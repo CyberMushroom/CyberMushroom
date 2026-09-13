@@ -1,0 +1,2087 @@
+<title>Curb Alert</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&display=swap">
+<style>
+/* ============ tokens ============ */
+:root{
+  --ground:#E7E5DE;
+  --surface:#FCFBF8;
+  --surface-2:#F1EFE8;
+  --sunk:#DEDBD1;
+  --ink:#1A1C17;
+  --ink-2:#585B50;
+  --ink-3:#8B8E82;
+  --line:#D6D3C8;
+  --line-2:#C3BFB2;
+  --accent:#E13A0B;
+  --accent-ink:#FFFFFF;
+  --accent-soft:#F9E1D8;
+  --live:#C4E62A;
+  --live-ink:#1A1C17;
+  --soon:#FFC53D;
+  --soon-ink:#2A2000;
+  --done:#D3D0C6;
+  --done-ink:#4E5148;
+  --shade:rgba(26,28,23,.34);
+  --shadow:0 1px 0 rgba(26,28,23,.05), 0 10px 26px -16px rgba(26,28,23,.6);
+  --r:14px;
+  --r-sm:9px;
+  --sans:'Archivo','Helvetica Neue',Helvetica,Arial,sans-serif;
+  --sign:'Big Shoulders Display','Archivo Narrow','Oswald',var(--sans);
+  --mono:'DM Mono',ui-monospace,'SF Mono',Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#100F0D;
+    --surface:#1B1D18;
+    --surface-2:#23251E;
+    --sunk:#141610;
+    --ink:#EEEBE1;
+    --ink-2:#A6A99B;
+    --ink-3:#7A7D71;
+    --line:#333629;
+    --line-2:#464A3B;
+    --accent:#FF5E2B;
+    --accent-ink:#1A0A03;
+    --accent-soft:#3B1A0C;
+    --done:#383B31;
+    --done-ink:#A6A99B;
+    --shade:rgba(0,0,0,.6);
+    --shadow:0 1px 0 rgba(0,0,0,.3), 0 12px 30px -18px #000;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#100F0D;
+  --surface:#1B1D18;
+  --surface-2:#23251E;
+  --sunk:#141610;
+  --ink:#EEEBE1;
+  --ink-2:#A6A99B;
+  --ink-3:#7A7D71;
+  --line:#333629;
+  --line-2:#464A3B;
+  --accent:#FF5E2B;
+  --accent-ink:#1A0A03;
+  --accent-soft:#3B1A0C;
+  --done:#383B31;
+  --done-ink:#A6A99B;
+  --shade:rgba(0,0,0,.6);
+  --shadow:0 1px 0 rgba(0,0,0,.3), 0 12px 30px -18px #000;
+}
+
+*{box-sizing:border-box}
+body{
+  background:var(--ground);
+  color:var(--ink);
+  font-family:var(--sans);
+  font-size:14px;
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+@media (prefers-reduced-motion: reduce){*{animation-duration:.001ms !important;transition-duration:.001ms !important}}
+
+/* ============ stage + phone ============ */
+.stage{
+  min-height:100dvh;
+  display:flex;flex-wrap:wrap;gap:34px;
+  align-items:center;justify-content:center;
+  padding-block:26px;padding-left:16px;padding-right:16px;
+}
+.phone{
+  width:min(430px,100%);
+  height:min(884px,calc(100dvh - 52px));
+  background:var(--surface);
+  border:1px solid var(--line-2);
+  border-radius:34px;
+  box-shadow:var(--shadow);
+  display:flex;flex-direction:column;
+  overflow:hidden;
+  position:relative;
+}
+.statusbar{
+  flex:none;display:flex;align-items:center;justify-content:space-between;
+  padding:9px 22px 5px;font-family:var(--mono);font-size:11px;color:var(--ink-3);
+  letter-spacing:.02em;
+}
+.statusbar .bars{display:flex;gap:3px;align-items:flex-end}
+.statusbar .bars i{display:block;width:3px;background:var(--ink-3);border-radius:1px}
+.screen{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
+.tabbar{
+  flex:none;display:grid;grid-template-columns:repeat(3,1fr);
+  border-top:1px solid var(--line);background:var(--surface);
+  padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px));
+}
+.tabbar button{
+  background:none;border:0;cursor:pointer;padding:7px 4px 6px;border-radius:11px;
+  display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--ink-3);
+  font-size:10.5px;font-weight:600;letter-spacing:.03em;text-transform:uppercase;
+}
+.tabbar button[aria-current="page"]{color:var(--accent);background:var(--accent-soft)}
+.tabbar svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.sidenote{width:min(300px,100%);color:var(--ink-2);font-size:12.5px;line-height:1.6}
+.sidenote h2{font-family:var(--sign);font-weight:800;font-size:23px;letter-spacing:.01em;margin:0 0 8px;color:var(--ink);text-transform:uppercase}
+.sidenote p{margin:0 0 10px}
+.sidenote dl{margin:14px 0 0;display:grid;grid-template-columns:auto 1fr;gap:5px 12px;font-size:12px}
+.sidenote dt{font-weight:600;color:var(--ink);white-space:nowrap}
+.sidenote dd{margin:0}
+@media (max-width:900px){.sidenote{display:none}}
+@media (max-width:560px){
+  .stage{padding:0;gap:0}
+  .phone{width:100%;height:100dvh;border-radius:0;border:0}
+}
+
+/* ============ shared bits ============ */
+.pad{padding:0 18px}
+.stack{display:flex;flex-direction:column}
+.row{display:flex;align-items:center;gap:8px}
+.spread{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.label{
+  font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.13em;
+  color:var(--ink-3);margin:0 0 8px;
+}
+.muted{color:var(--ink-2)}
+.tiny{font-size:11.5px}
+.hr{height:1px;background:var(--line);border:0;margin:18px 0}
+
+.appbar{
+  position:sticky;top:0;z-index:5;background:var(--surface);
+  border-bottom:1px solid var(--line);
+  display:flex;align-items:center;gap:10px;padding:10px 14px 10px 10px;
+}
+.appbar h1{
+  font-family:var(--sign);font-weight:800;font-size:25px;line-height:1;margin:0;
+  letter-spacing:.005em;text-transform:uppercase;flex:1;
+}
+.iconbtn{
+  background:var(--surface-2);border:1px solid var(--line);border-radius:10px;
+  width:34px;height:34px;display:grid;place-items:center;cursor:pointer;color:var(--ink-2);flex:none;
+}
+.iconbtn svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.iconbtn:hover{border-color:var(--line-2);color:var(--ink)}
+
+.btn{
+  border:1px solid var(--line-2);background:var(--surface-2);color:var(--ink);
+  border-radius:11px;padding:11px 15px;font-weight:600;font-size:13.5px;cursor:pointer;
+  display:inline-flex;align-items:center;justify-content:center;gap:7px;
+}
+.btn:hover{border-color:var(--ink-3)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.primary:hover{filter:brightness(1.06)}
+.btn.wide{width:100%}
+.btn.sm{padding:7px 11px;font-size:12.5px;border-radius:9px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.ghost{background:none;border-color:var(--line)}
+.btn svg{
+  width:15px;height:15px;flex:none;fill:none;stroke:currentColor;
+  stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;
+}
+
+.pill{
+  display:inline-flex;align-items:center;gap:5px;border-radius:999px;
+  padding:3px 9px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;
+  white-space:nowrap;
+}
+.pill.live{background:var(--live);color:var(--live-ink)}
+.pill.soon{background:var(--soon);color:var(--soon-ink)}
+.pill.later{background:var(--surface-2);color:var(--ink-2);border:1px solid var(--line)}
+.pill.done{background:var(--done);color:var(--done-ink)}
+.pill.dot::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+
+.tag{
+  display:inline-block;border:1px solid var(--line);border-radius:6px;
+  padding:2px 7px;font-size:11px;color:var(--ink-2);background:var(--surface);white-space:nowrap;
+}
+.tags{display:flex;flex-wrap:wrap;gap:5px}
+
+/* chips (filter + form multi-select) */
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{
+  border:1px solid var(--line-2);background:var(--surface);color:var(--ink-2);
+  border-radius:999px;padding:6px 12px;font-size:12.5px;cursor:pointer;font-weight:500;
+}
+.chip:hover{border-color:var(--ink-3);color:var(--ink)}
+.chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--surface);font-weight:600}
+.chip.accent[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+
+.seg{display:flex;background:var(--sunk);border-radius:10px;padding:3px;gap:2px}
+.seg button{
+  flex:1;background:none;border:0;border-radius:8px;padding:7px 6px;cursor:pointer;
+  font-size:12.5px;font-weight:600;color:var(--ink-2);white-space:nowrap;
+}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+
+.field{display:block;margin-bottom:13px}
+.field > span{display:block;font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:5px}
+.field .hint{font-weight:400;color:var(--ink-3)}
+input[type="text"],input[type="tel"],input[type="number"],input[type="date"],input[type="time"],select,textarea{
+  width:100%;background:var(--surface);border:1px solid var(--line-2);border-radius:10px;
+  padding:10px 12px;font-size:14px;
+}
+input::placeholder,textarea::placeholder{color:var(--ink-3)}
+textarea{min-height:82px;resize:vertical;line-height:1.5}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.err{color:var(--accent);font-size:11.5px;font-weight:600;margin-top:4px}
+input.bad,select.bad{border-color:var(--accent)}
+
+input[type="range"]{width:100%;accent-color:var(--accent);background:none;border:0;padding:0}
+
+.switch{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid var(--line)}
+.switch:last-child{border-bottom:0}
+.switch p{margin:0;font-size:13.5px;font-weight:500}
+.switch small{display:block;color:var(--ink-3);font-weight:400;font-size:11.5px;margin-top:1px}
+.toggle{
+  flex:none;width:44px;height:26px;border-radius:999px;border:1px solid var(--line-2);
+  background:var(--sunk);position:relative;cursor:pointer;transition:background .15s,border-color .15s;
+}
+.toggle::after{
+  content:"";position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;
+  background:var(--surface);box-shadow:0 1px 2px rgba(0,0,0,.3);transition:transform .15s;
+}
+.toggle[aria-pressed="true"]{background:var(--accent);border-color:var(--accent)}
+.toggle[aria-pressed="true"]::after{transform:translateX(18px)}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px}
+.panel{background:var(--surface-2);border-radius:var(--r);padding:14px}
+
+.empty{text-align:center;padding:38px 22px;color:var(--ink-2)}
+.empty strong{display:block;font-family:var(--sign);font-size:22px;text-transform:uppercase;color:var(--ink);margin-bottom:6px}
+
+.toast{
+  position:absolute;left:50%;bottom:78px;transform:translateX(-50%);
+  background:var(--ink);color:var(--ground);padding:9px 15px;border-radius:999px;
+  font-size:12.5px;font-weight:600;z-index:40;box-shadow:var(--shadow);max-width:88%;text-align:center;
+}
+</style>
+<style>
+/* ============ welcome ============ */
+.welcome{padding:0 18px 26px;display:flex;flex-direction:column;min-height:100%}
+.brandmark{padding:30px 0 0;position:relative}
+.brandmark .dot{
+  position:absolute;top:26px;left:-6px;width:74px;height:74px;border-radius:50%;
+  background:var(--accent);opacity:.16;
+}
+.brandmark h1{
+  position:relative;margin:0;font-family:var(--sign);font-weight:800;
+  font-size:clamp(46px,15vw,60px);line-height:.84;letter-spacing:-.005em;text-transform:uppercase;
+}
+.brandmark h1 em{font-style:normal;color:var(--accent)}
+.brandmark p{
+  position:relative;margin:12px 0 0;font-size:14.5px;color:var(--ink-2);max-width:31ch;line-height:1.45;
+}
+.nowstrip{
+  margin:20px 0 18px;display:flex;align-items:center;gap:10px;
+  background:var(--sunk);border-radius:11px;padding:10px 12px;
+}
+.nowstrip .n{font-family:var(--sign);font-size:31px;font-weight:800;line-height:.8;color:var(--accent)}
+.nowstrip .t{font-size:12.5px;line-height:1.35;color:var(--ink-2)}
+.nowstrip .t b{color:var(--ink);font-weight:600;display:block}
+
+.bigopts{display:flex;flex-direction:column;gap:11px}
+.bigopt{
+  display:grid;grid-template-columns:1fr auto;align-items:center;gap:14px;
+  width:100%;text-align:left;cursor:pointer;
+  background:var(--surface-2);border:1px solid var(--line-2);border-radius:var(--r);
+  padding:15px 15px 15px 17px;position:relative;overflow:hidden;
+}
+.bigopt::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--line-2)}
+.bigopt.go::before{background:var(--accent)}
+.bigopt:hover{border-color:var(--ink-3)}
+.bigopt .h{
+  display:block;font-family:var(--sign);font-weight:700;font-size:26px;line-height:1;margin:0 0 5px;
+  text-transform:uppercase;letter-spacing:.01em;
+}
+.bigopt .p{display:block;font-size:12.5px;color:var(--ink-2);line-height:1.4}
+.bigopt .meta{display:block;margin-top:7px;font-size:11.5px;color:var(--ink-3);font-family:var(--mono)}
+.bigopt .arw{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:var(--surface-2);color:var(--ink-2)}
+.bigopt .arw svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round}
+.bigopt.go .arw{background:var(--accent);color:var(--accent-ink)}
+
+.welcome-foot{margin-top:auto;padding-top:22px}
+.routeteaser{
+  display:flex;align-items:center;gap:11px;border:1px dashed var(--line-2);
+  border-radius:11px;padding:11px 13px;width:100%;background:none;cursor:pointer;text-align:left;
+}
+.routeteaser .num{
+  font-family:var(--sign);font-size:22px;font-weight:800;line-height:1;color:var(--ink);
+  background:var(--live);border-radius:7px;padding:5px 8px 4px;
+}
+.routeteaser .p{display:block;font-size:12.5px;font-weight:600}
+.routeteaser small{display:block;color:var(--ink-3);font-size:11.5px}
+.fineprint{margin:14px 0 0;font-size:11px;color:var(--ink-3);line-height:1.45}
+
+/* ============ find ============ */
+.searchwrap{padding:12px 14px 10px;position:relative}
+.searchwrap svg{
+  position:absolute;left:26px;top:50%;transform:translateY(-50%);width:16px;height:16px;
+  fill:none;stroke:var(--ink-3);stroke-width:1.9;stroke-linecap:round;
+}
+.searchwrap input{padding-left:36px;border-radius:11px;background:var(--surface-2)}
+.filterbar{
+  display:flex;gap:6px;overflow-x:auto;padding:0 14px 11px;scrollbar-width:none;
+}
+.filterbar::-webkit-scrollbar{display:none}
+.filterbar .chip{flex:none}
+.filterbar .chip.open{background:var(--ink);color:var(--surface);border-color:var(--ink);font-weight:600}
+.countline{
+  display:flex;align-items:baseline;justify-content:space-between;gap:10px;
+  padding:0 18px 9px;font-size:12px;color:var(--ink-2);
+}
+.countline b{font-family:var(--sign);font-size:20px;font-weight:700;color:var(--ink);letter-spacing:.01em}
+.countline select{width:auto;padding:4px 7px;font-size:12px;border-radius:8px;background:var(--surface-2)}
+
+.results{display:flex;flex-direction:column;gap:10px;padding:0 14px 22px}
+.sale{
+  background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r);
+  padding:13px 14px;cursor:pointer;text-align:left;width:100%;display:block;
+}
+.sale:hover{border-color:var(--line-2)}
+.sale.ended{opacity:.62}
+.sale-top{display:flex;align-items:center;gap:7px;margin-bottom:7px;flex-wrap:wrap}
+.sale h3{
+  font-family:var(--sign);font-weight:700;font-size:21px;line-height:1.02;margin:0 0 5px;
+  letter-spacing:.005em;
+}
+.sale h3 button{
+  background:none;border:0;padding:0;margin:0;font:inherit;color:inherit;
+  text-align:left;width:100%;display:block;cursor:pointer;
+}
+.sale .where{font-size:12px;color:var(--ink-2);margin:0 0 8px}
+.sale .when{font-family:var(--mono);font-size:12px;color:var(--ink);margin:0 0 9px;font-variant-numeric:tabular-nums}
+.sale .dist{margin-left:auto;font-family:var(--mono);font-size:12px;color:var(--ink-2);white-space:nowrap}
+.sale-foot{display:flex;align-items:center;gap:7px;margin-top:10px;padding-top:10px;border-top:1px solid var(--line)}
+.sale-foot .itemline{font-size:11.5px;color:var(--ink-2);flex:1;min-width:0}
+.sale-foot .itemline b{font-family:var(--mono);color:var(--ink);font-weight:500}
+.actbtn{
+  border:1px solid var(--line-2);background:var(--surface);border-radius:8px;width:31px;height:31px;
+  display:grid;place-items:center;cursor:pointer;color:var(--ink-3);flex:none;
+}
+.actbtn svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.actbtn[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.actbtn[aria-pressed="true"] svg{fill:currentColor}
+.matchline{
+  margin:8px 0 0;padding:7px 9px;background:var(--accent-soft);border-radius:8px;
+  font-size:11.5px;color:var(--ink);line-height:1.4;
+}
+.matchline b{font-family:var(--mono);font-weight:500}
+
+/* filter sheet */
+.sheet-bg{position:absolute;inset:0;background:var(--shade);z-index:20;animation:fade .16s ease-out}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.sheet{
+  position:absolute;left:0;right:0;bottom:0;top:34px;z-index:21;background:var(--surface);
+  border-radius:20px 20px 0 0;display:flex;flex-direction:column;overflow:hidden;
+  box-shadow:0 -8px 30px -12px var(--shade);animation:up .2s cubic-bezier(.2,.8,.3,1);
+}
+@keyframes up{from{transform:translateY(14px);opacity:.4}to{transform:none;opacity:1}}
+.sheet-head{
+  flex:none;display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:14px 16px;border-bottom:1px solid var(--line);
+}
+.sheet-head h2{font-family:var(--sign);font-size:24px;font-weight:800;margin:0;text-transform:uppercase}
+.sheet-body{flex:1;overflow-y:auto;padding:16px 16px 22px}
+.sheet-foot{flex:none;padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--line);display:flex;gap:9px}
+.fgroup{margin-bottom:20px}
+.fgroup:last-child{margin-bottom:6px}
+.rangerow{display:flex;align-items:center;gap:12px}
+.rangerow output{font-family:var(--mono);font-size:13px;min-width:62px;text-align:right;color:var(--ink)}
+
+/* ============ map + route ============ */
+.mapwrap{padding:12px 14px 0}
+.mapbox{
+  position:relative;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;
+  background:var(--surface-2);
+}
+.mapbox svg{display:block;width:100%;height:auto;max-width:100%}
+.maplegend{
+  display:flex;flex-wrap:wrap;gap:12px;padding:9px 12px;border-top:1px solid var(--line);
+  font-size:11px;color:var(--ink-3);background:var(--surface);
+}
+.maplegend span{display:inline-flex;align-items:center;gap:5px}
+.maplegend i{width:9px;height:9px;border-radius:50%;display:block}
+.pin{cursor:pointer}
+.pin text{font-family:var(--mono);font-size:9px}
+
+.routelist{display:flex;flex-direction:column;gap:0;padding:6px 14px 22px}
+.stop{display:grid;grid-template-columns:34px 1fr auto;gap:11px;align-items:start;padding:12px 0;border-bottom:1px solid var(--line)}
+.stop:last-child{border-bottom:0}
+.stop .n{
+  font-family:var(--sign);font-size:19px;font-weight:800;line-height:1;text-align:center;
+  border:1.5px solid var(--ink);border-radius:8px;padding:6px 0 5px;
+}
+.stop h4{margin:0 0 3px;font-size:13.5px;font-weight:600;line-height:1.25}
+.stop p{margin:0;font-size:11.5px;color:var(--ink-2)}
+.leg{display:flex;align-items:center;gap:7px;padding:5px 0 5px 45px;font-family:var(--mono);font-size:11px;color:var(--ink-3)}
+.leg::before{content:"";width:14px;height:1px;background:var(--line-2)}
+
+/* ============ detail ============ */
+.detail{padding:0 0 26px}
+.detail-hero{padding:16px 18px 14px;border-bottom:1px solid var(--line)}
+.detail-hero h2{font-family:var(--sign);font-weight:800;font-size:31px;line-height:.98;margin:9px 0 8px;letter-spacing:.005em}
+.detail-hero .host{font-size:12.5px;color:var(--ink-2)}
+.sect{padding:16px 18px;border-bottom:1px solid var(--line)}
+.sect:last-child{border-bottom:0}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:7px 14px;font-size:13px}
+.kv dt{color:var(--ink-3);font-size:11.5px;text-transform:uppercase;letter-spacing:.07em;font-weight:600;padding-top:1px}
+.kv dd{margin:0}
+.hours{display:flex;flex-direction:column;gap:6px}
+.hours .h{display:flex;align-items:center;justify-content:space-between;gap:10px;font-family:var(--mono);font-size:12.5px}
+.hours .h.past{color:var(--ink-3);text-decoration:line-through}
+.addr{font-size:14px;line-height:1.45}
+.addr .hidden-note{display:block;margin-top:5px;font-size:11.5px;color:var(--ink-3);font-family:var(--sans)}
+
+.items{display:flex;flex-direction:column}
+.item{display:grid;grid-template-columns:1fr auto;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)}
+.item:last-child{border-bottom:0}
+.item h5{margin:0 0 2px;font-size:13.5px;font-weight:500;line-height:1.3}
+.item .meta{font-size:11px;color:var(--ink-3)}
+.item .price{font-family:var(--mono);font-size:14px;font-weight:500;text-align:right;white-space:nowrap}
+.item .price small{display:block;font-size:10px;color:var(--ink-3);font-family:var(--sans);letter-spacing:.05em;text-transform:uppercase}
+.itemtools{display:flex;gap:8px;margin-bottom:11px}
+.itemtools input{flex:1}
+.stickybar{
+  position:sticky;bottom:0;background:var(--surface);border-top:1px solid var(--line);
+  padding:11px 16px;display:flex;gap:9px;z-index:4;
+}
+
+/* ============ wizard ============ */
+.steps{display:flex;gap:5px;padding:12px 16px 0}
+.steps i{flex:1;height:3px;border-radius:2px;background:var(--line);display:block}
+.steps i.on{background:var(--accent)}
+.steps i.done{background:var(--ink-3)}
+.wiz-head{padding:12px 18px 4px}
+.wiz-head .label{margin-bottom:5px}
+.wiz-head h2{font-family:var(--sign);font-weight:800;font-size:29px;line-height:1;margin:0 0 6px;text-transform:uppercase}
+.wiz-head p{margin:0;font-size:12.5px;color:var(--ink-2);line-height:1.45}
+.wiz-body{padding:16px 18px 20px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.three{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:8px}
+.daycard{border:1px solid var(--line);border-radius:11px;padding:11px;margin-bottom:9px;background:var(--surface-2)}
+.daycard .spread{margin-bottom:9px}
+.daycard h4{margin:0;font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-3)}
+.linkbtn{background:none;border:0;color:var(--accent);font-size:12px;font-weight:600;cursor:pointer;padding:2px 4px}
+.itemrow{display:grid;grid-template-columns:1fr 78px 30px;gap:7px;align-items:center;margin-bottom:7px}
+.itemrow .sub{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr auto;gap:7px;margin:-2px 0 9px}
+.itemrow select,.itemrow input{padding:8px 9px;font-size:13px}
+.itemtotal{
+  display:flex;justify-content:space-between;font-family:var(--mono);font-size:12.5px;
+  padding:10px 12px;background:var(--sunk);border-radius:10px;margin-top:4px;
+}
+.review{display:flex;flex-direction:column;gap:0}
+.review .r{display:grid;grid-template-columns:96px 1fr;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);font-size:13px;align-items:start}
+.review .r:last-child{border-bottom:0}
+.review dt{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-3);font-weight:600;padding-top:2px}
+.review dd{margin:0}
+.wiz-foot{
+  position:sticky;bottom:0;background:var(--surface);border-top:1px solid var(--line);
+  padding:11px 16px;display:flex;gap:9px;
+}
+.wiz-foot .btn{flex:1}
+.wiz-foot .btn.back{flex:0 0 84px}
+
+.done-screen{padding:44px 24px;text-align:center}
+.done-screen .badge{
+  width:70px;height:70px;border-radius:50%;background:var(--live);margin:0 auto 18px;
+  display:grid;place-items:center;
+}
+.done-screen .badge svg{width:34px;height:34px;fill:none;stroke:var(--live-ink);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.done-screen h2{font-family:var(--sign);font-size:34px;font-weight:800;margin:0 0 8px;text-transform:uppercase;line-height:1}
+.done-screen p{margin:0 auto 22px;max-width:30ch;color:var(--ink-2);font-size:13.5px}
+
+/* ============ account ============ */
+.profile{display:flex;align-items:center;gap:13px;padding:18px}
+.avatar{
+  width:54px;height:54px;border-radius:50%;background:var(--accent);color:var(--accent-ink);
+  display:grid;place-items:center;font-family:var(--sign);font-size:26px;font-weight:800;flex:none;
+}
+.profile h2{font-family:var(--sign);font-size:27px;font-weight:800;margin:0;line-height:1;text-transform:uppercase}
+.profile p{margin:3px 0 0;font-size:12px;color:var(--ink-3)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border-block:1px solid var(--line)}
+.stats div{background:var(--surface);padding:11px 8px;text-align:center}
+.stats b{display:block;font-family:var(--sign);font-size:25px;font-weight:800;line-height:1}
+.stats span{font-size:10.5px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-3)}
+.acct-sect{padding:16px 18px;border-bottom:1px solid var(--line)}
+.minilist{display:flex;flex-direction:column;gap:8px}
+.mini{
+  display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:11px;
+  padding:10px 11px;background:var(--surface-2);
+}
+.mini .txt{flex:1;min-width:0}
+.mini h4{margin:0 0 2px;font-size:13px;font-weight:600;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mini p{margin:0;font-size:11.5px;color:var(--ink-3)}
+</style>
+<div class="stage">
+  <div class="phone">
+    <div class="statusbar">
+      <span id="clock">—</span>
+      <span class="row" style="gap:7px">
+        <span class="bars"><i style="height:4px"></i><i style="height:6px"></i><i style="height:8px"></i><i style="height:10px"></i></span>
+        <span>LTE</span><span>82%</span>
+      </span>
+    </div>
+    <main class="screen" id="screen"></main>
+    <nav class="tabbar" id="tabbar" hidden></nav>
+  </div>
+  <aside class="sidenote">
+    <h2>Curb Alert</h2>
+    <p>A working prototype of a garage-sale finder, sized for a phone. Everything below is live: filter the listings, post one of your own, tune your account.</p>
+    <p>Sales you post are saved to this artifact's shared store, so they show up in Find for anyone who opens this page &mdash; on a phone too.</p>
+    <dl>
+      <dt>Find</dt><dd>Distance, day, sale type, categories, payment, access, and a search that reads item lists.</dd>
+      <dt>List</dt><dd>Five steps, with an optional item list you can price out and export.</dd>
+      <dt>Account</dt><dd>Profile, saved sales, your listings, saved searches, alerts, privacy.</dd>
+    </dl>
+  </aside>
+</div>
+
+<script>
+"use strict";
+
+/* ============================================================
+   Constants
+   ============================================================ */
+const CATS = [
+  ["furniture","Furniture"],["tools","Tools & hardware"],["baby","Baby & kids"],
+  ["clothing","Clothing"],["electronics","Electronics"],["media","Books & media"],
+  ["sports","Sports & outdoors"],["toys","Toys & games"],["kitchen","Kitchen & housewares"],
+  ["antiques","Antiques & vintage"],["garden","Garden & plants"],["decor","Art & decor"],
+  ["collect","Collectibles"],["jewelry","Jewelry"],["music","Music gear"],
+  ["auto","Auto & parts"],["craft","Craft & sewing"],["pet","Pet supplies"],
+  ["holiday","Holiday decor"],["appliance","Appliances"]
+];
+const TYPES = [
+  ["garage","Garage / yard sale"],["estate","Estate sale"],["moving","Moving sale"],
+  ["multi","Multi-family"],["block","Neighborhood / block sale"],["charity","Church / charity rummage"],
+  ["barn","Barn sale"],["downsize","Downsizing / storage unit"]
+];
+const PAYS = [
+  ["cash","Cash"],["venmo","Venmo"],["zelle","Zelle"],["cashapp","Cash App"],
+  ["card","Card / tap"],["wallet","Apple / Google Pay"]
+];
+const FEATS = [
+  ["pricesmarked","Prices marked"],["haggling","Haggling welcome"],["firm","Firm prices"],
+  ["freepile","Free pile"],["allmustgo","Everything must go"],["bags","Bag / bulk deals"],
+  ["parking","Easy parking"],["accessible","Step-free access"],["restroom","Restroom"],
+  ["kids","Kid friendly"],["pets","Pet friendly"],["rainorshine","Rain or shine"],
+  ["truck","Big items — bring a truck"],["loading","Help loading"],["numbers","Numbers at open"]
+];
+const CONDS = [["new","New"],["likenew","Like new"],["good","Good"],["fair","Fair"],["project","Project"]];
+const EARLY = [["welcome","Early birds welcome"],["no","No early birds"],["na","No policy"]];
+const RAIN = [["rainorshine","Rain or shine"],["raindate","Rain date"],["cancel","Cancels if rain"]];
+const label = (list, id) => (list.find(r => r[0] === id) || [id, id])[1];
+
+const SORTS = [["near","Nearest"],["soon","Starting soonest"],["items","Most items"],["new","Newly posted"]];
+const WHENS = [["any","Any day"],["today","Today"],["weekend","This weekend"],["week","Next 7 days"],["date","Pick a date"]];
+
+/* Schematic map: the pin field spans MAP_MI miles corner to corner; "home" sits here. */
+const MAP_MI = 12;
+const HOME = { x: 0.5, y: 0.6 };
+
+/* ============================================================
+   Fallback listings — used only when the shared store is not
+   reachable (e.g. the page opened outside a claude.ai viewer).
+   Days use `offset` (days from today) so the demo never goes stale.
+   ============================================================ */
+const FALLBACK = [
+  { id:"s-alder", sample:true, title:"Three-family sale on Alder Court", type:"multi", host:"Dana R.",
+    addr:{street:"18 Alder Ct", city:"Ridgemont", state:"OH", zip:"43221", cross:"off Sycamore Ave", visibility:"always"},
+    geo:{x:0.406,y:0.549}, days:[{offset:0,start:"07:00",end:"14:00"},{offset:1,start:"08:00",end:"12:00"}],
+    early:"no", rain:"raindate", cats:["baby","furniture","kitchen","toys","clothing"],
+    desc:"Three houses, one driveway. Two of us are downsizing and one is moving to a smaller place, so it is mostly household goods and kids' things. Everything is tagged. We start putting things out at 6:45 but please do not knock before 7.",
+    pay:["cash","venmo","zelle"], feat:["pricesmarked","freepile","parking","kids","numbers"],
+    items:[
+      {name:"Solid maple dresser, 6 drawer",price:120,cond:"good",qty:1,cat:"furniture",firm:false},
+      {name:"Graco stroller + infant seat",price:45,cond:"likenew",qty:1,cat:"baby",firm:false},
+      {name:"Le Creuset 5qt dutch oven, flame",price:90,cond:"good",qty:1,cat:"kitchen",firm:true},
+      {name:"Toddler clothes 2T-4T, bag of 20",price:10,cond:"good",qty:6,cat:"clothing",firm:false},
+      {name:"Wooden train table with track",price:35,cond:"good",qty:1,cat:"toys",firm:false},
+      {name:"Pyrex mixing bowl set, 4 pc",price:22,cond:"good",qty:1,cat:"kitchen",firm:false},
+      {name:"Crib mattress, never used",price:30,cond:"new",qty:1,cat:"baby",firm:false},
+      {name:"Board games, most complete",price:3,cond:"fair",qty:14,cat:"toys",firm:false}
+    ], contact:"app" },
+
+  { id:"s-woodshop", sample:true, title:"Woodshop cleanout — hand tools & lumber", type:"garage", host:"Marty V.",
+    addr:{street:"402 Kestrel Ln", city:"Ridgemont", state:"OH", zip:"43220", cross:"behind the fire station", visibility:"always"},
+    geo:{x:0.34,y:0.688}, days:[{offset:0,start:"06:30",end:"13:00"}],
+    early:"welcome", rain:"rainorshine", cats:["tools","auto","garden"],
+    desc:"Forty years of woodworking, and my shoulder says it is time. Machines are tested and running. Bring your own help for the drill press. Cash keeps it simple. Coffee is on from 6:30 for whoever gets here first.",
+    pay:["cash"], feat:["haggling","truck","loading","rainorshine","parking"],
+    items:[
+      {name:"Delta 10 in. drill press, 1/2 hp",price:185,cond:"good",qty:1,cat:"tools",firm:false},
+      {name:"Stanley No. 4 smoothing plane",price:30,cond:"good",qty:1,cat:"tools",firm:false},
+      {name:"Stanley No. 78 rabbet plane",price:38,cond:"fair",qty:1,cat:"tools",firm:false},
+      {name:"Craftsman socket set, 3/8 drive",price:25,cond:"good",qty:1,cat:"tools",firm:false},
+      {name:"Rough sawn walnut, 8/4, per board ft",price:6,cond:"new",qty:40,cat:"tools",firm:true},
+      {name:"Shop vac, 12 gal",price:35,cond:"good",qty:1,cat:"tools",firm:false},
+      {name:"Pipe clamps, 4 ft",price:12,cond:"good",qty:8,cat:"tools",firm:false},
+      {name:"Jointer, 6 in. — needs a belt",price:140,cond:"project",qty:1,cat:"tools",firm:false}
+    ], contact:"phone", phone:"(614) 555-0142" },
+
+  { id:"s-estate62", sample:true, title:"Estate sale: 1962 ranch, everything inside", type:"estate", host:"Hollis Estate Services",
+    addr:{street:"77 Bellview Dr", city:"Ridgemont", state:"OH", zip:"43214", cross:"at Bellview & 9th", visibility:"always"},
+    geo:{x:0.677,y:0.4}, days:[{offset:0,start:"09:00",end:"17:00"},{offset:1,start:"09:00",end:"17:00"},{offset:2,start:"10:00",end:"15:00"}],
+    early:"no", rain:"rainorshine", cats:["antiques","furniture","media","kitchen","decor","jewelry"],
+    desc:"Original owner household, largely untouched since the seventies. Teak dining set, a wall of hardbacks, costume jewelry, full kitchen, and a basement of tools we are still pricing. Numbers handed out at 8:30, twenty people in the house at a time. Half off on the last day.",
+    pay:["cash","card","venmo"], feat:["pricesmarked","numbers","accessible","restroom","parking"],
+    items:[
+      {name:"Teak dining table + 6 chairs",price:650,cond:"good",qty:1,cat:"furniture",firm:false},
+      {name:"Pair of ceramic table lamps",price:75,cond:"good",qty:2,cat:"decor",firm:false},
+      {name:"Costume jewelry, priced individually",price:4,cond:"good",qty:60,cat:"jewelry",firm:false},
+      {name:"Hardback books, most first printings",price:2,cond:"good",qty:200,cat:"media",firm:false},
+      {name:"Singer sewing machine in cabinet",price:110,cond:"good",qty:1,cat:"craft",firm:false},
+      {name:"Corningware casserole set",price:28,cond:"good",qty:1,cat:"kitchen",firm:false},
+      {name:"Walnut credenza, 6 ft",price:420,cond:"good",qty:1,cat:"furniture",firm:true},
+      {name:"Framed landscape oil, signed",price:95,cond:"good",qty:1,cat:"decor",firm:false}
+    ], contact:"app" },
+
+  { id:"s-block", sample:true, title:"Block sale — 14 houses on Sycamore", type:"block", host:"Sycamore Ave Association",
+    addr:{street:"Sycamore Ave, 200-400 block", city:"Ridgemont", state:"OH", zip:"43221", cross:"start at the corner of 3rd", visibility:"always"},
+    geo:{x:0.488,y:0.468}, days:[{offset:1,start:"08:00",end:"15:00"}],
+    early:"no", rain:"raindate", cats:["furniture","clothing","toys","sports","media","holiday","kitchen"],
+    desc:"Fourteen driveways, one street, one morning. Pick up a printed map at the folding table on the corner of 3rd. The Petersons at 318 do the lemonade and the Nguyens at 244 always have the good tools. Park on 3rd, not on Sycamore, so the street stays walkable.",
+    pay:["cash","venmo","cashapp"], feat:["pricesmarked","kids","pets","parking","bags"],
+    items:[], contact:"none" },
+
+  { id:"s-moving", sample:true, title:"Moving Sunday — everything must go", type:"moving", host:"Priya & Sam",
+    addr:{street:"1120 Fern Hollow Rd", city:"Ridgemont", state:"OH", zip:"43235", cross:"apartment C, use the back lot", visibility:"dayof"},
+    geo:{x:0.771,y:0.832}, days:[{offset:2,start:"09:00",end:"16:00"}],
+    early:"welcome", rain:"rainorshine", cats:["furniture","appliance","garden","electronics","kitchen"],
+    desc:"The truck comes Monday at seven, so anything still here Sunday night goes to the curb. Prices are soft after noon and very soft after two. If you can carry it, you can probably have it for less than the sticker.",
+    pay:["cash","venmo","zelle","wallet"], feat:["haggling","allmustgo","truck","loading","freepile"],
+    items:[
+      {name:"IKEA sofa, grey, 3 seat",price:80,cond:"good",qty:1,cat:"furniture",firm:false},
+      {name:"Portable dishwasher",price:120,cond:"good",qty:1,cat:"appliance",firm:false},
+      {name:"Monstera, chest height",price:35,cond:"good",qty:1,cat:"garden",firm:false},
+      {name:"Standing desk, electric",price:150,cond:"likenew",qty:1,cat:"furniture",firm:false},
+      {name:"Window AC unit, 8000 btu",price:60,cond:"good",qty:1,cat:"appliance",firm:false},
+      {name:"Houseplants, assorted small",price:8,cond:"good",qty:11,cat:"garden",firm:false}
+    ], contact:"app" },
+
+  { id:"s-baby", sample:true, title:"Baby & toddler gear, barely used", type:"garage", host:"The Okonkwos",
+    addr:{street:"56 Larkspur Way", city:"Ridgemont", state:"OH", zip:"43220", cross:"first house past the mailboxes", visibility:"dayof"},
+    geo:{x:0.435,y:0.79}, days:[{offset:1,start:"09:00",end:"12:00"}],
+    early:"no", rain:"cancel", cats:["baby","clothing","toys","media"],
+    desc:"Our youngest outgrew all of it in about nine months, which is the whole problem with baby gear. Everything is washed, nothing is recalled, and the car seat is within date. Stroller-friendly driveway, flat and paved.",
+    pay:["cash","venmo","zelle"], feat:["pricesmarked","accessible","kids","freepile"],
+    items:[
+      {name:"Convertible car seat, exp. 2029",price:55,cond:"likenew",qty:1,cat:"baby",firm:true},
+      {name:"Pack n Play with bassinet",price:40,cond:"good",qty:1,cat:"baby",firm:false},
+      {name:"High chair, wipes clean",price:25,cond:"good",qty:1,cat:"baby",firm:false},
+      {name:"Board books, bundle of 12",price:8,cond:"good",qty:3,cat:"media",firm:false},
+      {name:"Baby clothes 0-12mo, per bag",price:6,cond:"good",qty:9,cat:"clothing",firm:false}
+    ], contact:"app" },
+
+  { id:"s-records", sample:true, title:"Record collection, amps, and a drum kit", type:"garage", host:"Wes T.",
+    addr:{street:"9 Quarry St", city:"Ridgemont", state:"OH", zip:"43212", cross:"garage is around the back", visibility:"always"},
+    geo:{x:0.08,y:0.512}, days:[{offset:3,start:"10:00",end:"16:00"}],
+    early:"no", rain:"rainorshine", cats:["music","electronics","media","collect"],
+    desc:"Downsizing the studio. Records are alphabetized and graded honestly - if it says VG it plays like VG. Amps are tested and you are welcome to plug in. Prices are firm on the gear, negotiable on the vinyl if you take a stack.",
+    pay:["cash","card","venmo","wallet"], feat:["firm","photos","parking","rainorshine"],
+    items:[
+      {name:"Fender Blues Junior, 15w tube",price:425,cond:"good",qty:1,cat:"music",firm:true},
+      {name:"Ludwig 4 pc kit, 70s, no cymbals",price:600,cond:"fair",qty:1,cat:"music",firm:true},
+      {name:"Vinyl LPs, jazz and soul, graded VG+",price:12,cond:"good",qty:180,cat:"media",firm:false},
+      {name:"Technics SL-1200 mk2",price:550,cond:"good",qty:1,cat:"electronics",firm:true},
+      {name:"Shure SM57 mics",price:65,cond:"good",qty:3,cat:"music",firm:false},
+      {name:"Guitar pedals, assorted",price:40,cond:"good",qty:7,cat:"music",firm:false}
+    ], contact:"phone", phone:"(614) 555-0188" },
+
+  { id:"s-rummage", sample:true, title:"Church rummage sale — fill a bag for $5", type:"charity", host:"St. Brendan's Parish Hall",
+    addr:{street:"1400 Parish Rd", city:"Ridgemont", state:"OH", zip:"43214", cross:"enter by the hall doors", visibility:"always"},
+    geo:{x:0.511,y:0.301}, days:[{offset:1,start:"08:00",end:"13:00"}],
+    early:"no", rain:"rainorshine", cats:["clothing","media","kitchen","holiday","toys","decor"],
+    desc:"Forty tables in the hall, all donated, all cheap. The last hour is bag day: five dollars for whatever you can fit in one of our bags. Proceeds go to the food pantry. Volunteers are always short-handed at teardown if you can stay.",
+    pay:["cash"], feat:["bags","accessible","restroom","kids","parking","rainorshine"],
+    items:[], contact:"none" },
+
+  { id:"s-garden", sample:true, title:"Garden thinning — perennials & pots", type:"garage", host:"Ruth A.",
+    addr:{street:"31 Willowmere Ln", city:"Ridgemont", state:"OH", zip:"43221", cross:"look for the wheelbarrow", visibility:"always"},
+    geo:{x:0.613,y:0.581}, days:[{offset:0,start:"07:00",end:"11:00"}],
+    early:"welcome", rain:"rainorshine", cats:["garden","decor","tools"],
+    desc:"I divide the beds every fall and I always end up with more than I can replant. Hostas, daylilies, black-eyed susans, a few ferns, all dug fresh that morning and bagged. Bring a flat or a box. Terracotta pots by the fence are a dollar each.",
+    pay:["cash","venmo"], feat:["haggling","rainorshine","parking","pets"],
+    items:[
+      {name:"Hosta divisions, mature",price:5,cond:"new",qty:22,cat:"garden",firm:false},
+      {name:"Daylily clumps, orange",price:4,cond:"new",qty:15,cat:"garden",firm:false},
+      {name:"Terracotta pots, 6-10 in.",price:1,cond:"fair",qty:30,cat:"garden",firm:true},
+      {name:"Cedar planter box, 4 ft",price:45,cond:"good",qty:1,cat:"garden",firm:false},
+      {name:"Garden tools, hand sized",price:3,cond:"good",qty:12,cat:"tools",firm:false}
+    ], contact:"app" },
+
+  { id:"s-vintage", sample:true, title:"Vintage clothing + costume jewelry", type:"garage", host:"Nell & June",
+    addr:{street:"212 Foundry St", city:"Ridgemont", state:"OH", zip:"43201", cross:"the blue house with the porch", visibility:"always"},
+    geo:{x:0.635,y:0.9}, days:[{offset:2,start:"10:00",end:"15:00"}],
+    early:"no", rain:"raindate", cats:["clothing","jewelry","decor","craft"],
+    desc:"Two closets of forties through eighties, mostly womens, sized generously because vintage sizing lies. Racks are by decade. There is a mirror and a real changing spot, not a bedsheet. Photos of the good pieces are posted with the listing.",
+    pay:["cash","venmo","card"], feat:["photos","pricesmarked","haggling","accessible"],
+    items:[
+      {name:"1950s cotton day dresses",price:38,cond:"good",qty:9,cat:"clothing",firm:false},
+      {name:"Wool overcoats, 60s-70s",price:55,cond:"good",qty:4,cat:"clothing",firm:false},
+      {name:"Bakelite bangles",price:18,cond:"good",qty:11,cat:"jewelry",firm:false},
+      {name:"Brooches, rhinestone",price:12,cond:"good",qty:24,cat:"jewelry",firm:false},
+      {name:"Vintage patterns, unused",price:3,cond:"new",qty:40,cat:"craft",firm:false},
+      {name:"Beaded clutch purses",price:22,cond:"fair",qty:6,cat:"clothing",firm:false}
+    ], contact:"app" }
+];
+
+/* ============================================================
+   Small helpers
+   ============================================================ */
+const $ = sel => document.querySelector(sel);
+const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c =>
+  ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+const money = n => {
+  const v = Number(n);
+  if (!isFinite(v)) return "--";
+  return "$" + (v % 1 === 0 ? v.toLocaleString("en-US") : v.toFixed(2));
+};
+const plural = (n, one, many) => n + " " + (n === 1 ? one : (many || one + "s"));
+const uid = () => Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-4);
+
+const LS = {
+  get(k, d) { try { const v = localStorage.getItem("curbalert." + k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem("curbalert." + k, JSON.stringify(v)); } catch (e) {} },
+  del(k) { try { localStorage.removeItem("curbalert." + k); } catch (e) {} }
+};
+
+const startOfDay = d => { const x = new Date(d); x.setHours(0,0,0,0); return x; };
+const addDays = (d, n) => { const x = new Date(d); x.setDate(x.getDate() + n); return x; };
+
+/* A sale day is either {offset} (relative, for the built-in examples) or {date:"YYYY-MM-DD"}. */
+function dayDate(day) {
+  if (day.date) {
+    const p = String(day.date).split("-").map(Number);
+    if (p.length === 3 && p.every(n => !isNaN(n))) return new Date(p[0], p[1] - 1, p[2]);
+  }
+  return addDays(startOfDay(new Date()), Number(day.offset) || 0);
+}
+function atTime(base, hhmm) {
+  const [h, m] = String(hhmm || "00:00").split(":").map(Number);
+  const d = new Date(base); d.setHours(h || 0, m || 0, 0, 0); return d;
+}
+function windows(sale) {
+  return (sale.days || []).map(day => {
+    const base = dayDate(day);
+    return { base, start: atTime(base, day.start), end: atTime(base, day.end), day };
+  }).sort((a, b) => a.start - b.start);
+}
+function fmtTime(hhmm) {
+  const [h, m] = String(hhmm || "").split(":").map(Number);
+  if (isNaN(h)) return "--";
+  const ap = h >= 12 ? "PM" : "AM";
+  const hh = h % 12 === 0 ? 12 : h % 12;
+  return hh + ":" + String(m || 0).padStart(2, "0") + " " + ap;
+}
+function fmtDay(d) {
+  const today = startOfDay(new Date());
+  const diff = Math.round((startOfDay(d) - today) / 86400000);
+  if (diff === 0) return "Today";
+  if (diff === 1) return "Tomorrow";
+  const wd = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][d.getDay()];
+  if (diff > 1 && diff < 7) return wd;
+  return wd + " " + ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][d.getMonth()] + " " + d.getDate();
+}
+function untilText(ms) {
+  const mins = Math.round(ms / 60000);
+  if (mins < 60) return mins + " min";
+  const h = Math.floor(mins / 60), m = mins % 60;
+  return h + "h" + (m ? " " + m + "m" : "");
+}
+function statusOf(sale, now) {
+  now = now || new Date();
+  const w = windows(sale);
+  if (!w.length) return { kind: "later", text: "Dates TBD", sort: Infinity };
+  const open = w.find(x => now >= x.start && now <= x.end);
+  if (open) return { kind: "live", text: "Open now", note: "closes in " + untilText(open.end - now), sort: -1 };
+  const next = w.find(x => x.start > now);
+  if (!next) return { kind: "done", text: "Ended", sort: Infinity - 1 };
+  const mins = (next.start - now) / 60000;
+  if (mins <= 180) return { kind: "soon", text: "Opens in " + untilText(next.start - now), sort: next.start.getTime() };
+  return { kind: "later", text: fmtDay(next.base) + " " + fmtTime(next.day.start), sort: next.start.getTime() };
+}
+function distOf(sale) {
+  const g = sale.geo || HOME;
+  return Math.hypot((g.x - HOME.x) * MAP_MI, (g.y - HOME.y) * MAP_MI);
+}
+const fmtMi = d => (d < 10 ? d.toFixed(1) : Math.round(d)) + " mi";
+function geoFromText(str) {
+  let h = 2166136261;
+  for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); }
+  const a = ((h >>> 0) % 10000) / 10000, b = ((Math.imul(h, 2246822519) >>> 0) % 10000) / 10000;
+  const r = 0.06 + a * 0.34, ang = b * Math.PI * 2;
+  return { x: Math.min(0.94, Math.max(0.06, HOME.x + Math.cos(ang) * r)),
+           y: Math.min(0.94, Math.max(0.06, HOME.y + Math.sin(ang) * r * 0.9)) };
+}
+function itemStats(sale) {
+  const items = sale.items || [];
+  const count = items.reduce((n, i) => n + (Number(i.qty) || 1), 0);
+  const prices = items.map(i => Number(i.price)).filter(p => isFinite(p) && p > 0);
+  return { listed: items.length, count, min: prices.length ? Math.min.apply(null, prices) : null };
+}
+
+/* ============================================================
+   State
+   ============================================================ */
+const BLANK_FILTERS = () => ({
+  radius: 10, when: "any", date: "", types: [], cats: [], pays: [], feats: [],
+  hasItems: false, maxPrice: "", early: "any"
+});
+const DEFAULT_PROFILE = () => ({
+  name: "", zip: "43221", radius: 10, when: "week",
+  alertNearby: true, alertRadius: 5, alertSaved: true, alertMorning: true, quiet: true,
+  addrVisibility: "dayof", contact: "app", phone: ""
+});
+
+const state = {
+  screen: "welcome", saleId: null, view: "list", sheet: false, toast: null, toastTimer: 0,
+  q: "", filters: BLANK_FILTERS(), sort: "near", itemQ: "",
+  sales: FALLBACK.slice(), source: "local", db: null,
+  profile: Object.assign(DEFAULT_PROFILE(), LS.get("profile", {})),
+  saved: LS.get("saved", []),
+  route: LS.get("route", []),
+  searches: LS.get("searches", []),
+  me: LS.get("me", null) || (() => { const k = "dev-" + uid(); LS.set("me", k); return k; })(),
+  wiz: { step: 0, data: null, published: null }
+};
+state.filters.radius = state.profile.radius;
+state.filters.when = state.profile.when;
+
+function toast(msg) {
+  state.toast = msg;
+  clearTimeout(state.toastTimer);
+  state.toastTimer = setTimeout(() => { state.toast = null; paintToast(); }, 2400);
+  paintToast();
+}
+function paintToast() {
+  const old = document.querySelector(".toast");
+  if (old) old.remove();
+  if (!state.toast) return;
+  const el = document.createElement("div");
+  el.className = "toast";
+  el.textContent = state.toast;
+  el.setAttribute("role", "status");
+  document.querySelector(".phone").appendChild(el);
+}
+
+/* ============================================================
+   Shared store (listings everyone sees)
+   ============================================================ */
+function normalize(id, d) {
+  return Object.assign({}, d, { id, geo: d.geo || geoFromText(id) });
+}
+async function bootStore() {
+  let db = null;
+  try { db = await window.claude?.use?.("db"); } catch (e) { db = null; }
+  if (!db) return;
+  state.db = db;
+  db.collection("sales").onSnapshot(snap => {
+    const rows = snap.docs.map(d => normalize(d.id, d.data() || {})).filter(s => s.title);
+    state.sales = rows.length ? rows : FALLBACK.slice();
+    state.source = rows.length ? "shared" : "local";
+    render();
+  }, err => {
+    state.source = "local";
+    if (err && err.code !== "revoked") console.warn("store unavailable:", err.code);
+  });
+}
+
+/* ============================================================
+   Icons
+   ============================================================ */
+const ICON = {
+  find: '<svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.4 15.4 20 20"/></svg>',
+  sign: '<svg viewBox="0 0 24 24"><path d="M6 3v18"/><path d="M6 5h11l3 3.5-3 3.5H6z"/></svg>',
+  user: '<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/></svg>',
+  back: '<svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>',
+  home: '<svg viewBox="0 0 24 24"><path d="M4 11l8-6.5 8 6.5"/><path d="M6.5 10v9h11v-9"/></svg>',
+  arrow: '<svg viewBox="0 0 24 24"><path d="M5 12h13"/><path d="M12.5 6l6 6-6 6"/></svg>',
+  star: '<svg viewBox="0 0 24 24"><path d="M12 3.6l2.5 5.3 5.5.8-4 4 1 5.7-5-2.8-5 2.8 1-5.7-4-4 5.5-.8z"/></svg>',
+  route: '<svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8.5 6H14a4 4 0 0 1 0 8H9a4 4 0 0 0 0 8h.5"/></svg>',
+  check: '<svg viewBox="0 0 24 24"><path d="M5 12.5l5 5L19 7"/></svg>',
+  x: '<svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>',
+  copy: '<svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg>',
+  trash: '<svg viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M9 7V5h6v2"/><path d="M6.5 7l1 13h9l1-13"/></svg>',
+  pencil: '<svg viewBox="0 0 24 24"><path d="M4 20l4-1 10-10-3-3L5 16z"/><path d="M14.5 6.5l3 3"/></svg>',
+  down: '<svg viewBox="0 0 24 24"><path d="M12 4v12"/><path d="M7 11.5l5 5 5-5"/><path d="M5 20h14"/></svg>'
+};
+
+/* ============================================================
+   Router
+   ============================================================ */
+const TABS = [["find", "Find", ICON.find], ["list", "List a sale", ICON.sign], ["account", "Account", ICON.user]];
+
+function go(screen, opts) {
+  Object.assign(state, { screen: screen, sheet: false }, opts || {});
+  render();
+  const s = $("#screen"); if (s) s.scrollTop = 0;
+}
+
+function render() {
+  const screen = $("#screen");
+  if (!screen) return;
+  let html = "";
+  if (state.screen === "welcome") html = viewWelcome();
+  else if (state.screen === "find") html = viewFind();
+  else if (state.screen === "detail") html = viewDetail();
+  else if (state.screen === "list") html = viewWizard();
+  else if (state.screen === "account") html = viewAccount();
+  screen.innerHTML = html;
+
+  const bar = $("#tabbar");
+  const onTabs = ["find", "list", "account", "detail"].includes(state.screen);
+  bar.hidden = !onTabs;
+  if (onTabs) {
+    const active = state.screen === "detail" ? "find" : state.screen;
+    bar.innerHTML = TABS.map(([id, txt, ic]) =>
+      '<button data-act="tab" data-val="' + id + '"' + (active === id ? ' aria-current="page"' : "") + '>' +
+      ic + "<span>" + txt + "</span></button>").join("");
+  }
+  if (state.screen === "find" && state.view !== "list") drawMap();
+  paintToast();
+}
+
+/* ============================================================
+   Welcome
+   ============================================================ */
+function viewWelcome() {
+  const now = new Date();
+  const withRadius = state.sales.filter(s => distOf(s) <= Math.max(state.profile.radius, 5));
+  const open = withRadius.filter(s => statusOf(s, now).kind === "live");
+  const soon = state.sales.filter(s => {
+    const st = statusOf(s, now); return st.kind === "soon" || st.kind === "later";
+  });
+  const weekCount = state.sales.filter(s => matchWhen(s, "week")).length;
+  const routeCount = state.route.length;
+  const name = state.profile.name.trim();
+
+  const headline = open.length
+    ? { n: open.length, top: plural(open.length, "sale") + " open right now",
+        sub: "within " + state.profile.radius + " mi of " + esc(state.profile.zip) }
+    : { n: soon.length, top: plural(soon.length, "sale") + " coming up",
+        sub: "nothing open this minute — the driveways start early" };
+
+  return '' +
+  '<div class="welcome">' +
+    '<div class="brandmark">' +
+      '<span class="dot"></span>' +
+      '<h1>Curb<br>Alert<em>.</em></h1>' +
+      '<p>Find the good driveways before the good stuff goes.</p>' +
+    '</div>' +
+
+    '<div class="nowstrip">' +
+      '<span class="n mono">' + headline.n + '</span>' +
+      '<span class="t"><b>' + esc(headline.top) + '</b>' + esc(headline.sub) + '</span>' +
+    '</div>' +
+
+    '<div class="bigopts">' +
+      opt("find", "go", "Find garage sales", 
+          "Distance, day, sale type, categories, payment, parking, access — and a search that reads item lists.",
+          weekCount + " in the next 7 days · within " + state.profile.radius + " mi of " + esc(state.profile.zip)) +
+      opt("list", "", "List a garage sale",
+          "Five short steps. Add an item list with prices if you want one, or skip it entirely.",
+          myListings().length ? plural(myListings().length, "live listing") + " of yours" : "About two minutes") +
+      opt("account", "", "Account",
+          "Saved sales, your listings, saved searches, alerts and address privacy.",
+          name ? esc(name) + " · " + plural(state.saved.length, "saved sale") : "Set up your profile") +
+    '</div>' +
+
+    '<div class="welcome-foot">' +
+      (routeCount
+        ? '<button class="routeteaser" data-act="route">' +
+            '<span class="num mono">' + routeCount + '</span>' +
+            '<span><span class="p">Saturday route planned</span><small>' + esc(routeSummary()) + '</small></span>' +
+          '</button>'
+        : '<button class="routeteaser" data-act="go-find">' +
+            '<span class="num mono">0</span>' +
+            '<span><span class="p">No route planned yet</span><small>Add sales to a route and Curb Alert orders the stops</small></span>' +
+          '</button>') +
+      '<p class="fineprint">' +
+        (state.source === "shared"
+          ? "Listings are shared: anything posted here shows up for everyone who opens Curb Alert."
+          : "Showing example listings. Post a sale and it saves to the shared list.") +
+        " Your profile, saved sales and route stay on this device." +
+      '</p>' +
+    '</div>' +
+  '</div>';
+
+  function opt(target, cls, title, body, meta) {
+    return '<button class="bigopt ' + cls + '" data-act="tab" data-val="' + target + '">' +
+      '<span><span class="h">' + title + '</span><span class="p">' + body + '</span><span class="meta">' + meta + '</span></span>' +
+      '<span class="arw">' + ICON.arrow + '</span></button>';
+  }
+}
+function myListings() {
+  return state.sales.filter(s => s.ownerKey && s.ownerKey === state.me);
+}
+
+/* ============================================================
+   Find: matching
+   ============================================================ */
+function matchWhen(sale, when, dateStr) {
+  const w = windows(sale);
+  if (!w.length) return when === "any";
+  const today = startOfDay(new Date());
+  if (when === "any") return true;
+  if (when === "today") return w.some(x => +startOfDay(x.base) === +today);
+  if (when === "week") return w.some(x => { const d = (startOfDay(x.base) - today) / 86400000; return d >= 0 && d <= 7; });
+  if (when === "weekend") return w.some(x => {
+    const d = (startOfDay(x.base) - today) / 86400000, wd = x.base.getDay();
+    return d >= 0 && d <= 7 && (wd === 6 || wd === 0);
+  });
+  if (when === "date" && dateStr) return w.some(x => {
+    const p = dateStr.split("-").map(Number);
+    return x.base.getFullYear() === p[0] && x.base.getMonth() === p[1] - 1 && x.base.getDate() === p[2];
+  });
+  return true;
+}
+function searchHits(sale, q) {
+  if (!q) return { ok: true, items: [] };
+  const needle = q.toLowerCase().trim();
+  const items = (sale.items || []).filter(i => (i.name || "").toLowerCase().includes(needle));
+  const hay = [sale.title, sale.desc, sale.host, sale.addr?.city, sale.addr?.street, sale.addr?.cross,
+    label(TYPES, sale.type), (sale.cats || []).map(c => label(CATS, c)).join(" ")].join(" ").toLowerCase();
+  return { ok: items.length > 0 || hay.includes(needle), items: items };
+}
+function matches(sale) {
+  const f = state.filters;
+  if (distOf(sale) > f.radius) return false;
+  if (!matchWhen(sale, f.when, f.date)) return false;
+  if (f.types.length && !f.types.includes(sale.type)) return false;
+  if (f.cats.length && !f.cats.some(c => (sale.cats || []).includes(c))) return false;
+  if (f.pays.length && !f.pays.some(p => (sale.pay || []).includes(p))) return false;
+  if (f.feats.length && !f.feats.every(x => (sale.feat || []).includes(x))) return false;
+  if (f.hasItems && !(sale.items || []).length) return false;
+  if (f.early === "welcome" && sale.early !== "welcome") return false;
+  if (f.early === "no" && sale.early !== "no") return false;
+  if (f.maxPrice !== "" && !isNaN(Number(f.maxPrice))) {
+    const cap = Number(f.maxPrice), items = sale.items || [];
+    if (!items.length || !items.some(i => Number(i.price) <= cap)) return false;
+  }
+  return searchHits(sale, state.q).ok;
+}
+function activeFilterCount() {
+  const f = state.filters, d = BLANK_FILTERS();
+  let n = 0;
+  if (f.radius !== d.radius) n++;
+  if (f.when !== "any" && f.when !== state.profile.when) n++;
+  n += f.types.length + f.cats.length + f.pays.length + f.feats.length;
+  if (f.hasItems) n++;
+  if (f.maxPrice !== "") n++;
+  if (f.early !== "any") n++;
+  return n;
+}
+function resultSet() {
+  const now = new Date();
+  const rows = state.sales.filter(matches).map(s => ({ s: s, st: statusOf(s, now), d: distOf(s) }));
+  const byEnded = (a, b) => (a.st.kind === "done") - (b.st.kind === "done");
+  const cmp = {
+    near: (a, b) => a.d - b.d,
+    soon: (a, b) => a.st.sort - b.st.sort,
+    items: (a, b) => itemStats(b.s).count - itemStats(a.s).count,
+    "new": (a, b) => (b.s.createdAt || 0) - (a.s.createdAt || 0)
+  }[state.sort] || ((a, b) => a.d - b.d);
+  return rows.sort((a, b) => byEnded(a, b) || cmp(a, b));
+}
+
+/* ============================================================
+   Find: screen
+   ============================================================ */
+function viewFind() {
+  const rows = resultSet();
+  const nf = activeFilterCount();
+  const f = state.filters;
+  const quick = [];
+  if (f.when !== "any") quick.push(label(WHENS, f.when));
+  f.types.forEach(t => quick.push(label(TYPES, t)));
+  f.cats.forEach(c => quick.push(label(CATS, c)));
+  f.feats.forEach(x => quick.push(label(FEATS, x)));
+  f.pays.forEach(p => quick.push(label(PAYS, p)));
+  if (f.hasItems) quick.push("Has item list");
+  if (f.early !== "any") quick.push(label(EARLY, f.early));
+
+  return '' +
+  '<header class="appbar">' +
+    '<button class="iconbtn" data-act="home" aria-label="Back to start">' + ICON.home + '</button>' +
+    '<h1>Find sales</h1>' +
+    '<div class="seg" style="width:150px">' +
+      ["list","map","route"].map(v =>
+        '<button data-act="view" data-val="' + v + '" aria-pressed="' + (state.view === v) + '">' +
+        (v === "list" ? "List" : v === "map" ? "Map" : "Route") + '</button>').join("") +
+    '</div>' +
+  '</header>' +
+
+  '<div class="searchwrap">' + ICON.find.replace("<svg", '<svg aria-hidden="true"') +
+    '<input id="q" type="text" placeholder="Search sales or items — try &quot;drill&quot;" value="' + esc(state.q) + '" data-act="q" autocomplete="off">' +
+  '</div>' +
+
+  '<div class="filterbar">' +
+    '<button class="chip open" data-act="sheet">Filters' + (nf ? " · " + nf : "") + '</button>' +
+    '<button class="chip" data-act="sheet" data-val="radius">Within ' + f.radius + ' mi</button>' +
+    quick.map(q => '<button class="chip" data-act="sheet">' + esc(q) + '</button>').join("") +
+    (nf ? '<button class="chip" data-act="reset">Clear</button>' : "") +
+  '</div>' +
+
+  (state.view === "list" ? findList(rows) : state.view === "map" ? findMap(rows) : findRoute()) +
+  (state.sheet ? filterSheet() : "");
+}
+
+function findList(rows) {
+  const open = rows.filter(r => r.st.kind === "live").length;
+  return '' +
+  '<div class="countline">' +
+    '<span><b>' + rows.length + '</b> ' + (rows.length === 1 ? "sale" : "sales") +
+      (open ? ' · <span style="color:var(--ink)">' + open + ' open now</span>' : "") + '</span>' +
+    '<label class="row tiny">Sort <select data-act="sort">' +
+      SORTS.map(([v, t]) => '<option value="' + v + '"' + (state.sort === v ? " selected" : "") + '>' + t + '</option>').join("") +
+    '</select></label>' +
+  '</div>' +
+  (rows.length
+    ? '<div class="results">' + rows.map(r => saleCard(r)).join("") + '</div>'
+    : '<div class="empty"><strong>No sales match</strong><p>' +
+        (state.filters.radius < 25
+          ? 'Nothing inside ' + state.filters.radius + ' mi with those filters.'
+          : 'Nothing matches those filters right now.') +
+      '</p><div class="row" style="gap:8px;justify-content:center;margin-top:14px">' +
+        (state.filters.radius < 25 ? '<button class="btn sm" data-act="widen">Widen to ' + Math.min(50, state.filters.radius * 2) + ' mi</button>' : "") +
+        '<button class="btn sm" data-act="reset">Clear filters</button>' +
+      '</div></div>');
+}
+
+function saleCard(r) {
+  const s = r.s, st = r.st, its = itemStats(s);
+  const hit = searchHits(s, state.q);
+  const w = windows(s);
+  const next = w.find(x => x.end >= new Date()) || w[0];
+  const saved = state.saved.includes(s.id);
+  const onRoute = state.route.includes(s.id);
+  return '' +
+  '<div class="sale' + (st.kind === "done" ? " ended" : "") + '" data-act="open" data-id="' + esc(s.id) + '">' +
+    '<div class="sale-top">' +
+      '<span class="pill ' + st.kind + (st.kind === "live" ? " dot" : "") + '">' + esc(st.text) + '</span>' +
+      (st.note ? '<span class="tiny muted mono">' + esc(st.note) + '</span>' : "") +
+      '<span class="dist mono">' + fmtMi(r.d) + '</span>' +
+    '</div>' +
+    '<h3><button data-act="open" data-id="' + esc(s.id) + '">' + esc(s.title) + '</button></h3>' +
+    '<p class="when mono">' + w.map(x => fmtDay(x.base) + " " + fmtTime(x.day.start) + "–" + fmtTime(x.day.end)).join("  ·  ") + '</p>' +
+    '<p class="where">' + esc(label(TYPES, s.type)) + ' · ' + esc(s.addr?.city || "") +
+      (s.addr?.cross ? ", " + esc(s.addr.cross) : "") + '</p>' +
+    '<div class="tags">' + (s.cats || []).slice(0, 4).map(c => '<span class="tag">' + esc(label(CATS, c)) + '</span>').join("") +
+      ((s.cats || []).length > 4 ? '<span class="tag">+' + ((s.cats || []).length - 4) + '</span>' : "") + '</div>' +
+    (hit.items.length
+      ? '<p class="matchline">' + plural(hit.items.length, "item") + ' matches “' + esc(state.q) + '”: ' +
+        hit.items.slice(0, 2).map(i => esc(i.name) + " <b>" + money(i.price) + "</b>").join(", ") + '</p>'
+      : "") +
+    '<div class="sale-foot">' +
+      '<span class="itemline">' + (its.listed
+        ? '<b>' + its.count + '</b> items listed' + (its.min != null ? ' · from <b>' + money(its.min) + '</b>' : "")
+        : 'No item list · ' + esc(label(EARLY, s.early || "na"))) + '</span>' +
+      '<button class="actbtn" data-act="save" data-id="' + esc(s.id) + '" aria-pressed="' + saved + '" aria-label="Save this sale" title="Save">' + ICON.star + '</button>' +
+      '<button class="actbtn" data-act="route-add" data-id="' + esc(s.id) + '" aria-pressed="' + onRoute + '" aria-label="Add to route" title="Add to route">' + ICON.route + '</button>' +
+    '</div>' +
+  '</div>';
+}
+
+/* ============================================================
+   Find: filter sheet
+   ============================================================ */
+function chipRow(kind, list, selected, accent) {
+  return '<div class="chips">' + list.map(([id, txt]) =>
+    '<button class="chip' + (accent ? " accent" : "") + '" data-act="f-' + kind + '" data-val="' + id + '" aria-pressed="' +
+    (selected.includes(id)) + '">' + esc(txt) + '</button>').join("") + '</div>';
+}
+function filterSheet() {
+  const f = state.filters;
+  const n = state.sales.filter(matches).length;
+  return '' +
+  '<div class="sheet-bg" data-act="sheet-close"></div>' +
+  '<section class="sheet" role="dialog" aria-label="Filters">' +
+    '<div class="sheet-head">' +
+      '<h2>Filters</h2>' +
+      '<button class="iconbtn" data-act="sheet-close" aria-label="Close filters">' + ICON.x + '</button>' +
+    '</div>' +
+    '<div class="sheet-body">' +
+
+      '<div class="fgroup"><p class="label">How far</p>' +
+        '<div class="rangerow">' +
+          '<input id="radius" type="range" min="1" max="50" step="1" value="' + f.radius + '" data-act="f-radius">' +
+          '<output class="mono">' + f.radius + ' mi</output>' +
+        '</div>' +
+        '<p class="tiny muted" style="margin:6px 0 0">From ' + esc(state.profile.zip) + ', your home ZIP in Account.</p>' +
+      '</div>' +
+
+      '<div class="fgroup"><p class="label">When</p>' +
+        '<div class="chips">' + WHENS.map(([id, txt]) =>
+          '<button class="chip accent" data-act="f-when" data-val="' + id + '" aria-pressed="' + (f.when === id) + '">' + txt + '</button>').join("") + '</div>' +
+        (f.when === "date"
+          ? '<input id="fdate" type="date" style="margin-top:8px" value="' + esc(f.date) + '" data-act="f-date">' : "") +
+      '</div>' +
+
+      '<div class="fgroup"><p class="label">Kind of sale</p>' + chipRow("type", TYPES, f.types) + '</div>' +
+      '<div class="fgroup"><p class="label">What they have</p>' + chipRow("cat", CATS, f.cats) + '</div>' +
+
+      '<div class="fgroup"><p class="label">Items</p>' +
+        '<div class="switch"><p>Item list posted<small>Only sales that published what they are selling</small></p>' +
+          '<button class="toggle" data-act="f-hasitems" aria-pressed="' + f.hasItems + '" aria-label="Item list posted"></button></div>' +
+        '<label class="field" style="margin-top:11px"><span>Has something under <span class="hint">(dollars)</span></span>' +
+          '<input id="fmax" type="number" min="0" step="1" inputmode="numeric" placeholder="Any price" value="' + esc(f.maxPrice) + '" data-act="f-max"></label>' +
+      '</div>' +
+
+      '<div class="fgroup"><p class="label">Payment taken</p>' + chipRow("pay", PAYS, f.pays) + '</div>' +
+
+      '<div class="fgroup"><p class="label">Early birds</p>' +
+        '<div class="chips">' + [["any","Either way"]].concat(EARLY.slice(0, 2)).map(([id, txt]) =>
+          '<button class="chip accent" data-act="f-early" data-val="' + id + '" aria-pressed="' + (f.early === id) + '">' + txt + '</button>').join("") + '</div>' +
+      '</div>' +
+
+      '<div class="fgroup"><p class="label">Good to know</p>' + chipRow("feat", FEATS, f.feats) +
+        '<p class="tiny muted" style="margin:7px 0 0">Sales must have every one you pick.</p></div>' +
+
+      '<div class="fgroup"><p class="label">Save this search</p>' +
+        '<button class="btn wide ghost" data-act="save-search">Save these filters for alerts</button></div>' +
+
+    '</div>' +
+    '<div class="sheet-foot">' +
+      '<button class="btn" data-act="reset" style="flex:0 0 92px">Reset</button>' +
+      '<button class="btn primary" style="flex:1" data-act="sheet-close">Show ' + n + ' ' + (n === 1 ? "sale" : "sales") + '</button>' +
+    '</div>' +
+  '</section>';
+}
+
+/* ============================================================
+   Find: schematic map + route
+   ============================================================ */
+function findMap(rows) {
+  return '' +
+  '<div class="mapwrap"><div class="mapbox">' +
+    '<div id="mapsvg"></div>' +
+    '<div class="maplegend">' +
+      '<span><i style="background:var(--live)"></i>Open now</span>' +
+      '<span><i style="background:var(--soon)"></i>Opens soon</span>' +
+      '<span><i style="background:var(--surface);border:1px solid var(--ink-3)"></i>Another day</span>' +
+      '<span><i style="background:var(--done)"></i>Ended</span>' +
+      '<span style="margin-left:auto">Schematic — relative positions, not a street map</span>' +
+    '</div>' +
+  '</div></div>' +
+  '<div class="countline" style="padding-top:12px"><span><b>' + rows.length + '</b> pins · tap one</span></div>' +
+  '<div class="results">' + rows.slice(0, 3).map(r => saleCard(r)).join("") +
+    (rows.length > 3 ? '<button class="btn ghost wide" data-act="view" data-val="list">See all ' + rows.length + ' as a list</button>' : "") +
+  '</div>';
+}
+function drawMap() {
+  const host = document.getElementById("mapsvg");
+  if (!host) return;
+  const rows = resultSet();
+  const W = 300, H = 226;
+  const streets = [
+    "M0 58 H300", "M0 122 H300", "M0 186 H300",
+    "M62 0 V226", "M148 0 V226", "M232 0 V226",
+    "M0 226 L120 122 L300 96"
+  ];
+  const pins = rows.map((r, i) => {
+    const g = r.s.geo || HOME, x = g.x * W, y = g.y * H;
+    const fill = r.st.kind === "live" ? "var(--live)" : r.st.kind === "soon" ? "var(--soon)" : r.st.kind === "done" ? "var(--done)" : "var(--surface)";
+    const ink = r.st.kind === "live" || r.st.kind === "soon" ? "#1A1C17" : "var(--ink)";
+    return '<g class="pin" data-act="open" data-id="' + esc(r.s.id) + '" transform="translate(' + x.toFixed(1) + ',' + y.toFixed(1) + ')">' +
+      '<path d="M0 0 C-9 -9 -11 -14 -11 -18 a11 11 0 1 1 22 0 c0 4 -2 9 -11 18 z" fill="' + fill + '" stroke="var(--ink)" stroke-width="1.2"/>' +
+      '<text x="0" y="-14" text-anchor="middle" fill="' + ink + '">' + (i + 1) + '</text></g>';
+  }).join("");
+  host.innerHTML =
+    '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Schematic map of ' + rows.length + ' sales near you">' +
+      '<rect width="' + W + '" height="' + H + '" fill="var(--surface-2)"/>' +
+      '<path d="M6 148 h72 v70 h-72 z" fill="var(--sunk)"/>' +
+      '<text x="42" y="210" text-anchor="middle" font-size="7.5" fill="var(--ink-3)" font-family="monospace">RIVERSIDE PARK</text>' +
+      streets.map(d => '<path d="' + d + '" stroke="var(--line-2)" stroke-width="6" fill="none" stroke-linecap="round"/>').join("") +
+      streets.map(d => '<path d="' + d + '" stroke="var(--surface-2)" stroke-width="3.4" fill="none" stroke-linecap="round"/>').join("") +
+      '<text x="6" y="118" font-size="8" fill="var(--ink-3)" font-family="monospace">SYCAMORE AVE</text>' +
+      '<circle cx="' + (HOME.x * W) + '" cy="' + (HOME.y * H) + '" r="6" fill="var(--accent)"/>' +
+      '<circle cx="' + (HOME.x * W) + '" cy="' + (HOME.y * H) + '" r="12" fill="none" stroke="var(--accent)" stroke-width="1.2" opacity=".5"/>' +
+      '<text x="' + (HOME.x * W) + '" y="' + (HOME.y * H + 24) + '" text-anchor="middle" font-size="8" fill="var(--ink-2)" font-family="monospace">YOU</text>' +
+      pins +
+    '</svg>';
+}
+
+function routeStops() {
+  const picked = state.route.map(id => state.sales.find(s => s.id === id)).filter(Boolean);
+  const out = []; let cur = HOME; const pool = picked.slice();
+  while (pool.length) {
+    let best = 0, bd = Infinity;
+    pool.forEach((s, i) => {
+      const g = s.geo || HOME;
+      const d = Math.hypot((g.x - cur.x) * MAP_MI, (g.y - cur.y) * MAP_MI);
+      if (d < bd) { bd = d; best = i; }
+    });
+    const s = pool.splice(best, 1)[0];
+    out.push({ s: s, leg: bd });
+    cur = s.geo || HOME;
+  }
+  const back = Math.hypot((cur.x - HOME.x) * MAP_MI, (cur.y - HOME.y) * MAP_MI);
+  return { stops: out, back: back };
+}
+function routeSummary() {
+  const { stops, back } = routeStops();
+  if (!stops.length) return "";
+  const miles = stops.reduce((n, x) => n + x.leg, 0) + back;
+  const drive = Math.round(miles / 22 * 60) + stops.length * 2;
+  return plural(stops.length, "stop") + " · " + miles.toFixed(1) + " mi · about " + drive + " min driving";
+}
+function findRoute() {
+  const { stops, back } = routeStops();
+  if (!stops.length) {
+    return '<div class="empty"><strong>No route yet</strong><p>Tap the route button on any sale and Curb Alert puts the stops in a sensible order, nearest first.</p>' +
+      '<button class="btn sm" style="margin-top:14px" data-act="view" data-val="list">Back to the list</button></div>';
+  }
+  const now = new Date();
+  let clock = new Date(now);
+  const body = stops.map((x, i) => {
+    const st = statusOf(x.s, now), w = windows(x.s);
+    const next = w.find(y => y.end >= now) || w[0];
+    const legMin = Math.max(2, Math.round(x.leg / 22 * 60));
+    clock = new Date(clock.getTime() + legMin * 60000);
+    const arrive = new Date(clock);
+    clock = new Date(clock.getTime() + 12 * 60000);
+    const openLate = next && arrive < next.start;
+    return (i ? '<div class="leg">' + legMin + ' min · ' + x.leg.toFixed(1) + ' mi</div>' : '<div class="leg">' + legMin + ' min from home</div>') +
+      '<div class="stop"><span class="n mono">' + (i + 1) + '</span>' +
+      '<span><h4>' + esc(x.s.title) + '</h4>' +
+        '<p>' + esc(x.s.addr?.street || "") + ' · ' + esc(label(TYPES, x.s.type)) + '</p>' +
+        '<p class="mono" style="margin-top:3px">' + (next ? fmtDay(next.base) + " " + fmtTime(next.day.start) + "–" + fmtTime(next.day.end) : "TBD") +
+        (openLate ? ' · <span style="color:var(--accent)">opens after you arrive</span>' : "") + '</p></span>' +
+      '<span class="row" style="gap:5px">' +
+        '<button class="actbtn" data-act="open" data-id="' + esc(x.s.id) + '" aria-label="Open listing">' + ICON.arrow + '</button>' +
+        '<button class="actbtn" data-act="route-add" data-id="' + esc(x.s.id) + '" aria-pressed="true" aria-label="Remove from route">' + ICON.x + '</button>' +
+      '</span></div>';
+  }).join("");
+  return '<div class="countline" style="padding-top:12px"><span><b>' + stops.length + '</b> stops · ' + esc(routeSummary()) + '</span>' +
+      '<button class="linkbtn" data-act="route-clear">Clear</button></div>' +
+    '<div class="routelist">' + body +
+      '<div class="leg">' + Math.max(2, Math.round(back / 22 * 60)) + ' min home · ' + back.toFixed(1) + ' mi</div></div>';
+}
+
+/* ============================================================
+   Sale detail
+   ============================================================ */
+function viewDetail() {
+  const s = state.sales.find(x => x.id === state.saleId);
+  if (!s) return '<header class="appbar"><button class="iconbtn" data-act="back">' + ICON.back + '</button><h1>Not found</h1></header>' +
+    '<div class="empty"><strong>Listing is gone</strong><p>The host may have taken it down.</p></div>';
+
+  const now = new Date(), st = statusOf(s, now), w = windows(s), its = itemStats(s);
+  const saved = state.saved.includes(s.id), onRoute = state.route.includes(s.id);
+  const mine = s.ownerKey === state.me;
+  const vis = s.addr?.visibility || "always";
+  const showExact = vis === "always" || (vis === "dayof" && w.some(x => +startOfDay(x.base) === +startOfDay(now)));
+  const iq = state.itemQ.toLowerCase().trim();
+  const items = (s.items || []).filter(i => !iq || (i.name || "").toLowerCase().includes(iq));
+  const total = (s.items || []).reduce((n, i) => n + (Number(i.price) || 0) * (Number(i.qty) || 1), 0);
+
+  return '' +
+  '<header class="appbar">' +
+    '<button class="iconbtn" data-act="back" aria-label="Back">' + ICON.back + '</button>' +
+    '<h1>' + esc(label(TYPES, s.type)) + '</h1>' +
+    (mine ? '<button class="btn sm" data-act="edit" data-id="' + esc(s.id) + '">Edit</button>' : "") +
+  '</header>' +
+
+  '<div class="detail">' +
+    '<div class="detail-hero">' +
+      '<span class="row" style="gap:7px">' +
+        '<span class="pill ' + st.kind + (st.kind === "live" ? " dot" : "") + '">' + esc(st.text) + '</span>' +
+        (st.note ? '<span class="tiny muted mono">' + esc(st.note) + '</span>' : "") +
+        '<span class="dist mono tiny" style="margin-left:auto">' + fmtMi(distOf(s)) + ' away</span>' +
+      '</span>' +
+      '<h2>' + esc(s.title) + '</h2>' +
+      '<p class="host">Hosted by ' + esc(s.host || "a neighbour") + (mine ? " · this is your listing" : "") + '</p>' +
+    '</div>' +
+
+    '<div class="sect"><p class="label">Hours</p><div class="hours">' +
+      w.map(x => '<div class="h' + (x.end < now ? " past" : "") + '"><span>' + fmtDay(x.base) + '</span>' +
+        '<span>' + fmtTime(x.day.start) + " – " + fmtTime(x.day.end) + '</span></div>').join("") +
+      '</div>' +
+      '<p class="tiny muted" style="margin:9px 0 0">' + esc(label(EARLY, s.early || "na")) + ' · ' + esc(label(RAIN, s.rain || "rainorshine")) + '</p>' +
+    '</div>' +
+
+    '<div class="sect"><p class="label">Where</p>' +
+      '<p class="addr">' +
+        (showExact ? esc(s.addr?.street || "") + '<br>' : '<span class="mono">Exact address shows on sale day</span><br>') +
+        esc(s.addr?.city || "") + ", " + esc(s.addr?.state || "") + " " + esc(s.addr?.zip || "") +
+        (s.addr?.cross ? '<span class="hidden-note">' + esc(s.addr.cross) + '</span>' : "") +
+      '</p>' +
+      '<div class="row" style="margin-top:11px;gap:8px">' +
+        '<button class="btn sm" data-act="copy-addr" data-id="' + esc(s.id) + '">' + ICON.copy + ' Copy address</button>' +
+        '<button class="btn sm" data-act="view-map">See on map</button>' +
+      '</div>' +
+    '</div>' +
+
+    (s.desc ? '<div class="sect"><p class="label">From the host</p><p style="margin:0;line-height:1.55">' + esc(s.desc) + '</p></div>' : "") +
+
+    (its.listed
+      ? '<div class="sect"><div class="spread" style="margin-bottom:11px">' +
+          '<p class="label" style="margin:0">Item list</p>' +
+          '<span class="tiny mono muted">' + its.count + ' items · ' + money(total) + ' total</span></div>' +
+          '<div class="itemtools">' +
+            '<input id="itemq" type="text" placeholder="Filter these items" value="' + esc(state.itemQ) + '" data-act="itemq" autocomplete="off">' +
+            '<button class="btn sm" data-act="export" data-id="' + esc(s.id) + '" title="Download as CSV">' + ICON.down + '</button>' +
+          '</div>' +
+          (items.length ? '<div class="items">' + items.map(i =>
+            '<div class="item"><span><h5>' + esc(i.name) + '</h5>' +
+              '<span class="meta">' + esc(label(CONDS, i.cond || "good")) +
+              (Number(i.qty) > 1 ? " · " + i.qty + " available" : "") +
+              (i.cat ? " · " + esc(label(CATS, i.cat)) : "") + '</span></span>' +
+              '<span class="price">' + money(i.price) + (i.firm ? '<small>firm</small>' : '<small>or offer</small>') + '</span></div>').join("") + '</div>'
+            : '<p class="tiny muted">Nothing in this list matches “' + esc(state.itemQ) + '”.</p>') +
+        '</div>'
+      : '<div class="sect"><p class="label">Item list</p><p class="tiny muted" style="margin:0">' +
+        'This host did not post one. Plenty of sales do not — it just means you have to go look.</p></div>') +
+
+    '<div class="sect"><p class="label">What they have</p><div class="tags">' +
+      (s.cats || []).map(c => '<span class="tag">' + esc(label(CATS, c)) + '</span>').join("") + '</div></div>' +
+
+    '<div class="sect"><dl class="kv">' +
+      '<dt>Payment</dt><dd>' + ((s.pay || []).map(p => label(PAYS, p)).join(", ") || "Ask the host") + '</dd>' +
+      '<dt>Good to<br>know</dt><dd>' + ((s.feat || []).map(x => label(FEATS, x)).join(" · ") || "Nothing noted") + '</dd>' +
+      '<dt>Contact</dt><dd>' + (s.contact === "phone" && s.phone ? esc(s.phone)
+        : s.contact === "app" ? "Message through Curb Alert" : "No contact — just show up") + '</dd>' +
+    '</dl></div>' +
+  '</div>' +
+
+  '<div class="stickybar">' +
+    '<button class="btn" style="flex:0 0 46px" data-act="save" data-id="' + esc(s.id) + '" aria-pressed="' + saved + '" aria-label="Save">' +
+      (saved ? ICON.check : ICON.star) + '</button>' +
+    '<button class="btn primary" style="flex:1" data-act="route-add" data-id="' + esc(s.id) + '">' +
+      (onRoute ? "On your route" : "Add to route") + '</button>' +
+  '</div>';
+}
+
+/* ============================================================
+   List a garage sale — six steps
+   ============================================================ */
+const STEPS = [
+  { key: "basics", label: "Step 1 of 6", title: "The basics", blurb: "What to call it, what kind of sale it is, and where people are driving to." },
+  { key: "when", label: "Step 2 of 6", title: "When you open", blurb: "Add every day you are open. Early-bird policy matters more than you think." },
+  { key: "what", label: "Step 3 of 6", title: "What you are selling", blurb: "Pick the categories people filter by, then describe the sale in your own words." },
+  { key: "items", label: "Step 4 of 6", title: "Item list", blurb: "Optional. Listing even a dozen priced items puts you in front of people searching for exactly that." },
+  { key: "details", label: "Step 5 of 6", title: "Details", blurb: "Payment, parking, access, and how you want to be reached." },
+  { key: "review", label: "Step 6 of 6", title: "Check it over", blurb: "This is what neighbours will see." }
+];
+function blankSale() {
+  return {
+    title: "", type: "garage", host: state.profile.name || "",
+    addr: { street: "", city: "", state: "OH", zip: state.profile.zip || "", cross: "", visibility: state.profile.addrVisibility },
+    days: [{ date: isoDate(nextSaturday()), start: "08:00", end: "14:00" }],
+    early: "no", rain: "rainorshine", cats: [], desc: "", items: [],
+    pay: ["cash"], feat: ["pricesmarked"], contact: state.profile.contact, phone: state.profile.phone || ""
+  };
+}
+function nextSaturday() {
+  const d = startOfDay(new Date());
+  return addDays(d, (6 - d.getDay() + 7) % 7 || 7);
+}
+const isoDate = d => d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+
+function wizData() {
+  if (!state.wiz.data) state.wiz.data = LS.get("draft", null) || blankSale();
+  return state.wiz.data;
+}
+function saveDraft() { if (!state.wiz.editId) LS.set("draft", state.wiz.data); }
+
+function stepErrors(step) {
+  const d = wizData(), e = {};
+  if (step === 0) {
+    if (!d.title.trim()) e.title = "Give it a name people will recognise.";
+    if (!d.addr.street.trim()) e.street = "Street address, even if you hide it until sale day.";
+    if (!d.addr.city.trim()) e.city = "Town or city.";
+    if (!/^\d{5}$/.test(d.addr.zip.trim())) e.zip = "Five digits.";
+  }
+  if (step === 1) {
+    if (!d.days.length) e.days = "Add at least one day.";
+    d.days.forEach((day, i) => { if (day.start >= day.end) e["day" + i] = "Closing time has to be after opening."; });
+  }
+  if (step === 2) {
+    if (!d.cats.length) e.cats = "Pick at least one category so you turn up in filters.";
+  }
+  if (step === 4) {
+    if (!d.pay.length) e.pay = "Pick at least one way to pay.";
+    if (d.contact === "phone" && !d.phone.trim()) e.phone = "Add the number, or choose another contact option.";
+  }
+  return e;
+}
+
+function viewWizard() {
+  if (state.wiz.published) return viewPublished();
+  const step = state.wiz.step, meta = STEPS[step], d = wizData();
+  const errs = state.wiz.showErrors ? stepErrors(step) : {};
+  const body = [wizBasics, wizWhen, wizWhat, wizItems, wizDetails, wizReview][step](d, errs);
+
+  return '' +
+  '<header class="appbar">' +
+    '<button class="iconbtn" data-act="' + (step ? "wiz-back" : "home") + '" aria-label="Back">' + (step ? ICON.back : ICON.home) + '</button>' +
+    '<h1>' + (state.wiz.editId ? "Edit sale" : "List a sale") + '</h1>' +
+    (state.wiz.editId ? "" : '<button class="linkbtn" data-act="wiz-reset">Start over</button>') +
+  '</header>' +
+  '<div class="steps">' + STEPS.map((s, i) =>
+    '<i class="' + (i === step ? "on" : i < step ? "done" : "") + '"></i>').join("") + '</div>' +
+  '<div class="wiz-head"><p class="label">' + meta.label + '</p><h2>' + meta.title + '</h2><p>' + meta.blurb + '</p></div>' +
+  '<div class="wiz-body">' + body + '</div>' +
+  '<div class="wiz-foot">' +
+    (step ? '<button class="btn back" data-act="wiz-back">Back</button>' : "") +
+    (step < 5
+      ? '<button class="btn primary" data-act="wiz-next">' + (step === 3 && !d.items.length ? "Skip items" : "Continue") + '</button>'
+      : '<button class="btn primary" data-act="publish">' + (state.wiz.editId ? "Save changes" : "Publish sale") + '</button>') +
+  '</div>';
+}
+
+function field(name, labelTxt, value, errs, opts) {
+  opts = opts || {};
+  return '<label class="field"><span>' + labelTxt + (opts.hint ? ' <span class="hint">' + opts.hint + '</span>' : "") + '</span>' +
+    '<input type="' + (opts.type || "text") + '" id="w-' + name + '" data-act="w" data-key="' + name + '"' +
+    (opts.placeholder ? ' placeholder="' + esc(opts.placeholder) + '"' : "") +
+    (opts.inputmode ? ' inputmode="' + opts.inputmode + '"' : "") +
+    (opts.maxlength ? ' maxlength="' + opts.maxlength + '"' : "") +
+    ' value="' + esc(value) + '" class="' + (errs[opts.errKey || name] ? "bad" : "") + '">' +
+    (errs[opts.errKey || name] ? '<span class="err">' + errs[opts.errKey || name] + '</span>' : "") + '</label>';
+}
+
+function wizBasics(d, errs) {
+  return '' +
+    field("title", "Sale name", d.title, errs, { placeholder: "Three-family sale on Alder Court", maxlength: 70 }) +
+    '<div class="field"><span>Kind of sale</span><div class="chips">' +
+      TYPES.map(([id, txt]) => '<button class="chip accent" data-act="w-type" data-val="' + id + '" aria-pressed="' + (d.type === id) + '">' + txt + '</button>').join("") +
+    '</div></div>' +
+    field("host", "Who is hosting", d.host, errs, { placeholder: "Your name or the family name", maxlength: 40 }) +
+    '<hr class="hr">' +
+    field("addr.street", "Street address", d.addr.street, errs, { placeholder: "18 Alder Ct", errKey: "street" }) +
+    '<div class="two">' +
+      field("addr.city", "Town", d.addr.city, errs, { placeholder: "Ridgemont", errKey: "city" }) +
+      '<div class="two" style="gap:8px">' +
+        field("addr.state", "State", d.addr.state, errs, { maxlength: 2 }) +
+        field("addr.zip", "ZIP", d.addr.zip, errs, { inputmode: "numeric", maxlength: 5, errKey: "zip" }) +
+      '</div>' +
+    '</div>' +
+    field("addr.cross", "Landmark or note", d.addr.cross, errs, { hint: "(optional)", placeholder: "look for the wheelbarrow" }) +
+    '<div class="field"><span>Who sees the exact address</span><div class="seg">' +
+      [["always","Always"],["dayof","On sale day"],["cross","Never"]].map(([id, txt]) =>
+        '<button data-act="w-vis" data-val="' + id + '" aria-pressed="' + (d.addr.visibility === id) + '">' + txt + '</button>').join("") +
+    '</div><p class="tiny muted" style="margin:6px 0 0">Hidden addresses still show your town and landmark note, so people can plan a route.</p></div>';
+}
+
+function wizWhen(d, errs) {
+  return d.days.map((day, i) =>
+    '<div class="daycard"><div class="spread"><h4>Day ' + (i + 1) + '</h4>' +
+      (d.days.length > 1 ? '<button class="linkbtn" data-act="day-del" data-val="' + i + '">Remove</button>' : "") + '</div>' +
+      '<div class="three">' +
+        '<input type="date" data-act="day" data-key="date" data-val="' + i + '" value="' + esc(day.date || isoDate(dayDate(day))) + '">' +
+        '<input type="time" data-act="day" data-key="start" data-val="' + i + '" value="' + esc(day.start) + '">' +
+        '<input type="time" data-act="day" data-key="end" data-val="' + i + '" value="' + esc(day.end) + '">' +
+      '</div>' +
+      (errs["day" + i] ? '<span class="err">' + errs["day" + i] + '</span>' : "") +
+    '</div>').join("") +
+    '<button class="btn ghost wide sm" data-act="day-add" style="margin-bottom:16px">Add another day</button>' +
+    '<div class="field"><span>Early birds</span><div class="chips">' +
+      EARLY.map(([id, txt]) => '<button class="chip accent" data-act="w-early" data-val="' + id + '" aria-pressed="' + (d.early === id) + '">' + txt + '</button>').join("") +
+    '</div></div>' +
+    '<div class="field"><span>If it rains</span><div class="chips">' +
+      RAIN.map(([id, txt]) => '<button class="chip accent" data-act="w-rain" data-val="' + id + '" aria-pressed="' + (d.rain === id) + '">' + txt + '</button>').join("") +
+    '</div></div>';
+}
+
+function wizWhat(d, errs) {
+  return '<div class="field"><span>Categories <span class="hint">(people filter on these)</span></span>' +
+    '<div class="chips">' + CATS.map(([id, txt]) =>
+      '<button class="chip" data-act="w-cat" data-val="' + id + '" aria-pressed="' + d.cats.includes(id) + '">' + txt + '</button>').join("") + '</div>' +
+    (errs.cats ? '<span class="err">' + errs.cats + '</span>' : "") + '</div>' +
+    '<label class="field"><span>Describe the sale <span class="hint">(optional, but it sells)</span></span>' +
+      '<textarea id="w-desc" data-act="w" data-key="desc" maxlength="700" placeholder="What is worth the drive? Anything a buyer should bring — a truck, cash, their own boxes?">' + esc(d.desc) + '</textarea>' +
+      '<span class="tiny muted">' + (700 - d.desc.length) + ' characters left</span></label>';
+}
+
+function wizItems(d, errs) {
+  const total = d.items.reduce((n, i) => n + (Number(i.price) || 0) * (Number(i.qty) || 1), 0);
+  const count = d.items.reduce((n, i) => n + (Number(i.qty) || 1), 0);
+  return (d.items.length
+    ? d.items.map((it, i) =>
+      '<div class="itemrow">' +
+        '<input type="text" placeholder="What is it?" data-act="item" data-key="name" data-val="' + i + '" value="' + esc(it.name) + '">' +
+        '<input type="number" min="0" step="1" inputmode="decimal" placeholder="$" data-act="item" data-key="price" data-val="' + i + '" value="' + esc(it.price) + '">' +
+        '<button class="actbtn" data-act="item-del" data-val="' + i + '" aria-label="Remove item">' + ICON.trash + '</button>' +
+        '<span class="sub">' +
+          '<select data-act="item" data-key="cond" data-val="' + i + '">' + CONDS.map(([id, txt]) =>
+            '<option value="' + id + '"' + (it.cond === id ? " selected" : "") + '>' + txt + '</option>').join("") + '</select>' +
+          '<select data-act="item" data-key="cat" data-val="' + i + '">' + [["", "Category"]].concat(CATS).map(([id, txt]) =>
+            '<option value="' + id + '"' + (it.cat === id ? " selected" : "") + '>' + txt + '</option>').join("") + '</select>' +
+          '<button class="chip" data-act="item-firm" data-val="' + i + '" aria-pressed="' + !!it.firm + '">Firm</button>' +
+        '</span>' +
+      '</div>').join("")
+    : '<p class="tiny muted" style="margin:0 0 14px">No items yet. You can publish without a list — or add a few of the good ones so searches find you.</p>') +
+    '<button class="btn ghost wide sm" data-act="item-add">Add an item</button>' +
+    (d.items.length ? '<div class="itemtotal"><span>' + count + ' items listed</span><span>' + money(total) + ' if it all goes</span></div>' : "");
+}
+
+function wizDetails(d, errs) {
+  return '<div class="field"><span>Payment you take</span>' +
+    '<div class="chips">' + PAYS.map(([id, txt]) =>
+      '<button class="chip" data-act="w-pay" data-val="' + id + '" aria-pressed="' + d.pay.includes(id) + '">' + txt + '</button>').join("") + '</div>' +
+    (errs.pay ? '<span class="err">' + errs.pay + '</span>' : "") + '</div>' +
+    '<div class="field"><span>Good to know</span>' +
+      '<div class="chips">' + FEATS.map(([id, txt]) =>
+        '<button class="chip" data-act="w-feat" data-val="' + id + '" aria-pressed="' + d.feat.includes(id) + '">' + txt + '</button>').join("") + '</div></div>' +
+    '<div class="field"><span>How buyers reach you</span><div class="seg">' +
+      [["app","In-app"],["phone","Phone"],["none","No contact"]].map(([id, txt]) =>
+        '<button data-act="w-contact" data-val="' + id + '" aria-pressed="' + (d.contact === id) + '">' + txt + '</button>').join("") + '</div></div>' +
+    (d.contact === "phone" ? field("phone", "Phone number", d.phone, errs, { type: "tel", placeholder: "(614) 555-0142" }) : "");
+}
+
+function wizReview(d) {
+  const its = itemStats(d);
+  const r = (k, v) => '<div class="r"><dt>' + k + '</dt><dd>' + v + '</dd></div>';
+  return '<dl class="review">' +
+    r("Name", '<b>' + esc(d.title || "Untitled sale") + '</b>') +
+    r("Kind", esc(label(TYPES, d.type))) +
+    r("Host", esc(d.host || "Not given")) +
+    r("Where", esc(d.addr.street) + '<br>' + esc(d.addr.city) + ", " + esc(d.addr.state) + " " + esc(d.addr.zip) +
+      (d.addr.cross ? '<br><span class="tiny muted">' + esc(d.addr.cross) + '</span>' : "") +
+      '<br><span class="tiny muted">Exact address: ' +
+      ({ always: "always visible", dayof: "shows on sale day", cross: "never shown" }[d.addr.visibility]) + '</span>') +
+    r("Hours", '<span class="mono">' + d.days.map(day =>
+      fmtDay(dayDate(day)) + " " + fmtTime(day.start) + "–" + fmtTime(day.end)).join("<br>") + '</span>') +
+    r("Policy", esc(label(EARLY, d.early)) + " · " + esc(label(RAIN, d.rain))) +
+    r("Selling", d.cats.length ? d.cats.map(c => '<span class="tag">' + esc(label(CATS, c)) + '</span>').join(" ") : '<span class="muted">Nothing picked</span>') +
+    r("Items", its.listed ? its.count + " items listed, from " + money(its.min) : '<span class="muted">No list — that is fine</span>') +
+    r("Payment", d.pay.map(p => esc(label(PAYS, p))).join(", ")) +
+    r("Notes", d.feat.length ? d.feat.map(x => esc(label(FEATS, x))).join(" · ") : '<span class="muted">None</span>') +
+    r("Contact", d.contact === "phone" ? esc(d.phone) : d.contact === "app" ? "In-app messages" : "No contact") +
+    (d.desc ? r("Blurb", '<span style="line-height:1.5">' + esc(d.desc) + '</span>') : "") +
+  '</dl>';
+}
+
+function viewPublished() {
+  const s = state.wiz.published;
+  return '<div class="done-screen">' +
+    '<div class="badge">' + ICON.check + '</div>' +
+    '<h2>' + (state.wiz.wasEdit ? "Changes saved" : "Your sale is live") + '</h2>' +
+    '<p>' + esc(s.title) + ' is on the map for anyone within their search radius' +
+      (state.source === "shared" ? "." : " on this device.") + '</p>' +
+    '<div class="stack" style="gap:9px;max-width:280px;margin:0 auto">' +
+      '<button class="btn primary" data-act="open" data-id="' + esc(s.id) + '">See your listing</button>' +
+      ((s.items || []).length ? '<button class="btn" data-act="export" data-id="' + esc(s.id) + '">Download price list (CSV)</button>' : "") +
+      '<button class="btn ghost" data-act="tab" data-val="find">Back to Find</button>' +
+    '</div>' +
+    '<p class="fineprint" style="margin-top:20px">Take it down any time from Account &rsaquo; Your listings.</p>' +
+  '</div>';
+}
+
+/* ============================================================
+   Account
+   ============================================================ */
+function viewAccount() {
+  const p = state.profile;
+  const mine = myListings();
+  const savedSales = state.saved.map(id => state.sales.find(s => s.id === id)).filter(Boolean);
+  const initial = (p.name.trim()[0] || "?").toUpperCase();
+  const itemsListed = mine.reduce((n, s) => n + itemStats(s).count, 0);
+
+  return '' +
+  '<header class="appbar">' +
+    '<button class="iconbtn" data-act="home" aria-label="Back to start">' + ICON.home + '</button>' +
+    '<h1>Account</h1>' +
+  '</header>' +
+
+  '<div class="profile">' +
+    '<div class="avatar">' + esc(initial) + '</div>' +
+    '<div><h2>' + esc(p.name.trim() || "Set your name") + '</h2>' +
+      '<p>' + esc(p.zip || "no ZIP yet") + ' · searching ' + p.radius + ' mi · this device</p></div>' +
+  '</div>' +
+  '<div class="stats">' +
+    '<div><b class="mono">' + mine.length + '</b><span>Listings</span></div>' +
+    '<div><b class="mono">' + itemsListed + '</b><span>Items posted</span></div>' +
+    '<div><b class="mono">' + state.saved.length + '</b><span>Saved</span></div>' +
+  '</div>' +
+
+  '<div class="acct-sect"><p class="label">You</p>' +
+    field2("name", "Display name", p.name, { placeholder: "How hosts and buyers see you" }) +
+    '<div class="two">' +
+      field2("zip", "Home ZIP", p.zip, { inputmode: "numeric", maxlength: 5 }) +
+      '<label class="field"><span>Default radius</span>' +
+        '<div class="rangerow"><input id="p-radius" type="range" min="1" max="50" value="' + p.radius + '" data-act="p-radius">' +
+        '<output class="mono">' + p.radius + ' mi</output></div></label>' +
+    '</div>' +
+    '<div class="field"><span>Default day filter</span><div class="chips">' +
+      WHENS.slice(0, 4).map(([id, txt]) =>
+        '<button class="chip accent" data-act="p-when" data-val="' + id + '" aria-pressed="' + (p.when === id) + '">' + txt + '</button>').join("") +
+    '</div></div>' +
+  '</div>' +
+
+  '<div class="acct-sect"><p class="label">Saved sales</p>' +
+    (savedSales.length
+      ? '<div class="minilist">' + savedSales.map(s => {
+          const st = statusOf(s, new Date());
+          return '<div class="mini"><span class="pill ' + st.kind + '">' + esc(st.text) + '</span>' +
+            '<span class="txt"><h4>' + esc(s.title) + '</h4><p>' + fmtMi(distOf(s)) + ' · ' + esc(s.addr?.city || "") + '</p></span>' +
+            '<button class="actbtn" data-act="open" data-id="' + esc(s.id) + '" aria-label="Open">' + ICON.arrow + '</button>' +
+            '<button class="actbtn" data-act="save" data-id="' + esc(s.id) + '" aria-label="Unsave">' + ICON.x + '</button></div>';
+        }).join("") + '</div>'
+      : '<p class="tiny muted" style="margin:0">Nothing saved yet. Tap the star on any sale.</p>') +
+  '</div>' +
+
+  '<div class="acct-sect"><p class="label">Your listings</p>' +
+    (mine.length
+      ? '<div class="minilist">' + mine.map(s => {
+          const st = statusOf(s, new Date());
+          return '<div class="mini"><span class="pill ' + st.kind + '">' + esc(st.text) + '</span>' +
+            '<span class="txt"><h4>' + esc(s.title) + '</h4><p>' + plural(itemStats(s).count, "item") + ' · ' + esc(label(TYPES, s.type)) + '</p></span>' +
+            '<button class="actbtn" data-act="edit" data-id="' + esc(s.id) + '" aria-label="Edit">' + ICON.pencil + '</button>' +
+            '<button class="actbtn" data-act="unlist" data-id="' + esc(s.id) + '" aria-label="Take down">' + ICON.trash + '</button></div>';
+        }).join("") + '</div>'
+      : '<p class="tiny muted" style="margin:0 0 11px">You have not posted a sale from this device.</p>') +
+    '<button class="btn ghost wide sm" style="margin-top:11px" data-act="tab" data-val="list">List a garage sale</button>' +
+  '</div>' +
+
+  '<div class="acct-sect"><p class="label">Saved searches</p>' +
+    (state.searches.length
+      ? '<div class="minilist">' + state.searches.map((s, i) =>
+          '<div class="mini"><span class="txt"><h4>' + esc(s.name) + '</h4><p>' + esc(s.summary) + '</p></span>' +
+            '<button class="actbtn" data-act="search-run" data-val="' + i + '" aria-label="Run search">' + ICON.find + '</button>' +
+            '<button class="actbtn" data-act="search-del" data-val="' + i + '" aria-label="Delete search">' + ICON.trash + '</button></div>').join("") + '</div>'
+      : '<p class="tiny muted" style="margin:0">Set filters in Find, then use “Save these filters” at the bottom of the sheet.</p>') +
+  '</div>' +
+
+  '<div class="acct-sect"><p class="label">Alerts</p>' +
+    sw("alertNearby", "New sale near me", "A new listing lands inside " + p.alertRadius + " mi", p.alertNearby) +
+    (p.alertNearby
+      ? '<div class="rangerow" style="padding:4px 0 10px"><input id="p-alertRadius" type="range" min="1" max="25" value="' + p.alertRadius + '" data-act="p-alertRadius">' +
+        '<output class="mono">' + p.alertRadius + ' mi</output></div>' : "") +
+    sw("alertSaved", "Saved search matches", "Something new fits a search you saved", p.alertSaved) +
+    sw("alertMorning", "Morning of a saved sale", "One reminder at 6:30 AM with your route", p.alertMorning) +
+    sw("quiet", "Quiet hours", "Nothing between 9 PM and 6 AM", p.quiet) +
+  '</div>' +
+
+  '<div class="acct-sect"><p class="label">Privacy on your listings</p>' +
+    '<div class="field"><span>Show exact address</span><div class="seg">' +
+      [["always","Always"],["dayof","Sale day"],["cross","Never"]].map(([id, txt]) =>
+        '<button data-act="p-vis" data-val="' + id + '" aria-pressed="' + (p.addrVisibility === id) + '">' + txt + '</button>').join("") + '</div></div>' +
+    '<div class="field" style="margin-bottom:0"><span>Default contact method</span><div class="seg">' +
+      [["app","In-app"],["phone","Phone"],["none","None"]].map(([id, txt]) =>
+        '<button data-act="p-contact" data-val="' + id + '" aria-pressed="' + (p.contact === id) + '">' + txt + '</button>').join("") + '</div></div>' +
+    (p.contact === "phone" ? field2("phone", "Phone number", p.phone, { type: "tel", placeholder: "(614) 555-0142" }) : "") +
+  '</div>' +
+
+  '<div class="acct-sect" style="border-bottom:0">' +
+    '<p class="label">This device</p>' +
+    '<p class="tiny muted" style="margin:0 0 11px">Your profile, saved sales, route and searches live in this browser only. Listings you publish are shared.</p>' +
+    '<button class="btn ghost wide sm" data-act="clear-data">Clear this device’s data</button>' +
+  '</div>';
+
+  function field2(key, labelTxt, value, opts) {
+    opts = opts || {};
+    return '<label class="field"><span>' + labelTxt + '</span><input type="' + (opts.type || "text") + '" id="p-' + key + '"' +
+      ' data-act="p" data-key="' + key + '"' + (opts.placeholder ? ' placeholder="' + esc(opts.placeholder) + '"' : "") +
+      (opts.inputmode ? ' inputmode="' + opts.inputmode + '"' : "") + (opts.maxlength ? ' maxlength="' + opts.maxlength + '"' : "") +
+      ' value="' + esc(value) + '"></label>';
+  }
+  function sw(key, title, sub, on) {
+    return '<div class="switch"><p>' + title + '<small>' + sub + '</small></p>' +
+      '<button class="toggle" data-act="p-toggle" data-key="' + key + '" aria-pressed="' + !!on + '" aria-label="' + title + '"></button></div>';
+  }
+}
+
+/* ============================================================
+   Actions
+   ============================================================ */
+function withFocus(fn) {
+  const a = document.activeElement, id = a && a.id;
+  let pos = null;
+  try { pos = a && typeof a.selectionStart === "number" ? a.selectionStart : null; } catch (e) {}
+  fn();
+  if (id) {
+    const el = document.getElementById(id);
+    if (el) { el.focus(); if (pos != null && el.setSelectionRange) { try { el.setSelectionRange(pos, pos); } catch (e) {} } }
+  }
+}
+const toggleIn = (arr, v) => arr.includes(v) ? arr.filter(x => x !== v) : arr.concat([v]);
+
+function filterSummary() {
+  const f = state.filters, bits = [f.radius + " mi", label(WHENS, f.when)];
+  if (f.types.length) bits.push(f.types.map(t => label(TYPES, t)).join("/"));
+  if (f.cats.length) bits.push(f.cats.map(c => label(CATS, c)).join("/"));
+  if (f.feats.length) bits.push(f.feats.map(x => label(FEATS, x)).join("/"));
+  if (state.q) bits.push('"' + state.q + '"');
+  return bits.join(" · ");
+}
+
+async function copyText(txt) {
+  try { await navigator.clipboard.writeText(txt); return true; } catch (e) {}
+  try {
+    const ta = document.createElement("textarea");
+    ta.value = txt; ta.style.position = "fixed"; ta.style.opacity = "0";
+    document.body.appendChild(ta); ta.select();
+    const ok = document.execCommand("copy"); ta.remove(); return ok;
+  } catch (e) { return false; }
+}
+
+async function exportItems(sale) {
+  const rows = [["Item", "Price", "Condition", "Qty", "Category", "Firm"]].concat(
+    (sale.items || []).map(i => [i.name, i.price, label(CONDS, i.cond || "good"), i.qty || 1, i.cat ? label(CATS, i.cat) : "", i.firm ? "firm" : "or offer"]));
+  const csv = rows.map(r => r.map(c => '"' + String(c == null ? "" : c).replace(/"/g, '""') + '"').join(",")).join("\r\n");
+  const name = (sale.title || "sale").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 40) + "-price-list.csv";
+  let dl = null;
+  try { dl = await window.claude?.use?.("downloads"); } catch (e) {}
+  if (!dl) {
+    const ok = await copyText(csv);
+    toast(ok ? "Price list copied to the clipboard" : "Downloads are not available in this view");
+    return;
+  }
+  try {
+    const res = await dl.save({ filename: name, data: csv });
+    if (res && res.status === "saved") toast("Saved " + name);
+  } catch (e) {
+    if (e && e.code === "cancelled") return;
+    toast("Could not save the file");
+  }
+}
+
+async function publishSale() {
+  const d = wizData();
+  for (let i = 0; i < 5; i++) {
+    if (Object.keys(stepErrors(i)).length) {
+      state.wiz.step = i; state.wiz.showErrors = true; render();
+      toast("Something is missing on step " + (i + 1));
+      return;
+    }
+  }
+  const doc = {
+    title: d.title.trim(), type: d.type, host: d.host.trim() || "A neighbour",
+    addr: { street: d.addr.street.trim(), city: d.addr.city.trim(), state: d.addr.state.trim().toUpperCase(),
+            zip: d.addr.zip.trim(), cross: d.addr.cross.trim(), visibility: d.addr.visibility },
+    days: d.days.map(x => ({ date: x.date || isoDate(dayDate(x)), start: x.start, end: x.end })),
+    early: d.early, rain: d.rain, cats: d.cats.slice(), desc: d.desc.trim(),
+    items: d.items.filter(i => (i.name || "").trim()).map(i => ({
+      name: i.name.trim(), price: Number(i.price) || 0, cond: i.cond || "good",
+      qty: Number(i.qty) || 1, cat: i.cat || "", firm: !!i.firm })),
+    pay: d.pay.slice(), feat: d.feat.slice(), contact: d.contact, phone: d.phone.trim(),
+    ownerKey: state.me, createdAt: Date.now(), sample: false
+  };
+  doc.geo = geoFromText(doc.addr.street + doc.addr.zip + doc.title);
+
+  const editing = state.wiz.editId;
+  let id = editing || ("u-" + uid());
+  try {
+    if (state.db) {
+      await state.db.doc("sales/" + id).set(doc);
+    } else {
+      const local = Object.assign({ id: id }, doc);
+      state.sales = state.sales.filter(s => s.id !== id).concat([local]);
+    }
+  } catch (e) {
+    const msg = e && e.code === "quota_exceeded"
+      ? "The shared list is full — take down an old listing first."
+      : "Could not publish just now. Your draft is safe.";
+    toast(msg);
+    return;
+  }
+  if (!state.sales.some(s => s.id === id)) state.sales = state.sales.concat([Object.assign({ id: id }, doc)]);
+  state.wiz = { step: 0, data: null, published: Object.assign({ id: id }, doc), wasEdit: !!editing };
+  LS.del("draft");
+  render();
+}
+
+async function unlist(id) {
+  if (!confirm("Take this listing down? Buyers will stop seeing it.")) return;
+  try { if (state.db) await state.db.doc("sales/" + id).delete(); } catch (e) {}
+  state.sales = state.sales.filter(s => s.id !== id);
+  state.saved = state.saved.filter(x => x !== id); LS.set("saved", state.saved);
+  state.route = state.route.filter(x => x !== id); LS.set("route", state.route);
+  toast("Listing taken down");
+  render();
+}
+
+document.addEventListener("click", ev => {
+  const el = ev.target.closest("[data-act]");
+  if (!el) return;
+  const act = el.dataset.act, id = el.dataset.id, val = el.dataset.val, key = el.dataset.key;
+  const d = state.wiz.data || wizData();
+  const f = state.filters, p = state.profile;
+  const stop = () => ev.preventDefault();
+
+  switch (act) {
+    /* navigation */
+    case "tab": stop();
+      if (val === "list" && !state.wiz.published) state.wiz.step = state.wiz.step || 0;
+      if (val === "list") { state.wiz.published = null; }
+      go(val); return;
+    case "home": stop(); go("welcome"); return;
+    case "back": stop(); go("find"); return;
+    case "open": stop(); state.itemQ = ""; go("detail", { saleId: id }); return;
+    case "go-find": stop(); go("find"); return;
+    case "route": stop(); state.view = "route"; go("find"); return;
+    case "view": stop(); state.view = val; render(); return;
+    case "view-map": stop(); state.view = "map"; go("find"); return;
+
+    /* find */
+    case "sheet": stop(); state.sheet = true; render(); return;
+    case "sheet-close": stop(); state.sheet = false; render(); return;
+    case "reset": stop(); state.filters = BLANK_FILTERS(); state.q = ""; render(); return;
+    case "widen": stop(); f.radius = Math.min(50, f.radius * 2); render(); return;
+    case "f-when": stop(); f.when = val; render(); return;
+    case "f-early": stop(); f.early = val; render(); return;
+    case "f-type": stop(); f.types = toggleIn(f.types, val); render(); return;
+    case "f-cat": stop(); f.cats = toggleIn(f.cats, val); render(); return;
+    case "f-pay": stop(); f.pays = toggleIn(f.pays, val); render(); return;
+    case "f-feat": stop(); f.feats = toggleIn(f.feats, val); render(); return;
+    case "f-hasitems": stop(); f.hasItems = !f.hasItems; render(); return;
+    case "save-search": stop(); {
+      const name = (state.q || (f.cats.length ? label(CATS, f.cats[0]) : label(WHENS, f.when))) + " within " + f.radius + " mi";
+      state.searches = state.searches.concat([{ name: name, summary: filterSummary(), q: state.q, filters: JSON.parse(JSON.stringify(f)) }]);
+      LS.set("searches", state.searches);
+      state.sheet = false; render(); toast("Search saved — alerts on");
+      return; }
+
+    /* cards */
+    case "save": stop();
+      state.saved = toggleIn(state.saved, id); LS.set("saved", state.saved);
+      toast(state.saved.includes(id) ? "Saved" : "Removed from saved"); render(); return;
+    case "route-add": stop();
+      state.route = toggleIn(state.route, id); LS.set("route", state.route);
+      toast(state.route.includes(id) ? "Added to your route" : "Off your route"); render(); return;
+    case "route-clear": stop(); state.route = []; LS.set("route", []); render(); return;
+    case "copy-addr": stop(); {
+      const s = state.sales.find(x => x.id === id); if (!s) return;
+      copyText([s.addr.street, s.addr.city + ", " + s.addr.state + " " + s.addr.zip].join(", "))
+        .then(ok => toast(ok ? "Address copied" : "Could not copy"));
+      return; }
+    case "export": stop(); { const s = state.sales.find(x => x.id === id); if (s) exportItems(s); return; }
+
+    /* wizard */
+    case "wiz-next": stop(); {
+      const errs = stepErrors(state.wiz.step);
+      if (Object.keys(errs).length) { state.wiz.showErrors = true; render(); return; }
+      state.wiz.showErrors = false; state.wiz.step = Math.min(5, state.wiz.step + 1);
+      saveDraft(); render(); $("#screen").scrollTop = 0; return; }
+    case "wiz-back": stop();
+      state.wiz.showErrors = false; state.wiz.step = Math.max(0, state.wiz.step - 1);
+      render(); $("#screen").scrollTop = 0; return;
+    case "wiz-reset": stop();
+      if (!confirm("Clear this draft and start again?")) return;
+      LS.del("draft"); state.wiz = { step: 0, data: blankSale(), published: null }; render(); return;
+    case "publish": stop(); publishSale(); return;
+    case "edit": stop(); {
+      const s = state.sales.find(x => x.id === id); if (!s) return;
+      state.wiz = { step: 0, data: JSON.parse(JSON.stringify(s)), editId: id, published: null };
+      state.wiz.data.addr = Object.assign({ street: "", city: "", state: "", zip: "", cross: "", visibility: "always" }, s.addr);
+      state.wiz.data.desc = s.desc || ""; state.wiz.data.items = (s.items || []).slice();
+      go("list"); return; }
+    case "unlist": stop(); unlist(id); return;
+
+    case "w-type": stop(); d.type = val; saveDraft(); render(); return;
+    case "w-vis": stop(); d.addr.visibility = val; saveDraft(); render(); return;
+    case "w-early": stop(); d.early = val; saveDraft(); render(); return;
+    case "w-rain": stop(); d.rain = val; saveDraft(); render(); return;
+    case "w-cat": stop(); d.cats = toggleIn(d.cats, val); saveDraft(); render(); return;
+    case "w-pay": stop(); d.pay = toggleIn(d.pay, val); saveDraft(); render(); return;
+    case "w-feat": stop(); d.feat = toggleIn(d.feat, val); saveDraft(); render(); return;
+    case "w-contact": stop(); d.contact = val; saveDraft(); render(); return;
+    case "day-add": stop(); {
+      const last = d.days[d.days.length - 1];
+      const base = last ? addDays(dayDate(last), 1) : nextSaturday();
+      d.days = d.days.concat([{ date: isoDate(base), start: last ? last.start : "08:00", end: last ? last.end : "14:00" }]);
+      saveDraft(); render(); return; }
+    case "day-del": stop(); d.days = d.days.filter((_, i) => i !== Number(val)); saveDraft(); render(); return;
+    case "item-add": stop();
+      d.items = d.items.concat([{ name: "", price: "", cond: "good", qty: 1, cat: "", firm: false }]);
+      saveDraft(); render();
+      setTimeout(() => { const rows = document.querySelectorAll('[data-act="item"][data-key="name"]'); const lastRow = rows[rows.length - 1]; if (lastRow) lastRow.focus(); }, 0);
+      return;
+    case "item-del": stop(); d.items = d.items.filter((_, i) => i !== Number(val)); saveDraft(); render(); return;
+    case "item-firm": stop(); d.items[Number(val)].firm = !d.items[Number(val)].firm; saveDraft(); render(); return;
+
+    /* account */
+    case "p-when": stop(); p.when = val; LS.set("profile", p); render(); return;
+    case "p-vis": stop(); p.addrVisibility = val; LS.set("profile", p); render(); return;
+    case "p-contact": stop(); p.contact = val; LS.set("profile", p); render(); return;
+    case "p-toggle": stop(); p[key] = !p[key]; LS.set("profile", p); render(); return;
+    case "search-run": stop(); {
+      const s = state.searches[Number(val)];
+      state.filters = Object.assign(BLANK_FILTERS(), s.filters); state.q = s.q || "";
+      state.view = "list"; go("find"); return; }
+    case "search-del": stop();
+      state.searches = state.searches.filter((_, i) => i !== Number(val));
+      LS.set("searches", state.searches); render(); return;
+    case "clear-data": stop();
+      if (!confirm("Clear your profile, saved sales, route and searches from this device? Your published listings stay up.")) return;
+      ["profile", "saved", "route", "searches", "draft"].forEach(LS.del);
+      state.profile = DEFAULT_PROFILE(); state.saved = []; state.route = []; state.searches = [];
+      state.filters = BLANK_FILTERS(); toast("Device data cleared"); render(); return;
+  }
+});
+
+document.addEventListener("input", ev => {
+  const el = ev.target.closest("[data-act]");
+  if (!el) return;
+  const act = el.dataset.act, key = el.dataset.key, val = el.dataset.val, v = el.value;
+  const d = state.wiz.data || wizData(), f = state.filters, p = state.profile;
+
+  if (act === "q") { state.q = v; withFocus(render); return; }
+  if (act === "itemq") { state.itemQ = v; withFocus(render); return; }
+  if (act === "f-max") { f.maxPrice = v; withFocus(render); return; }
+  if (act === "f-date") { f.date = v; f.when = "date"; withFocus(render); return; }
+  if (act === "f-radius") { f.radius = Number(v); const o = el.parentElement.querySelector("output"); if (o) o.textContent = v + " mi"; return; }
+  if (act === "p-radius") { p.radius = Number(v); const o = el.parentElement.querySelector("output"); if (o) o.textContent = v + " mi"; return; }
+  if (act === "p-alertRadius") { p.alertRadius = Number(v); const o = el.parentElement.querySelector("output"); if (o) o.textContent = v + " mi"; return; }
+  if (act === "p") { p[key] = v; LS.set("profile", p); return; }
+  if (act === "w") {
+    if (key.indexOf("addr.") === 0) d.addr[key.slice(5)] = v; else d[key] = v;
+    saveDraft(); return;
+  }
+  if (act === "day") { d.days[Number(val)][key] = v; saveDraft(); return; }
+  if (act === "item") { d.items[Number(val)][key] = v; saveDraft(); return; }
+});
+
+document.addEventListener("change", ev => {
+  const el = ev.target.closest("[data-act]");
+  if (!el) return;
+  const act = el.dataset.act, key = el.dataset.key, val = el.dataset.val, v = el.value;
+  const d = state.wiz.data || wizData(), p = state.profile;
+  if (act === "sort") { state.sort = v; render(); return; }
+  if (act === "f-radius") { render(); return; }
+  if (act === "p-radius" || act === "p-alertRadius") { LS.set("profile", p); render(); return; }
+  if (act === "item") { d.items[Number(val)][key] = v; saveDraft(); render(); return; }
+  if (act === "p") { LS.set("profile", p); return; }
+});
+
+document.addEventListener("keydown", ev => {
+  if (ev.key === "Escape" && state.sheet) { state.sheet = false; render(); }
+});
+
+/* ============================================================
+   Boot
+   ============================================================ */
+function tickClock() {
+  const d = new Date();
+  const wd = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][d.getDay()];
+  const h = d.getHours() % 12 === 0 ? 12 : d.getHours() % 12;
+  const el = document.getElementById("clock");
+  if (el) el.textContent = wd + " " + h + ":" + String(d.getMinutes()).padStart(2, "0") + (d.getHours() >= 12 ? " PM" : " AM");
+}
+
+function start(saved) {
+  if (saved && saved.screen) {
+    state.screen = saved.screen; state.saleId = saved.saleId || null;
+    state.view = saved.view || "list"; state.q = saved.q || "";
+    if (saved.filters) state.filters = Object.assign(BLANK_FILTERS(), saved.filters);
+    if (saved.wiz) state.wiz = Object.assign({ step: 0, data: null, published: null }, saved.wiz);
+  }
+  render();
+  tickClock();
+  setInterval(() => { tickClock(); if (state.screen !== "list") render(); }, 60000);
+  bootStore();
+  try {
+    window.claude?.hot?.snapshot?.(() => ({
+      screen: state.screen, saleId: state.saleId, view: state.view, q: state.q,
+      filters: state.filters, wiz: { step: state.wiz.step, data: state.wiz.data, editId: state.wiz.editId }
+    }));
+  } catch (e) {}
+}
+
+if (window.claude?.hot?.ready) window.claude.hot.ready(start);
+else start(window.claude?.hot?.data || null);
+</script>
