@@ -226,7 +226,9 @@ def make_icon(art, glints=()):
 
 
 def make_digit(ch):
-    canvas = Canvas(DIGIT_W, DIGIT_H)
+    # Cells carry their own trailing spacer column: Fusion's Counter object
+    # butts digit images together with no gap of its own.
+    canvas = Canvas(DIGIT_ADVANCE, DIGIT_H)
     canvas.blit_art(DIGIT_ART[ch], 0, 0, INK)
     return canvas
 
