@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<effect>
+  <name>Dissolve</name>
+  <description>Eats the image away in random blocks, with a burning edge. Works as a death effect on a sprite and as a scene transition on a layer, and because the blocks are square it stays honest on a pixel grid.</description>
+  <author>CyberMushroom</author>
+  <copyright>Copyright (c) CyberMushroom</copyright>
+  <website>https://github.com/CyberMushroom/CyberMushroom</website>
+
+  <parameter>
+    <name>Edge Colour</name>
+    <variable>_EdgeColor</variable>
+    <description>Colour of the band at the dissolve front.</description>
+    <type>int_float4</type>
+    <property>color</property>
+    <value>16777215</value>
+  </parameter>
+
+  <parameter>
+    <name>Amount</name>
+    <variable>_Amount</variable>
+    <description>0 is untouched, 1 is completely gone. Animate this.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.0</value>
+    <min>0</min>
+    <max>1</max>
+  </parameter>
+
+  <parameter>
+    <name>Block Size</name>
+    <variable>_Block</variable>
+    <description>Size of one dissolve block in texels. 1 is per-pixel static, larger reads as chunks falling away.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>2.0</value>
+    <min>1</min>
+    <max>64</max>
+  </parameter>
+
+  <parameter>
+    <name>Edge Width</name>
+    <variable>_Edge</variable>
+    <description>How wide the coloured burning band is. 0 removes it.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.15</value>
+    <min>0</min>
+    <max>1</max>
+  </parameter>
+
+  <parameter>
+    <name>Seed</name>
+    <variable>_Seed</variable>
+    <description>Changes which blocks go first. Any two objects with different seeds dissolve differently.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.0</value>
+    <min>0</min>
+    <max>1000</max>
+  </parameter>
+
+  <parameter>
+    <name>Reverse</name>
+    <variable>_Invert</variable>
+    <description>On makes the object appear instead of disappear as Amount rises.</description>
+    <type>bool</type>
+    <property>checkbox</property>
+    <value>0</value>
+  </parameter>
+</effect>

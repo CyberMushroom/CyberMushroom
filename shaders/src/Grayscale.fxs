@@ -1,0 +1,23 @@
+// @name        Grayscale
+// @category    Color
+// @target      ps_2_0
+// @description Drains the colour out of a sprite or a whole layer. Four
+// weightings, because "grey" is not one thing: Rec.601 luminance is what your
+// eye reads, plain average is what most pixel art was drawn against.
+// @usage       Put it on a layer with Amount on an alterable value to grey out
+// the world behind a pause menu.
+// @param type=float var=_Amount name="Amount" default=1.0 min=0 max=1 desc="0 is the original, 1 is fully grey."
+// @param type=int   var=_Mode   name="Mode"   default=0 min=0 max=3 prop=slider desc="0 luminance (Rec.601), 1 flat average, 2 lightness (max and min averaged), 3 brightest channel."
+
+float4 fusion_main(in PS_INPUT In)
+{
+    float4 src = fusionTex(In, In.texCoord);
+
+    float grey = fusionLuma(src.rgb);
+    if (_Mode == 1) grey = (src.r + src.g + src.b) / 3.0;
+    if (_Mode == 2) grey = (max(max(src.r, src.g), src.b) + min(min(src.r, src.g), src.b)) * 0.5;
+    if (_Mode == 3) grey = max(max(src.r, src.g), src.b);
+
+    src.rgb = lerp(src.rgb, float3(grey, grey, grey), saturate(_Amount));
+    return src;
+}

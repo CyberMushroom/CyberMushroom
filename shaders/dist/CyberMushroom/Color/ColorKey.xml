@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<effect>
+  <name>Colour Key</name>
+  <description>Makes one colour transparent. For sprite sheets exported without alpha, for punching a window out of a backdrop, and for cutting a hole in anything at runtime.</description>
+  <author>CyberMushroom</author>
+  <copyright>Copyright (c) CyberMushroom</copyright>
+  <website>https://github.com/CyberMushroom/CyberMushroom</website>
+
+  <parameter>
+    <name>Key Colour</name>
+    <variable>_Key</variable>
+    <description>The colour to remove. Default is magenta.</description>
+    <type>int_float4</type>
+    <property>color</property>
+    <value>16711935</value>
+  </parameter>
+
+  <parameter>
+    <name>Tolerance</name>
+    <variable>_Tolerance</variable>
+    <description>How close a pixel has to be to the key colour to be removed.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.15</value>
+    <min>0</min>
+    <max>1.8</max>
+  </parameter>
+
+  <parameter>
+    <name>Softness</name>
+    <variable>_Softness</variable>
+    <description>Fades pixels out near the edge of the tolerance rather than cutting them hard.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.05</value>
+    <min>0</min>
+    <max>1</max>
+  </parameter>
+
+  <parameter>
+    <name>Despill</name>
+    <variable>_Despill</variable>
+    <description>Pulls the key colour back out of the pixels that survive, which kills the coloured fringe left around a cut-out.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.0</value>
+    <min>0</min>
+    <max>1</max>
+  </parameter>
+</effect>

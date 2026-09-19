@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<effect>
+  <name>Dither</name>
+  <description>Ordered (Bayer) dithering with an adjustable number of levels. Where Posterize bands, this one trades banding for a woven pattern, the way an artist fakes a gradient with two colours.</description>
+  <author>CyberMushroom</author>
+  <copyright>Copyright (c) CyberMushroom</copyright>
+  <website>https://github.com/CyberMushroom/CyberMushroom</website>
+
+  <parameter>
+    <name>Levels</name>
+    <variable>_Levels</variable>
+    <description>Steps per channel after dithering. 2 is one bit per channel.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>4.0</value>
+    <min>2</min>
+    <max>32</max>
+  </parameter>
+
+  <parameter>
+    <name>Dither Strength</name>
+    <variable>_Amount</variable>
+    <description>0 quantises with hard bands, 1 dithers fully.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>1.0</value>
+    <min>0</min>
+    <max>1</max>
+  </parameter>
+
+  <parameter>
+    <name>Pattern Scale</name>
+    <variable>_Scale</variable>
+    <description>Size of one dither cell in texels. Raise it if the game is drawn small and scaled up.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>1.0</value>
+    <min>1</min>
+    <max>8</max>
+  </parameter>
+
+  <parameter>
+    <name>Coarse Pattern</name>
+    <variable>_Coarse</variable>
+    <description>On uses a 2x2 matrix, off uses 4x4.</description>
+    <type>bool</type>
+    <property>checkbox</property>
+    <value>0</value>
+  </parameter>
+
+  <parameter>
+    <name>Luminance Only</name>
+    <variable>_Luma</variable>
+    <description>On dithers brightness and keeps the hue smooth. Off dithers each channel, which is what a real indexed palette does.</description>
+    <type>bool</type>
+    <property>checkbox</property>
+    <value>0</value>
+  </parameter>
+</effect>

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<effect>
+  <name>Water Reflection</name>
+  <description>Flips the image, ripples it and fades it out with depth. Put a copy of your scenery below the waterline, apply this, and it reflects.</description>
+  <author>CyberMushroom</author>
+  <copyright>Copyright (c) CyberMushroom</copyright>
+  <website>https://github.com/CyberMushroom/CyberMushroom</website>
+
+  <parameter>
+    <name>Water Colour</name>
+    <variable>_Color</variable>
+    <description>Colour the reflection is tinted toward. Default is DMG 48,98,48.</description>
+    <type>int_float4</type>
+    <property>color</property>
+    <value>3170864</value>
+  </parameter>
+
+  <parameter>
+    <name>Ripple Size</name>
+    <variable>_Amplitude</variable>
+    <description>How far the ripples push pixels sideways, in texels.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>1.5</value>
+    <min>0</min>
+    <max>32</max>
+  </parameter>
+
+  <parameter>
+    <name>Ripple Count</name>
+    <variable>_Frequency</variable>
+    <description>How many ripples fit down the reflection.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>6.0</value>
+    <min>0</min>
+    <max>64</max>
+  </parameter>
+
+  <parameter>
+    <name>Speed</name>
+    <variable>_Speed</variable>
+    <description>How fast the ripples travel when Time is animated.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>1.5</value>
+    <min>-32</min>
+    <max>32</max>
+  </parameter>
+
+  <parameter>
+    <name>Time</name>
+    <variable>_Time</variable>
+    <description>Animate this to make the water move.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.0</value>
+    <min>0</min>
+    <max>100000</max>
+  </parameter>
+
+  <parameter>
+    <name>Tint</name>
+    <variable>_Tint</variable>
+    <description>How strongly the water colour stains the reflection.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.35</value>
+    <min>0</min>
+    <max>1</max>
+  </parameter>
+
+  <parameter>
+    <name>Depth Fade</name>
+    <variable>_Fade</variable>
+    <description>How much the reflection fades out toward the bottom, which is where it is furthest from the surface.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.6</value>
+    <min>0</min>
+    <max>1</max>
+  </parameter>
+
+  <parameter>
+    <name>Flip</name>
+    <variable>_Flip</variable>
+    <description>On mirrors the image vertically, which is what you want when the source is the scenery above. Off leaves it upright.</description>
+    <type>bool</type>
+    <property>checkbox</property>
+    <value>1</value>
+  </parameter>
+</effect>

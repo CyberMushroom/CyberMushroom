@@ -1,0 +1,29 @@
+// @name        Heat Haze
+// @category    Distort
+// @target      ps_2_0
+// @description Soft rising noise that bends the image, the air over a fire or a
+// desert floor. Unlike Wave this has no repeating pattern, so it holds up over
+// a whole screen.
+// @usage       Apply to a layer above the heat source, or to a tall invisible
+// Active object with "apply to background" so only the air above the lava
+// wobbles. Animate Time every tick.
+// @param type=float var=_Strength name="Strength" default=2.0 min=0 max=32 desc="How far pixels move, in texels."
+// @param type=float var=_Scale    name="Cell Size" default=24.0 min=1 max=256 desc="Size of one noise cell in texels. Small is a fine shimmer, large is slow rolling air."
+// @param type=float var=_Speed    name="Rise Speed" default=1.0 min=-8 max=8 desc="How fast the haze climbs when Time is animated."
+// @param type=float var=_Time     name="Time"     default=0.0 min=0 max=100000 desc="Animate this or the haze stands still."
+// @param type=float var=_Rise     name="Vertical Bias" default=0.6 min=0 max=1 desc="0 wobbles evenly in both directions, 1 mostly pushes pixels up and down like rising air."
+
+float4 fusion_main(in PS_INPUT In)
+{
+    float2 texel = fusionTexel();
+    float2 cell = In.texCoord / texel / max(_Scale, 1.0);
+    float drift = _Time * _Speed;
+
+    float nx = fusionNoise(cell + float2(0.0, -drift));
+    float ny = fusionNoise(cell * 1.7 + float2(drift * 0.6, -drift * 1.3) + 19.0);
+
+    float2 offset = (float2(nx, ny) - 0.5) * 2.0;
+    offset.x *= 1.0 - saturate(_Rise);
+
+    return fusionTex(In, saturate(In.texCoord + offset * _Strength * texel));
+}

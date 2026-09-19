@@ -1,0 +1,34 @@
+// @name        Film Grain
+// @category    Screen
+// @target      ps_2_0
+// @description Per-pixel noise over the picture. Breaks up flat areas, hides
+// banding left by a small palette, and gives a still screen something to do.
+// @usage       Add 0.1 to Time every tick (Always: Set effect parameter "Time"
+// to Time + 0.1) or the grain freezes into a static pattern.
+// @param type=float var=_Amount name="Amount" default=0.1 min=0 max=1 desc="Strength of the noise."
+// @param type=float var=_Time   name="Time"   default=0.0 min=0 max=100000 desc="Animate this or the grain will not move."
+// @param type=float var=_Scale  name="Grain Size" default=1.0 min=1 max=16 desc="Size of one grain in texels."
+// @param type=bool  var=_Shadows name="Shadows Only" default=0 desc="On keeps the grain out of the highlights, which is how real film behaves and stops bright sprites looking dirty."
+// @param type=bool  var=_Colour  name="Coloured"     default=0 desc="On gives each channel its own noise. Off is monochrome grain, which is usually what you want on a limited palette."
+
+float4 fusion_main(in PS_INPUT In)
+{
+    float4 src = fusionTex(In, In.texCoord);
+
+    float2 pixel = floor(In.texCoord / fusionTexel() / max(_Scale, 1.0));
+    float2 seed = pixel + frac(_Time) * 137.0;
+
+    float mono = fusionHash(seed);
+    float3 noise = float3(mono, mono, mono);
+    if (_Colour)
+    {
+        noise = float3(fusionHash(seed),
+                       fusionHash(seed + 17.13),
+                       fusionHash(seed + 41.71));
+    }
+    noise -= 0.5;
+
+    float weight = _Shadows ? (1.0 - fusionLuma(src.rgb)) : 1.0;
+    src.rgb = saturate(src.rgb + noise * _Amount * weight);
+    return src;
+}

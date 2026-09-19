@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<effect>
+  <name>Vignette</name>
+  <description>Darkens the edges so the eye goes to the middle. Subtle at 0.3, a torch-lit cave at 0.9.</description>
+  <author>CyberMushroom</author>
+  <copyright>Copyright (c) CyberMushroom</copyright>
+  <website>https://github.com/CyberMushroom/CyberMushroom</website>
+
+  <parameter>
+    <name>Edge Colour</name>
+    <variable>_Color</variable>
+    <description>What the edges fade toward. Black is the usual answer; the DMG darkest green keeps it on palette.</description>
+    <type>int_float4</type>
+    <property>color</property>
+    <value>0</value>
+  </parameter>
+
+  <parameter>
+    <name>Radius</name>
+    <variable>_Radius</variable>
+    <description>How far from the centre the darkening starts.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.75</value>
+    <min>0</min>
+    <max>2</max>
+  </parameter>
+
+  <parameter>
+    <name>Softness</name>
+    <variable>_Softness</variable>
+    <description>How gradually it falls off.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.5</value>
+    <min>0.01</min>
+    <max>2</max>
+  </parameter>
+
+  <parameter>
+    <name>Amount</name>
+    <variable>_Amount</variable>
+    <description>Overall strength.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.6</value>
+    <min>0</min>
+    <max>1</max>
+  </parameter>
+
+  <parameter>
+    <name>Roundness</name>
+    <variable>_Roundness</variable>
+    <description>1 is a circle, 0 follows the shape of the object so a wide screen gets a wide vignette.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>1.0</value>
+    <min>0</min>
+    <max>1</max>
+  </parameter>
+</effect>

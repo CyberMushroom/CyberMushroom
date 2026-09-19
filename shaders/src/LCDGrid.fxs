@@ -1,0 +1,28 @@
+// @name        LCD Grid
+// @category    Retro
+// @target      ps_2_0
+// @description The handheld screen itself: a dot-matrix grid with a gap between
+// cells and a tinted backlight. Sits on top of a finished frame and makes it
+// look like it is being read off a panel rather than drawn on one.
+// @usage       Apply to a fullscreen layer above everything. Keep Cell Size at
+// your game's pixel scale - if the frame is 160x144 stretched 4x, Cell Size 4
+// puts one grid cell on one game pixel.
+// @param type=color var=_Backlight name="Backlight" default=1031323 desc="Colour the panel glows. Default is DMG 155,188,15."
+// @param type=float var=_Cell      name="Cell Size" default=4.0 min=1 max=32 desc="Grid cell size in texels."
+// @param type=float var=_Gap       name="Gap Width" default=0.25 min=0 max=0.9 desc="How much of each cell is gap rather than lit area."
+// @param type=float var=_Darkness  name="Gap Darkness" default=0.3 min=0 max=1 desc="How dark the gaps go. Past about 0.5 the image starts to disappear at small cell sizes."
+// @param type=float var=_Tint      name="Backlight Tint" default=0.0 min=0 max=1 desc="Pushes the whole image toward the backlight colour, the way a DMG panel washes everything green."
+
+float4 fusion_main(in PS_INPUT In)
+{
+    float4 src = fusionTex(In, In.texCoord);
+
+    float2 pixel = In.texCoord / fusionTexel();
+    float2 cell = abs(frac(pixel / max(_Cell, 1.0)) - 0.5) * 2.0;
+    float grid = max(cell.x, cell.y);
+    float gap = smoothstep(1.0 - saturate(_Gap), 1.0, grid);
+
+    src.rgb *= 1.0 - gap * saturate(_Darkness);
+    src.rgb = lerp(src.rgb, saturate(_Backlight.rgb * fusionLuma(src.rgb) * 2.0), saturate(_Tint));
+    return src;
+}

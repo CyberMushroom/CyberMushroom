@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<effect>
+  <name>Iris Wipe</name>
+  <description>The shape closing in around the hero at the end of a level. Circle, diamond or square, centred anywhere, opening or closing.</description>
+  <author>CyberMushroom</author>
+  <copyright>Copyright (c) CyberMushroom</copyright>
+  <website>https://github.com/CyberMushroom/CyberMushroom</website>
+
+  <parameter>
+    <name>Centre X</name>
+    <variable>_CenterX</variable>
+    <description>Centre of the shape across the object.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.5</value>
+    <min>-1</min>
+    <max>2</max>
+  </parameter>
+
+  <parameter>
+    <name>Centre Y</name>
+    <variable>_CenterY</variable>
+    <description>Centre of the shape down the object.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.5</value>
+    <min>-1</min>
+    <max>2</max>
+  </parameter>
+
+  <parameter>
+    <name>Radius</name>
+    <variable>_Radius</variable>
+    <description>Size of the shape, where 1 reaches the edge of the object. Animate this.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.5</value>
+    <min>0</min>
+    <max>2</max>
+  </parameter>
+
+  <parameter>
+    <name>Softness</name>
+    <variable>_Softness</variable>
+    <description>How soft the edge of the shape is. 0 is a hard edge.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.01</value>
+    <min>0</min>
+    <max>1</max>
+  </parameter>
+
+  <parameter>
+    <name>Shape</name>
+    <variable>_Shape</variable>
+    <description>0 circle, 1 diamond, 2 square.</description>
+    <type>int</type>
+    <property>slider</property>
+    <value>0</value>
+    <min>0</min>
+    <max>2</max>
+  </parameter>
+
+  <parameter>
+    <name>Reverse</name>
+    <variable>_Invert</variable>
+    <description>Off keeps the inside of the shape and hides the outside. On hides the inside, which is what you want on a full-screen cover object.</description>
+    <type>bool</type>
+    <property>checkbox</property>
+    <value>0</value>
+  </parameter>
+
+  <parameter>
+    <name>Ignore Aspect</name>
+    <variable>_Square</variable>
+    <description>On measures in texture coordinates, so the shape stretches with the object. Off keeps a circle round on a wide screen.</description>
+    <type>bool</type>
+    <property>checkbox</property>
+    <value>0</value>
+  </parameter>
+</effect>

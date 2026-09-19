@@ -1,0 +1,21 @@
+// @name        Silhouette
+// @category    Outline
+// @target      ps_2_0
+// @description Fills the sprite with one flat colour and keeps its shape. Use a
+// second copy of an object with this on it for a cast shadow, a ghost, an
+// enemy seen through a wall, or the white frame of a teleport.
+// @usage       For a ground shadow, duplicate the sprite, squash it, set the
+// colour to your darkest palette entry and drop Alpha to about 0.4.
+// @param type=color var=_Color     name="Colour"       default=0 desc="The flat colour the sprite becomes."
+// @param type=float var=_Alpha     name="Alpha"        default=1.0 min=0 max=1 desc="Opacity of the silhouette."
+// @param type=float var=_Amount    name="Amount"       default=1.0 min=0 max=1 desc="Blends between the original sprite and the flat fill."
+// @param type=float var=_Threshold name="Alpha Cutoff" default=0.0 min=0 max=1 desc="Pixels below this are dropped entirely, which hardens a soft edge into a crisp shape."
+
+float4 fusion_main(in PS_INPUT In)
+{
+    float4 src = fusionTex(In, In.texCoord);
+
+    src.rgb = lerp(src.rgb, _Color.rgb, saturate(_Amount));
+    src.a *= step(_Threshold, src.a) * saturate(_Alpha);
+    return src;
+}

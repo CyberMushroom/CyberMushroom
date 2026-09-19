@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<effect>
+  <name>Hit Flash</name>
+  <description>The damage flash. Drives the sprite to a solid colour and back without touching its silhouette, so a hit reads instantly even at 160x144.</description>
+  <author>CyberMushroom</author>
+  <copyright>Copyright (c) CyberMushroom</copyright>
+  <website>https://github.com/CyberMushroom/CyberMushroom</website>
+
+  <parameter>
+    <name>Flash Colour</name>
+    <variable>_Color</variable>
+    <description>Colour the sprite flashes to. White for a generic hit, red for damage taken, dark green to read on a DMG screen.</description>
+    <type>int_float4</type>
+    <property>color</property>
+    <value>16777215</value>
+  </parameter>
+
+  <parameter>
+    <name>Amount</name>
+    <variable>_Amount</variable>
+    <description>How far through the flash you are. Animate this, leave everything else alone.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>1.0</value>
+    <min>0</min>
+    <max>1</max>
+  </parameter>
+
+  <parameter>
+    <name>Additive</name>
+    <variable>_Additive</variable>
+    <description>On, the colour is added on top so bright pixels blow out. Off, the sprite is blended toward the colour.</description>
+    <type>bool</type>
+    <property>checkbox</property>
+    <value>0</value>
+  </parameter>
+
+  <parameter>
+    <name>Alpha Fade</name>
+    <variable>_Fade</variable>
+    <description>Fades the sprite out as it flashes. Handy for death pops: run Amount and this together.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.0</value>
+    <min>0</min>
+    <max>1</max>
+  </parameter>
+</effect>

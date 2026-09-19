@@ -1,0 +1,21 @@
+// @name        Invert
+// @category    Color
+// @target      ps_2_0
+// @description Photo-negative. Cheap, loud, and reads through anything: a good
+// one-frame hit stinger, a "wrong answer" blink, or a hazard that should never
+// be mistaken for scenery.
+// @usage       Toggle Amount between 0 and 1 every other frame for a strobe.
+// @param type=float var=_Amount name="Amount" default=1.0 min=0 max=1 desc="0 is the original, 1 is fully inverted, 0.5 is flat grey."
+// @param type=bool  var=_Luma   name="Luminance Only" default=0 desc="On, only the brightness flips and the hue survives. Off, every channel flips."
+
+float4 fusion_main(in PS_INPUT In)
+{
+    float4 src = fusionTex(In, In.texCoord);
+
+    float3 flipped = 1.0 - src.rgb;
+    float luma = fusionLuma(src.rgb);
+    float3 lumaFlipped = src.rgb + (1.0 - 2.0 * luma);
+
+    src.rgb = lerp(src.rgb, saturate(_Luma ? lumaFlipped : flipped), saturate(_Amount));
+    return src;
+}

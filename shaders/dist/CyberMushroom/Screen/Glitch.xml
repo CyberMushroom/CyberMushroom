@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<effect>
+  <name>Glitch</name>
+  <description>Torn horizontal bands, an RGB split and dropped lines. The corruption effect - good for damage, bad connections, and anything that should feel like the game itself is breaking.</description>
+  <author>CyberMushroom</author>
+  <copyright>Copyright (c) CyberMushroom</copyright>
+  <website>https://github.com/CyberMushroom/CyberMushroom</website>
+
+  <parameter>
+    <name>Amount</name>
+    <variable>_Amount</variable>
+    <description>Overall severity. 0 is a clean image.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.5</value>
+    <min>0</min>
+    <max>1</max>
+  </parameter>
+
+  <parameter>
+    <name>Time</name>
+    <variable>_Time</variable>
+    <description>Animate this or the glitch holds one frozen pattern.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.0</value>
+    <min>0</min>
+    <max>100000</max>
+  </parameter>
+
+  <parameter>
+    <name>Band Count</name>
+    <variable>_Bands</variable>
+    <description>How many horizontal slices the image is torn into.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>16.0</value>
+    <min>1</min>
+    <max>128</max>
+  </parameter>
+
+  <parameter>
+    <name>Tear Distance</name>
+    <variable>_Shift</variable>
+    <description>How far a torn band slides sideways, in texels.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>16.0</value>
+    <min>0</min>
+    <max>128</max>
+  </parameter>
+
+  <parameter>
+    <name>Colour Split</name>
+    <variable>_Split</variable>
+    <description>How far the red and blue channels come apart, in texels.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>4.0</value>
+    <min>0</min>
+    <max>64</max>
+  </parameter>
+
+  <parameter>
+    <name>Dropped Lines</name>
+    <variable>_Drop</variable>
+    <description>Chance a band goes black instead of tearing.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.1</value>
+    <min>0</min>
+    <max>1</max>
+  </parameter>
+</effect>

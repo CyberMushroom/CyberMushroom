@@ -1,0 +1,40 @@
+// @name        Glitch
+// @category    Screen
+// @target      ps_3_0
+// @description Torn horizontal bands, an RGB split and dropped lines. The
+// corruption effect - good for damage, bad connections, and anything that
+// should feel like the game itself is breaking.
+// @usage       Animate Time every tick and keep Amount at 0 until you want it;
+// at 0 the image passes through untouched.
+// @param type=float var=_Amount   name="Amount"     default=0.5 min=0 max=1 desc="Overall severity. 0 is a clean image."
+// @param type=float var=_Time     name="Time"       default=0.0 min=0 max=100000 desc="Animate this or the glitch holds one frozen pattern."
+// @param type=float var=_Bands    name="Band Count" default=16.0 min=1 max=128 desc="How many horizontal slices the image is torn into."
+// @param type=float var=_Shift    name="Tear Distance" default=16.0 min=0 max=128 desc="How far a torn band slides sideways, in texels."
+// @param type=float var=_Split    name="Colour Split"  default=4.0 min=0 max=64 desc="How far the red and blue channels come apart, in texels."
+// @param type=float var=_Drop     name="Dropped Lines" default=0.1 min=0 max=1 desc="Chance a band goes black instead of tearing."
+
+float4 fusion_main(in PS_INPUT In)
+{
+    float2 texel = fusionTexel();
+    float time = floor(_Time * 12.0);
+
+    /* One random number per band per frame drives the whole thing, so a band
+       either tears, drops or stays put - it never half-does both. */
+    float band = floor(In.texCoord.y * max(_Bands, 1.0));
+    float roll = fusionHash(float2(band, time));
+    float active = step(1.0 - saturate(_Amount), roll);
+
+    float direction = (fusionHash(float2(band, time + 7.0)) - 0.5) * 2.0;
+    float2 uv = In.texCoord;
+    uv.x += direction * _Shift * texel.x * active;
+
+    float2 split = float2(_Split * texel.x * active * saturate(_Amount), 0.0);
+    float4 src = fusionTex(In, uv);
+    src.r = fusionTex(In, uv + split).r;
+    src.b = fusionTex(In, uv - split).b;
+
+    float dropped = step(1.0 - saturate(_Drop * _Amount), fusionHash(float2(band, time + 23.0)));
+    src.rgb *= 1.0 - dropped;
+
+    return src;
+}

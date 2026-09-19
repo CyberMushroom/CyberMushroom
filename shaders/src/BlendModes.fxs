@@ -1,0 +1,26 @@
+// @name        Blend Modes
+// @category    Blend
+// @target      ps_3_0
+// @background  yes
+// @description Thirteen Photoshop blend modes against whatever Fusion has
+// already drawn behind the object. Fusion's built-in ink effects stop at Add
+// and Subtract - this is the rest of them.
+// @usage       Set Mode once in the object's properties. Screen (3) over a dark
+// scene is a light shaft; Multiply (2) is a shadow or a stain; Overlay (4) is a
+// colour wash that keeps the scene's contrast.
+// @note        Needs something drawn behind it. On an empty layer the
+// background is blank and most modes will do nothing visible.
+// @param type=int   var=_Mode    name="Mode"    default=2 min=0 max=12 prop=slider desc="0 normal, 1 add, 2 multiply, 3 screen, 4 overlay, 5 soft light, 6 hard light, 7 difference, 8 lighten, 9 darken, 10 colour dodge, 11 colour burn, 12 exclusion."
+// @param type=float var=_Opacity name="Opacity" default=1.0 min=0 max=1 desc="How much of the blend to apply."
+
+float4 fusion_main(in PS_INPUT In)
+{
+    float4 src = fusionTex(In, In.texCoord);
+    float4 bg = fusionBg(In.bgCoord);
+
+    float3 blended = fusionBlend(bg.rgb, src.rgb, _Mode);
+
+    /* Hand back the finished blend with the sprite's own alpha, so Fusion's
+       normal alpha blending lands it on the background unchanged. */
+    return float4(blended, src.a * saturate(_Opacity));
+}

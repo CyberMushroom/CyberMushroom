@@ -1,0 +1,38 @@
+// @name        Swirl
+// @category    Distort
+// @target      ps_2_0
+// @description Twists the image around a point, hardest in the middle and
+// fading to nothing at the edge of its radius. Portals, whirlpools, drains, and
+// a very good "sucked into the pipe" transition.
+// @usage       Ramp Angle from 0 to about 720 over half a second while pulling
+// Radius down, and the object screws itself out of existence.
+// @param type=float var=_CenterX name="Centre X" default=0.5 min=0 max=1 desc="Centre of the twist across the object."
+// @param type=float var=_CenterY name="Centre Y" default=0.5 min=0 max=1 desc="Centre of the twist down the object."
+// @param type=float var=_Angle   name="Angle"    default=180.0 min=-1440 max=1440 desc="Degrees of twist at the centre."
+// @param type=float var=_Radius  name="Radius"   default=0.5 min=0.01 max=2 desc="How far the twist reaches, where 1 is half the object's width."
+// @param type=bool  var=_Clip    name="Clip Edges" default=1 desc="On hides pixels dragged in from outside the object's image."
+
+float4 fusion_main(in PS_INPUT In)
+{
+    float aspect = fPixelHeight / max(fPixelWidth, 1.0e-6);
+    float2 center = float2(_CenterX, _CenterY);
+
+    float2 centred = In.texCoord - center;
+    centred.x *= aspect;
+
+    /* Squared falloff, so the middle spins hard and the rim stays still
+       instead of shearing against the untwisted pixels around it. */
+    float fade = saturate(1.0 - length(centred) / max(_Radius, 0.01));
+    centred = fusionRotate(centred, radians(_Angle) * fade * fade);
+
+    centred.x /= aspect;
+    float2 uv = center + centred;
+
+    float4 src = fusionTex(In, saturate(uv));
+    if (_Clip)
+    {
+        float2 inside = step(float2(0.0, 0.0), uv) * step(uv, float2(1.0, 1.0));
+        src *= inside.x * inside.y;
+    }
+    return src;
+}

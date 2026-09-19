@@ -1,0 +1,25 @@
+// @name        Hue Shift
+// @category    Color
+// @target      ps_2_0
+// @description Rotates the hue of every pixel, with saturation and value on the
+// side. One sprite sheet, a dozen palettes: recolour enemies, pickups and
+// player variants at runtime instead of drawing them twice.
+// @usage       Hue is a full turn from 0 to 1, so animating it from 0 upward
+// cycles the rainbow. Add 0.01 a tick for a slow shimmer.
+// @param type=float var=_Hue        name="Hue"        default=0.0 min=-1 max=1 desc="Hue rotation. 0 is no change, 0.5 is the opposite side of the wheel, 1 is a full turn."
+// @param type=float var=_Saturation name="Saturation" default=1.0 min=0 max=4 desc="Multiplies saturation. 1 is no change."
+// @param type=float var=_Value      name="Value"      default=1.0 min=0 max=4 desc="Multiplies brightness. 1 is no change."
+// @param type=float var=_Amount     name="Amount"     default=1.0 min=0 max=1 desc="Blends the recoloured pixel back over the original."
+
+float4 fusion_main(in PS_INPUT In)
+{
+    float4 src = fusionTex(In, In.texCoord);
+
+    float3 hsv = fusionRgb2Hsv(src.rgb);
+    hsv.x = frac(hsv.x + _Hue + 1.0);
+    hsv.y = saturate(hsv.y * _Saturation);
+    hsv.z = saturate(hsv.z * _Value);
+
+    src.rgb = lerp(src.rgb, fusionHsv2Rgb(hsv), saturate(_Amount));
+    return src;
+}

@@ -1,0 +1,40 @@
+// @name        Alpha Mask
+// @category    Mask
+// @target      ps_2_0
+// @description Cuts the object out using a second image you supply. Anything
+// you can draw, you can mask with: torn paper edges, a spotlight, a window in a
+// wall, a hand-drawn transition.
+// @usage       Scroll the mask with Offset X and Y to sweep a shape across the
+// object without animating a mask per frame.
+// @note        The mask image is stretched across the whole object, so draw it
+// at the object's proportions or it will squash.
+// @sampler     1 linear clamp clamp
+// @param type=float var=_OffsetX name="Offset X" default=0.0 min=-100 max=100 desc="Slides the mask sideways, where 1 is its full width."
+// @param type=float var=_OffsetY name="Offset Y" default=0.0 min=-100 max=100 desc="Slides the mask vertically."
+// @param type=float var=_ScaleX  name="Scale X"  default=1.0 min=0.01 max=64 desc="Stretches the mask horizontally."
+// @param type=float var=_ScaleY  name="Scale Y"  default=1.0 min=0.01 max=64 desc="Stretches the mask vertically."
+// @param type=int   var=_Channel name="Channel"  default=0 min=0 max=4 prop=slider desc="Which part of the mask to read: 0 alpha, 1 luminance, 2 red, 3 green, 4 blue."
+// @param type=float var=_Contrast name="Contrast" default=1.0 min=0 max=16 desc="Hardens the mask around its midpoint. High values turn a soft gradient into a crisp cut."
+// @param type=bool  var=_Invert  name="Invert"   default=0 desc="On keeps what the mask hides and hides what it keeps."
+// @param type=bool  var=_Tile    name="Tile"     default=0 desc="On repeats the mask instead of stretching one copy across the object."
+// @param type=image var=_Mask    name="Mask Image" desc="The image to mask with. White or opaque keeps the pixel, black or transparent removes it."
+
+float4 fusion_main(in PS_INPUT In)
+{
+    float4 src = fusionTex(In, In.texCoord);
+
+    float2 uv = In.texCoord * float2(max(_ScaleX, 0.01), max(_ScaleY, 0.01)) + float2(_OffsetX, _OffsetY);
+    uv = _Tile ? frac(uv + 1000.0) : saturate(uv);
+
+    float4 mask = fusionImage_Mask(uv);
+
+    float value = mask.a;
+    if (_Channel == 1) value = fusionLuma(mask.rgb);
+    if (_Channel == 2) value = mask.r;
+    if (_Channel == 3) value = mask.g;
+    if (_Channel == 4) value = mask.b;
+
+    value = saturate((value - 0.5) * max(_Contrast, 0.0) + 0.5);
+    src.a *= _Invert ? (1.0 - value) : value;
+    return src;
+}

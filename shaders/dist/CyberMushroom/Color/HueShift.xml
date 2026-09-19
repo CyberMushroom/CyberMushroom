@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<effect>
+  <name>Hue Shift</name>
+  <description>Rotates the hue of every pixel, with saturation and value on the side. One sprite sheet, a dozen palettes: recolour enemies, pickups and player variants at runtime instead of drawing them twice.</description>
+  <author>CyberMushroom</author>
+  <copyright>Copyright (c) CyberMushroom</copyright>
+  <website>https://github.com/CyberMushroom/CyberMushroom</website>
+
+  <parameter>
+    <name>Hue</name>
+    <variable>_Hue</variable>
+    <description>Hue rotation. 0 is no change, 0.5 is the opposite side of the wheel, 1 is a full turn.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.0</value>
+    <min>-1</min>
+    <max>1</max>
+  </parameter>
+
+  <parameter>
+    <name>Saturation</name>
+    <variable>_Saturation</variable>
+    <description>Multiplies saturation. 1 is no change.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>1.0</value>
+    <min>0</min>
+    <max>4</max>
+  </parameter>
+
+  <parameter>
+    <name>Value</name>
+    <variable>_Value</variable>
+    <description>Multiplies brightness. 1 is no change.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>1.0</value>
+    <min>0</min>
+    <max>4</max>
+  </parameter>
+
+  <parameter>
+    <name>Amount</name>
+    <variable>_Amount</variable>
+    <description>Blends the recoloured pixel back over the original.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>1.0</value>
+    <min>0</min>
+    <max>1</max>
+  </parameter>
+</effect>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<effect>
+  <name>Bloom</name>
+  <description>Bright pixels bleed light into their neighbours. One pass, two rings of taps - not a film-grade bloom, but it costs one draw and it makes lamps, coins and explosions feel hot.</description>
+  <author>CyberMushroom</author>
+  <copyright>Copyright (c) CyberMushroom</copyright>
+  <website>https://github.com/CyberMushroom/CyberMushroom</website>
+
+  <parameter>
+    <name>Glow Colour</name>
+    <variable>_Color</variable>
+    <description>Colour the glow is pushed toward when Tint Strength is above 0.</description>
+    <type>int_float4</type>
+    <property>color</property>
+    <value>16777215</value>
+  </parameter>
+
+  <parameter>
+    <name>Threshold</name>
+    <variable>_Threshold</variable>
+    <description>Only pixels brighter than this bleed.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.7</value>
+    <min>0</min>
+    <max>1</max>
+  </parameter>
+
+  <parameter>
+    <name>Intensity</name>
+    <variable>_Intensity</variable>
+    <description>How much light is added back.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.8</value>
+    <min>0</min>
+    <max>4</max>
+  </parameter>
+
+  <parameter>
+    <name>Radius</name>
+    <variable>_Radius</variable>
+    <description>How far the light spreads, in texels.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>4.0</value>
+    <min>1</min>
+    <max>64</max>
+  </parameter>
+
+  <parameter>
+    <name>Tint Strength</name>
+    <variable>_Tint</variable>
+    <description>Pushes the glow toward Glow Colour instead of the colour of the pixel that made it.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.0</value>
+    <min>0</min>
+    <max>1</max>
+  </parameter>
+</effect>

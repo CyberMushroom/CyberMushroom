@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<effect>
+  <name>Glow</name>
+  <description>A soft halo around the sprite's silhouette, drawn behind it. Unlike Bloom this does not care how bright the sprite is - a pitch black sprite still glows - so it works for magic, pickups and selection states.</description>
+  <author>CyberMushroom</author>
+  <copyright>Copyright (c) CyberMushroom</copyright>
+  <website>https://github.com/CyberMushroom/CyberMushroom</website>
+
+  <parameter>
+    <name>Glow Colour</name>
+    <variable>_Color</variable>
+    <description>Colour of the halo. Default is DMG 155,188,15.</description>
+    <type>int_float4</type>
+    <property>color</property>
+    <value>1031323</value>
+  </parameter>
+
+  <parameter>
+    <name>Radius</name>
+    <variable>_Radius</variable>
+    <description>How far the halo reaches, in texels.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>4.0</value>
+    <min>1</min>
+    <max>32</max>
+  </parameter>
+
+  <parameter>
+    <name>Strength</name>
+    <variable>_Strength</variable>
+    <description>Halo opacity. 0 turns it off.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>1.0</value>
+    <min>0</min>
+    <max>4</max>
+  </parameter>
+
+  <parameter>
+    <name>Falloff</name>
+    <variable>_Falloff</variable>
+    <description>Above 1 the halo hugs the sprite, below 1 it spreads out flat.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>1.0</value>
+    <min>0.1</min>
+    <max>4</max>
+  </parameter>
+
+  <sampler>
+    <index>0</index>
+    <filter>point</filter>
+    <addressU>clamp</addressU>
+    <addressV>clamp</addressV>
+  </sampler>
+</effect>

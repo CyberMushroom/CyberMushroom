@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<effect>
+  <name>Outline</name>
+  <description>Draws a border around the sprite's silhouette. The single most useful effect in a 2D game: it lifts a character off a busy background, marks a selected unit, and flashes an interactable.</description>
+  <author>CyberMushroom</author>
+  <copyright>Copyright (c) CyberMushroom</copyright>
+  <website>https://github.com/CyberMushroom/CyberMushroom</website>
+
+  <parameter>
+    <name>Colour</name>
+    <variable>_Color</variable>
+    <description>Outline colour.</description>
+    <type>int_float4</type>
+    <property>color</property>
+    <value>16777215</value>
+  </parameter>
+
+  <parameter>
+    <name>Thickness</name>
+    <variable>_Thickness</variable>
+    <description>Outline width in texels.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>1.0</value>
+    <min>0</min>
+    <max>16</max>
+  </parameter>
+
+  <parameter>
+    <name>Alpha</name>
+    <variable>_Alpha</variable>
+    <description>Outline opacity. 0 turns the outline off without removing the effect.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>1.0</value>
+    <min>0</min>
+    <max>1</max>
+  </parameter>
+
+  <parameter>
+    <name>Alpha Cutoff</name>
+    <variable>_Threshold</variable>
+    <description>How opaque a pixel has to be to count as part of the sprite. Lower it for soft-edged art.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.5</value>
+    <min>0</min>
+    <max>1</max>
+  </parameter>
+
+  <parameter>
+    <name>8-Way</name>
+    <variable>_Diagonal</variable>
+    <description>On checks the diagonals too, which keeps corners from being clipped. Off is the cheaper 4-way version.</description>
+    <type>bool</type>
+    <property>checkbox</property>
+    <value>1</value>
+  </parameter>
+
+  <parameter>
+    <name>Inside</name>
+    <variable>_Inside</variable>
+    <description>On draws the border just inside the silhouette instead of around it, so the sprite does not grow.</description>
+    <type>bool</type>
+    <property>checkbox</property>
+    <value>0</value>
+  </parameter>
+
+  <sampler>
+    <index>0</index>
+    <filter>point</filter>
+    <addressU>clamp</addressU>
+    <addressV>clamp</addressV>
+  </sampler>
+</effect>

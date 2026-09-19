@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<effect>
+  <name>Blur</name>
+  <description>A round, single-pass blur. Alpha-weighted, so blurring a sprite does not drag dark fringes out of its transparent edges the way a naive blur does.</description>
+  <author>CyberMushroom</author>
+  <copyright>Copyright (c) CyberMushroom</copyright>
+  <website>https://github.com/CyberMushroom/CyberMushroom</website>
+
+  <parameter>
+    <name>Radius</name>
+    <variable>_Radius</variable>
+    <description>Blur radius in texels.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>4.0</value>
+    <min>0</min>
+    <max>64</max>
+  </parameter>
+
+  <parameter>
+    <name>Quality</name>
+    <variable>_Quality</variable>
+    <description>Rings of samples: 1 is 9 taps and fine for small radii, 3 is 25 taps and stays smooth at large ones.</description>
+    <type>float</type>
+    <property>slider</property>
+    <value>2.0</value>
+    <min>1</min>
+    <max>3</max>
+  </parameter>
+
+  <parameter>
+    <name>Amount</name>
+    <variable>_Amount</variable>
+    <description>Blends the blurred result back over the sharp original.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>1.0</value>
+    <min>0</min>
+    <max>1</max>
+  </parameter>
+
+  <sampler>
+    <index>0</index>
+    <filter>linear</filter>
+    <addressU>clamp</addressU>
+    <addressV>clamp</addressV>
+  </sampler>
+</effect>

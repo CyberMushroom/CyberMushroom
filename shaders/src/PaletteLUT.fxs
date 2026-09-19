@@ -1,0 +1,37 @@
+// @name        Palette Ramp
+// @category    Retro
+// @target      ps_2_0
+// @description Re-colours by brightness through a palette strip you supply as
+// an image, instead of the four hard-coded stops Gradient Map gives you. Draw a
+// 1-pixel-tall strip of your palette, drop it in, and the whole game wears it.
+// @usage       Stack several palettes as rows in one image and animate Row to
+// cross the day/night/hurt palettes without loading anything.
+// @note        Set the Palette Ramp image's sampler to point filtering (the
+// generated .xml already does) or Fusion will blend between your palette
+// entries and hand you colours that are not in the palette.
+// @sampler     1 point clamp clamp
+// @param type=float var=_Columns name="Ramp Length" default=4.0 min=2 max=256 desc="How many colours across your strip is. Must match the image or the ends will be sampled wrong."
+// @param type=float var=_Rows    name="Ramp Rows"   default=1.0 min=1 max=64 desc="How many palettes are stacked vertically in the image."
+// @param type=float var=_Row     name="Row"         default=0.0 min=0 max=63 desc="Which row to read. Animate this to swap palettes."
+// @param type=float var=_Offset  name="Offset"      default=0.0 min=-1 max=1 desc="Slides every pixel along the ramp before it is looked up."
+// @param type=float var=_Contrast name="Contrast"   default=1.0 min=0 max=4 desc="Spreads the brightness range across the ramp."
+// @param type=float var=_Amount  name="Amount"      default=1.0 min=0 max=1 desc="Blends the re-coloured pixel back over the original."
+// @param type=image var=_Ramp    name="Palette Ramp" desc="The palette strip. Darkest colour on the left, lightest on the right."
+
+float4 fusion_main(in PS_INPUT In)
+{
+    float4 src = fusionTex(In, In.texCoord);
+
+    float luma = fusionLuma(src.rgb);
+    luma = saturate((luma - 0.5) * _Contrast + 0.5 + _Offset);
+
+    /* Land on the middle of a palette cell, not on the seam between two. */
+    float columns = max(_Columns, 2.0);
+    float rows = max(_Rows, 1.0);
+    float u = (floor(luma * (columns - 1.0) + 0.5) + 0.5) / columns;
+    float v = (floor(clamp(_Row, 0.0, rows - 1.0)) + 0.5) / rows;
+
+    float3 mapped = fusionImage_Ramp(float2(u, v)).rgb;
+    src.rgb = lerp(src.rgb, mapped, saturate(_Amount));
+    return src;
+}

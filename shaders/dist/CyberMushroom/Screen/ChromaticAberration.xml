@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<effect>
+  <name>Chromatic Aberration</name>
+  <description>Splits the red and blue channels apart, the way a cheap lens or a composite cable does. A pinch of it sells "screen", a lot of it sells "something is wrong with the machine".</description>
+  <author>CyberMushroom</author>
+  <copyright>Copyright (c) CyberMushroom</copyright>
+  <website>https://github.com/CyberMushroom/CyberMushroom</website>
+
+  <parameter>
+    <name>Strength</name>
+    <variable>_Strength</variable>
+    <description>How far apart the channels are pulled, in texels.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>1.0</value>
+    <min>0</min>
+    <max>32</max>
+  </parameter>
+
+  <parameter>
+    <name>Angle</name>
+    <variable>_Angle</variable>
+    <description>Direction of the split in degrees, used when Radial is off.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.0</value>
+    <min>0</min>
+    <max>360</max>
+  </parameter>
+
+  <parameter>
+    <name>Radial</name>
+    <variable>_Radial</variable>
+    <description>On splits outward from the centre so the edges of the screen suffer most, which is how a lens behaves. Off splits everything the same direction.</description>
+    <type>bool</type>
+    <property>checkbox</property>
+    <value>1</value>
+  </parameter>
+
+  <parameter>
+    <name>Centre Falloff</name>
+    <variable>_Falloff</variable>
+    <description>Radial only: how quickly the split fades out toward the middle of the image.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>1.0</value>
+    <min>0</min>
+    <max>4</max>
+  </parameter>
+</effect>

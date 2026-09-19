@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<effect>
+  <name>Wipe</name>
+  <description>A straight-edged wipe at any angle, with an optional coloured leading edge. The workhorse scene transition - put it on a full-screen object and animate Amount.</description>
+  <author>CyberMushroom</author>
+  <copyright>Copyright (c) CyberMushroom</copyright>
+  <website>https://github.com/CyberMushroom/CyberMushroom</website>
+
+  <parameter>
+    <name>Edge Colour</name>
+    <variable>_EdgeColor</variable>
+    <description>Colour of the band at the leading edge.</description>
+    <type>int_float4</type>
+    <property>color</property>
+    <value>16777215</value>
+  </parameter>
+
+  <parameter>
+    <name>Amount</name>
+    <variable>_Amount</variable>
+    <description>How far the wipe has travelled. Animate this.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.0</value>
+    <min>0</min>
+    <max>1</max>
+  </parameter>
+
+  <parameter>
+    <name>Angle</name>
+    <variable>_Angle</variable>
+    <description>Direction the wipe travels, in degrees.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.0</value>
+    <min>0</min>
+    <max>360</max>
+  </parameter>
+
+  <parameter>
+    <name>Softness</name>
+    <variable>_Softness</variable>
+    <description>How gradual the edge is. 0 is a hard line.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.02</value>
+    <min>0</min>
+    <max>1</max>
+  </parameter>
+
+  <parameter>
+    <name>Edge Width</name>
+    <variable>_Edge</variable>
+    <description>Width of the coloured leading band. 0 removes it.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.0</value>
+    <min>0</min>
+    <max>1</max>
+  </parameter>
+
+  <parameter>
+    <name>Reverse</name>
+    <variable>_Invert</variable>
+    <description>On wipes the object in instead of out.</description>
+    <type>bool</type>
+    <property>checkbox</property>
+    <value>0</value>
+  </parameter>
+</effect>

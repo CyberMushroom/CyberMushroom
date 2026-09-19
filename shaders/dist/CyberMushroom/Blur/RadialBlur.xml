@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<effect>
+  <name>Radial Blur</name>
+  <description>Blurs outward from a point, or around it. Zoom for a dash or a hit, spin for a dizzy spell or a spinning pickup.</description>
+  <author>CyberMushroom</author>
+  <copyright>Copyright (c) CyberMushroom</copyright>
+  <website>https://github.com/CyberMushroom/CyberMushroom</website>
+
+  <parameter>
+    <name>Centre X</name>
+    <variable>_CenterX</variable>
+    <description>Point the blur radiates from, across the object.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.5</value>
+    <min>-1</min>
+    <max>2</max>
+  </parameter>
+
+  <parameter>
+    <name>Centre Y</name>
+    <variable>_CenterY</variable>
+    <description>Point the blur radiates from, down the object.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.5</value>
+    <min>-1</min>
+    <max>2</max>
+  </parameter>
+
+  <parameter>
+    <name>Zoom</name>
+    <variable>_Zoom</variable>
+    <description>Smear toward or away from the centre. Negative pulls inward.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.1</value>
+    <min>-1</min>
+    <max>1</max>
+  </parameter>
+
+  <parameter>
+    <name>Spin</name>
+    <variable>_Spin</variable>
+    <description>Smear around the centre instead. Positive and negative spin opposite ways.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.0</value>
+    <min>-1</min>
+    <max>1</max>
+  </parameter>
+
+  <parameter>
+    <name>Clear Centre</name>
+    <variable>_Hole</variable>
+    <description>Keeps the middle sharp out to this radius, so a character at the centre of a dash stays readable.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.0</value>
+    <min>0</min>
+    <max>1</max>
+  </parameter>
+
+  <parameter>
+    <name>Amount</name>
+    <variable>_Amount</variable>
+    <description>Blends the blurred result back over the sharp original.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>1.0</value>
+    <min>0</min>
+    <max>1</max>
+  </parameter>
+
+  <sampler>
+    <index>0</index>
+    <filter>linear</filter>
+    <addressU>clamp</addressU>
+    <addressV>clamp</addressV>
+  </sampler>
+</effect>

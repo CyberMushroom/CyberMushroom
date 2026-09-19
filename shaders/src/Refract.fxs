@@ -1,0 +1,42 @@
+// @name        Refract
+// @category    Blend
+// @target      ps_2_0
+// @background  yes
+// @description Bends the background as it passes through the object, using the
+// object's own shading as the lens. Draw a bubble, a bottle, a heat pocket or a
+// pane of glass, apply this, and the world behind it warps.
+// @usage       Draw the lens shape with soft shading - the shader reads the
+// slope of the brightness, so a smooth dome bends more at its edges than in the
+// middle, exactly like real glass.
+// @note        Needs something drawn behind it, on a lower layer or earlier in
+// the same one.
+// @sampler     0 linear clamp clamp
+// @sampler     1 linear clamp clamp
+// @param type=color var=_Tint     name="Tint Colour" default=16777215 desc="Colour the refracted background is stained with."
+// @param type=float var=_Strength name="Strength"    default=16.0 min=-128 max=128 desc="How far the background is pushed, in texels. Negative bends the other way."
+// @param type=float var=_Zoom     name="Magnify"     default=0.0 min=-1 max=1 desc="Scales the background inside the lens. Positive magnifies, negative shrinks."
+// @param type=float var=_TintAmount name="Tint"      default=0.15 min=0 max=1 desc="How strongly the tint colour stains what shows through."
+// @param type=float var=_Keep     name="Keep Sprite" default=0.15 min=0 max=1 desc="How much of the object's own art stays visible on top of the refraction. 0 is invisible glass."
+
+float4 fusion_main(in PS_INPUT In)
+{
+    float2 texel = fusionTexel();
+    float4 src = fusionTex(In, In.texCoord);
+
+    /* The slope of the sprite's brightness stands in for a surface normal:
+       flat areas pass light straight through, slopes bend it. */
+    float left = fusionLuma(fusionTex(In, In.texCoord - float2(texel.x, 0.0)).rgb);
+    float right = fusionLuma(fusionTex(In, In.texCoord + float2(texel.x, 0.0)).rgb);
+    float up = fusionLuma(fusionTex(In, In.texCoord - float2(0.0, texel.y)).rgb);
+    float down = fusionLuma(fusionTex(In, In.texCoord + float2(0.0, texel.y)).rgb);
+
+    float2 slope = float2(right - left, down - up);
+    float2 uv = In.bgCoord + slope * _Strength * texel;
+    uv = (uv - 0.5) / max(1.0 + _Zoom, 0.01) + 0.5;
+
+    float4 bg = fusionBg(saturate(uv));
+    bg.rgb = lerp(bg.rgb, _Tint.rgb * fusionLuma(bg.rgb) * 2.0, saturate(_TintAmount));
+
+    float3 rgb = lerp(saturate(bg.rgb), src.rgb, saturate(_Keep));
+    return float4(rgb, src.a);
+}

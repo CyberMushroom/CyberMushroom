@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<effect>
+  <name>Threshold</name>
+  <description>Two colours, one cut-off. Everything brighter than the threshold becomes the light colour, everything darker becomes the dark one. A 1-bit look for title cards, silhouette puzzles and stark flash frames.</description>
+  <author>CyberMushroom</author>
+  <copyright>Copyright (c) CyberMushroom</copyright>
+  <website>https://github.com/CyberMushroom/CyberMushroom</website>
+
+  <parameter>
+    <name>Dark Colour</name>
+    <variable>_Dark</variable>
+    <description>Colour for pixels below the cut-off.</description>
+    <type>int_float4</type>
+    <property>color</property>
+    <value>997391</value>
+  </parameter>
+
+  <parameter>
+    <name>Light Colour</name>
+    <variable>_Light</variable>
+    <description>Colour for pixels above the cut-off.</description>
+    <type>int_float4</type>
+    <property>color</property>
+    <value>1031323</value>
+  </parameter>
+
+  <parameter>
+    <name>Cutoff</name>
+    <variable>_Cutoff</variable>
+    <description>The brightness that splits dark from light.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.5</value>
+    <min>0</min>
+    <max>1</max>
+  </parameter>
+
+  <parameter>
+    <name>Softness</name>
+    <variable>_Soft</variable>
+    <description>Width of the fade across the cut-off. 0 is a hard edge and will alias on a diagonal.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.02</value>
+    <min>0</min>
+    <max>1</max>
+  </parameter>
+
+  <parameter>
+    <name>Amount</name>
+    <variable>_Amount</variable>
+    <description>Blends the result back over the original.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>1.0</value>
+    <min>0</min>
+    <max>1</max>
+  </parameter>
+</effect>

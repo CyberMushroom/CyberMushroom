@@ -1,0 +1,26 @@
+// @name        Posterize
+// @category    Color
+// @target      ps_2_0
+// @description Snaps every channel to a fixed number of steps. Four levels is
+// roughly what an 8-bit console gave you; two is a woodcut. Pair it with Dither
+// if the banding gets ugly.
+// @usage       Drop Levels from 32 toward 2 over a second for a "signal
+// degrading" transition.
+// @param type=float var=_Levels name="Levels" default=4.0 min=2 max=32 desc="Steps per channel. 2 is one bit per channel, 4 gives the classic retro banding."
+// @param type=float var=_Amount name="Amount" default=1.0 min=0 max=1 desc="Blends the banded result back over the original."
+// @param type=bool  var=_Luma   name="Luminance Only" default=0 desc="On, only brightness is stepped and the hue stays smooth. Off, each channel is stepped on its own."
+
+float4 fusion_main(in PS_INPUT In)
+{
+    float4 src = fusionTex(In, In.texCoord);
+    float steps = max(2.0, floor(_Levels)) - 1.0;
+
+    float3 banded = floor(saturate(src.rgb) * steps + 0.5) / steps;
+
+    float luma = fusionLuma(src.rgb);
+    float stepped = floor(saturate(luma) * steps + 0.5) / steps;
+    float3 lumaBanded = src.rgb * (stepped / max(luma, 1.0e-4));
+
+    src.rgb = lerp(src.rgb, saturate(_Luma ? lumaBanded : banded), saturate(_Amount));
+    return src;
+}

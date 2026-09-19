@@ -1,0 +1,36 @@
+// @name        UV Transform
+// @category    Distort
+// @target      ps_2_0
+// @description Scrolls, scales and rotates the image inside the object without
+// moving the object. This is how you get endless parallax skies, conveyor
+// belts, flowing lava and spinning gears out of one static Active object.
+// @usage       Add a small amount to Scroll X every tick for a conveyor. Set
+// Wrap Mode to Wrap and the image tiles forever.
+// @param type=float var=_ScrollX name="Scroll X" default=0.0 min=-1000 max=1000 desc="Horizontal scroll, where 1 is the full width of the image."
+// @param type=float var=_ScrollY name="Scroll Y" default=0.0 min=-1000 max=1000 desc="Vertical scroll, where 1 is the full height."
+// @param type=float var=_ScaleX  name="Scale X"  default=1.0 min=0.01 max=64 desc="Horizontal zoom. Above 1 shows more of the image, below 1 zooms in."
+// @param type=float var=_ScaleY  name="Scale Y"  default=1.0 min=0.01 max=64 desc="Vertical zoom."
+// @param type=float var=_Angle   name="Angle"    default=0.0 min=-1440 max=1440 desc="Rotation in degrees around the pivot."
+// @param type=float var=_PivotX  name="Pivot X"  default=0.5 min=0 max=1 desc="Point the rotation and scaling happen around, across the object."
+// @param type=float var=_PivotY  name="Pivot Y"  default=0.5 min=0 max=1 desc="Point the rotation and scaling happen around, down the object."
+// @param type=int   var=_Wrap    name="Wrap Mode" default=0 min=0 max=2 prop=slider desc="0 wrap (tiles forever), 1 clamp (edge pixels smear), 2 clip (anything outside disappears)."
+
+float4 fusion_main(in PS_INPUT In)
+{
+    float2 pivot = float2(_PivotX, _PivotY);
+
+    float2 uv = In.texCoord - pivot;
+    uv = fusionRotate(uv, radians(_Angle));
+    uv *= float2(max(_ScaleX, 0.01), max(_ScaleY, 0.01));
+    uv += pivot + float2(_ScrollX, _ScrollY);
+
+    float2 inside = step(float2(0.0, 0.0), uv) * step(uv, float2(1.0, 1.0));
+    float2 sampleUV = (_Wrap == 0) ? frac(uv + 1000.0) : saturate(uv);
+
+    float4 src = fusionTex(In, sampleUV);
+    if (_Wrap == 2)
+    {
+        src *= inside.x * inside.y;
+    }
+    return src;
+}

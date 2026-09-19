@@ -1,0 +1,34 @@
+// @name        Iris Wipe
+// @category    Mask
+// @target      ps_2_0
+// @description The shape closing in around the hero at the end of a level.
+// Circle, diamond or square, centred anywhere, opening or closing.
+// @usage       Put a full-screen object filled with your darkest colour on the
+// top layer, apply this, turn Reverse on and animate Radius from 1.5 down to 0
+// to close the iris on the player. Track the player by animating Centre X and Y.
+// @param type=float var=_CenterX  name="Centre X" default=0.5 min=-1 max=2 desc="Centre of the shape across the object."
+// @param type=float var=_CenterY  name="Centre Y" default=0.5 min=-1 max=2 desc="Centre of the shape down the object."
+// @param type=float var=_Radius   name="Radius"   default=0.5 min=0 max=2 desc="Size of the shape, where 1 reaches the edge of the object. Animate this."
+// @param type=float var=_Softness name="Softness" default=0.01 min=0 max=1 desc="How soft the edge of the shape is. 0 is a hard edge."
+// @param type=int   var=_Shape    name="Shape"    default=0 min=0 max=2 prop=slider desc="0 circle, 1 diamond, 2 square."
+// @param type=bool  var=_Invert   name="Reverse"  default=0 desc="Off keeps the inside of the shape and hides the outside. On hides the inside, which is what you want on a full-screen cover object."
+// @param type=bool  var=_Square   name="Ignore Aspect" default=0 desc="On measures in texture coordinates, so the shape stretches with the object. Off keeps a circle round on a wide screen."
+
+float4 fusion_main(in PS_INPUT In)
+{
+    float4 src = fusionTex(In, In.texCoord);
+
+    float aspect = fPixelHeight / max(fPixelWidth, 1.0e-6);
+    float2 centred = (In.texCoord - float2(_CenterX, _CenterY)) * 2.0;
+    centred.x *= _Square ? 1.0 : aspect;
+
+    float dist = length(centred);
+    if (_Shape == 1) dist = abs(centred.x) + abs(centred.y);
+    if (_Shape == 2) dist = max(abs(centred.x), abs(centred.y));
+
+    float soft = max(_Softness, 1.0e-4);
+    float outside = smoothstep(_Radius - soft, _Radius + soft, dist);
+
+    src.a *= _Invert ? (1.0 - outside) : outside;
+    return src;
+}

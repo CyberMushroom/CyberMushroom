@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<effect>
+  <name>Wave</name>
+  <description>Runs a sine wave through the image. Underwater levels, heat shimmer, a wobbling menu, a flag - one shader, four jobs.</description>
+  <author>CyberMushroom</author>
+  <copyright>Copyright (c) CyberMushroom</copyright>
+  <website>https://github.com/CyberMushroom/CyberMushroom</website>
+
+  <parameter>
+    <name>Amplitude</name>
+    <variable>_Amplitude</variable>
+    <description>How far pixels move, in texels.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>2.0</value>
+    <min>0</min>
+    <max>64</max>
+  </parameter>
+
+  <parameter>
+    <name>Frequency</name>
+    <variable>_Frequency</variable>
+    <description>How many waves fit across the object.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>3.0</value>
+    <min>0</min>
+    <max>32</max>
+  </parameter>
+
+  <parameter>
+    <name>Speed</name>
+    <variable>_Speed</variable>
+    <description>How fast the wave travels when Time is animated.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>2.0</value>
+    <min>-32</min>
+    <max>32</max>
+  </parameter>
+
+  <parameter>
+    <name>Time</name>
+    <variable>_Time</variable>
+    <description>Animate this to move the wave.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.0</value>
+    <min>0</min>
+    <max>100000</max>
+  </parameter>
+
+  <parameter>
+    <name>Vertical</name>
+    <variable>_Vertical</variable>
+    <description>Off pushes pixels sideways (a flag or a heat wobble). On pushes them up and down (a wave rolling across water).</description>
+    <type>bool</type>
+    <property>checkbox</property>
+    <value>0</value>
+  </parameter>
+
+  <parameter>
+    <name>Clip Edges</name>
+    <variable>_Clip</variable>
+    <description>On hides pixels pushed outside the object's image. Off smears the edge pixels instead, which suits a full-screen wobble.</description>
+    <type>bool</type>
+    <property>checkbox</property>
+    <value>1</value>
+  </parameter>
+</effect>

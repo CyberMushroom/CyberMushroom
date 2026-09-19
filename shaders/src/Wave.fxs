@@ -1,0 +1,33 @@
+// @name        Wave
+// @category    Distort
+// @target      ps_2_0
+// @description Runs a sine wave through the image. Underwater levels, heat
+// shimmer, a wobbling menu, a flag - one shader, four jobs.
+// @usage       Add a little to Time every tick and the wave travels. Leave Time
+// alone and you get a fixed bend.
+// @param type=float var=_Amplitude name="Amplitude" default=2.0 min=0 max=64 desc="How far pixels move, in texels."
+// @param type=float var=_Frequency name="Frequency" default=3.0 min=0 max=32 desc="How many waves fit across the object."
+// @param type=float var=_Speed     name="Speed"     default=2.0 min=-32 max=32 desc="How fast the wave travels when Time is animated."
+// @param type=float var=_Time      name="Time"      default=0.0 min=0 max=100000 desc="Animate this to move the wave."
+// @param type=bool  var=_Vertical  name="Vertical"  default=0 desc="Off pushes pixels sideways (a flag or a heat wobble). On pushes them up and down (a wave rolling across water)."
+// @param type=bool  var=_Clip      name="Clip Edges" default=1 desc="On hides pixels pushed outside the object's image. Off smears the edge pixels instead, which suits a full-screen wobble."
+
+float4 fusion_main(in PS_INPUT In)
+{
+    float2 texel = fusionTexel();
+    float2 uv = In.texCoord;
+
+    float along = _Vertical ? uv.x : uv.y;
+    float phase = along * _Frequency * 6.2831853 + _Time * _Speed;
+    float offset = sin(phase) * _Amplitude;
+
+    uv += _Vertical ? float2(0.0, offset * texel.y) : float2(offset * texel.x, 0.0);
+
+    float4 src = fusionTex(In, saturate(uv));
+    if (_Clip)
+    {
+        float2 inside = step(float2(0.0, 0.0), uv) * step(uv, float2(1.0, 1.0));
+        src *= inside.x * inside.y;
+    }
+    return src;
+}

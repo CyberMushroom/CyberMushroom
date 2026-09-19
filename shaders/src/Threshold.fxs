@@ -1,0 +1,24 @@
+// @name        Threshold
+// @category    Color
+// @target      ps_2_0
+// @description Two colours, one cut-off. Everything brighter than the threshold
+// becomes the light colour, everything darker becomes the dark one. A 1-bit
+// look for title cards, silhouette puzzles and stark flash frames.
+// @usage       Sweep Cutoff from 0 to 1 to dissolve an image from all-light to
+// all-dark without touching its alpha.
+// @param type=color var=_Dark   name="Dark Colour"  default=997391 desc="Colour for pixels below the cut-off."
+// @param type=color var=_Light  name="Light Colour" default=1031323 desc="Colour for pixels above the cut-off."
+// @param type=float var=_Cutoff name="Cutoff"       default=0.5 min=0 max=1 desc="The brightness that splits dark from light."
+// @param type=float var=_Soft   name="Softness"     default=0.02 min=0 max=1 desc="Width of the fade across the cut-off. 0 is a hard edge and will alias on a diagonal."
+// @param type=float var=_Amount name="Amount"       default=1.0 min=0 max=1 desc="Blends the result back over the original."
+
+float4 fusion_main(in PS_INPUT In)
+{
+    float4 src = fusionTex(In, In.texCoord);
+
+    float luma = fusionLuma(src.rgb);
+    float mask = smoothstep(_Cutoff - _Soft * 0.5, _Cutoff + _Soft * 0.5 + 1.0e-5, luma);
+
+    src.rgb = lerp(src.rgb, lerp(_Dark.rgb, _Light.rgb, mask), saturate(_Amount));
+    return src;
+}
