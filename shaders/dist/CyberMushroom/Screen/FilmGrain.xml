@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<effect>
+  <name>Film Grain</name>
+  <description>Per-pixel noise over the picture. Breaks up flat areas, hides banding left by a small palette, and gives a still screen something to do.</description>
+  <author>CyberMushroom</author>
+  <copyright>Copyright (c) CyberMushroom</copyright>
+  <website>https://github.com/CyberMushroom/CyberMushroom</website>
+
+  <parameter>
+    <name>Amount</name>
+    <variable>_Amount</variable>
+    <description>Strength of the noise.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.1</value>
+    <min>0</min>
+    <max>1</max>
+  </parameter>
+
+  <parameter>
+    <name>Time</name>
+    <variable>_Time</variable>
+    <description>Animate this or the grain will not move.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.0</value>
+    <min>0</min>
+    <max>100000</max>
+  </parameter>
+
+  <parameter>
+    <name>Grain Size</name>
+    <variable>_Scale</variable>
+    <description>Size of one grain in texels.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>1.0</value>
+    <min>1</min>
+    <max>16</max>
+  </parameter>
+
+  <parameter>
+    <name>Shadows Only</name>
+    <variable>_Shadows</variable>
+    <description>On keeps the grain out of the highlights, which is how real film behaves and stops bright sprites looking dirty.</description>
+    <type>bool</type>
+    <property>checkbox</property>
+    <value>0</value>
+  </parameter>
+
+  <parameter>
+    <name>Coloured</name>
+    <variable>_Colour</variable>
+    <description>On gives each channel its own noise. Off is monochrome grain, which is usually what you want on a limited palette.</description>
+    <type>bool</type>
+    <property>checkbox</property>
+    <value>0</value>
+  </parameter>
+</effect>

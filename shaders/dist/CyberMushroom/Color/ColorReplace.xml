@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<effect>
+  <name>Colour Replace</name>
+  <description>Swaps one colour in a sprite for another, within a tolerance. The palette-swap workhorse: one mushroom sheet, every mushroom in the game.</description>
+  <author>CyberMushroom</author>
+  <copyright>Copyright (c) CyberMushroom</copyright>
+  <website>https://github.com/CyberMushroom/CyberMushroom</website>
+
+  <parameter>
+    <name>Find Colour</name>
+    <variable>_From</variable>
+    <description>The colour to look for. Pick it with the eyedropper from your actual sprite; anti-aliased edges will need some tolerance.</description>
+    <type>int_float4</type>
+    <property>color</property>
+    <value>255</value>
+  </parameter>
+
+  <parameter>
+    <name>Replace With</name>
+    <variable>_To</variable>
+    <description>The colour it becomes.</description>
+    <type>int_float4</type>
+    <property>color</property>
+    <value>16711680</value>
+  </parameter>
+
+  <parameter>
+    <name>Tolerance</name>
+    <variable>_Tolerance</variable>
+    <description>How far a pixel can sit from Find Colour and still count. 0 is an exact match.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.1</value>
+    <min>0</min>
+    <max>1.8</max>
+  </parameter>
+
+  <parameter>
+    <name>Edge Softness</name>
+    <variable>_Softness</variable>
+    <description>Fades the swap out past the tolerance so anti-aliased edges do not turn into a hard rim.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.05</value>
+    <min>0</min>
+    <max>1</max>
+  </parameter>
+
+  <parameter>
+    <name>Keep Shading</name>
+    <variable>_KeepShade</variable>
+    <description>On, the replacement keeps the original pixel's light and shade, which holds up on shaded sprites.</description>
+    <type>bool</type>
+    <property>checkbox</property>
+    <value>0</value>
+  </parameter>
+</effect>

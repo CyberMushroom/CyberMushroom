@@ -1,0 +1,47 @@
+// @name        Motion Blur
+// @category    Blur
+// @target      ps_3_0
+// @description Smears the image along a line. Point it the way the object is
+// travelling and a fast sprite reads as fast instead of teleporting between
+// frames.
+// @usage       Set Angle from the object's own direction and drive Distance
+// from its speed, so the smear grows with the movement.
+// @sampler     0 linear clamp clamp
+// @param type=float var=_Distance name="Distance" default=8.0 min=0 max=128 desc="Length of the smear in texels."
+// @param type=float var=_Angle    name="Angle"    default=0.0 min=0 max=360 desc="Direction of the smear in degrees. 0 is to the right, 90 is up."
+// @param type=bool  var=_Trail    name="Trailing" default=1 desc="On smears only behind the object, like a real trail. Off smears both ways, which is what a camera shutter does."
+// @param type=float var=_Amount   name="Amount"   default=1.0 min=0 max=1 desc="Blends the smear back over the sharp original."
+
+float4 fusion_main(in PS_INPUT In)
+{
+    float4 src = fusionTex(In, In.texCoord);
+    float2 texel = fusionTexel();
+
+    float2 dir = fusionRotate(float2(1.0, 0.0), radians(_Angle));
+    dir.y = -dir.y;
+
+    float4 sum = float4(0.0, 0.0, 0.0, 0.0);
+    float weight = 0.0;
+
+    const int TAPS = 12;
+
+    [unroll]
+    for (int i = 0; i < TAPS; i++)
+    {
+        float t = (float)i / (float)(TAPS - 1);
+        float offset = _Trail ? -t : (t - 0.5) * 2.0;
+
+        float4 tap = fusionTex(In, In.texCoord + dir * offset * _Distance * texel);
+        /* Taps nearest the object count most, so the head of the streak stays
+           solid and the tail fades. */
+        float w = _Trail ? (1.0 - t * 0.85) : 1.0;
+
+        sum += float4(tap.rgb * tap.a, tap.a) * w;
+        weight += w;
+    }
+
+    sum /= weight;
+    float4 blurred = float4(sum.rgb / max(sum.a, 1.0e-5), sum.a);
+
+    return lerp(src, blurred, saturate(_Amount));
+}

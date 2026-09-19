@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<effect>
+  <name>Shockwave</name>
+  <description>An expanding ring that bends whatever it passes over. The explosion effect: pair it with a white flash and a screen shake and a small hit turns into an event.</description>
+  <author>CyberMushroom</author>
+  <copyright>Copyright (c) CyberMushroom</copyright>
+  <website>https://github.com/CyberMushroom/CyberMushroom</website>
+
+  <parameter>
+    <name>Centre X</name>
+    <variable>_CenterX</variable>
+    <description>Centre of the ring across the object, 0 is the left edge and 1 the right.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.5</value>
+    <min>0</min>
+    <max>1</max>
+  </parameter>
+
+  <parameter>
+    <name>Centre Y</name>
+    <variable>_CenterY</variable>
+    <description>Centre of the ring down the object.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.5</value>
+    <min>0</min>
+    <max>1</max>
+  </parameter>
+
+  <parameter>
+    <name>Radius</name>
+    <variable>_Radius</variable>
+    <description>Current size of the ring, where 1 is half the object's width. Animate this.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.3</value>
+    <min>0</min>
+    <max>2</max>
+  </parameter>
+
+  <parameter>
+    <name>Ring Width</name>
+    <variable>_Width</variable>
+    <description>How thick the disturbed band is.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.1</value>
+    <min>0.01</min>
+    <max>1</max>
+  </parameter>
+
+  <parameter>
+    <name>Strength</name>
+    <variable>_Strength</variable>
+    <description>How far the ring pushes pixels, in texels. Negative pulls inward.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>8.0</value>
+    <min>-64</min>
+    <max>64</max>
+  </parameter>
+
+  <parameter>
+    <name>Highlight</name>
+    <variable>_Highlight</variable>
+    <description>Brightens the crest of the ring so it reads even against flat colour.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.2</value>
+    <min>0</min>
+    <max>2</max>
+  </parameter>
+</effect>

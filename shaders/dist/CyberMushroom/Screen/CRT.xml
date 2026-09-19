@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<effect>
+  <name>CRT</name>
+  <description>A whole tube in one pass: barrel curvature, scanlines, a shadow mask and a vignette, with the area outside the glass blacked out. Everything can be dialled to zero, so you can keep just the parts you want.</description>
+  <author>CyberMushroom</author>
+  <copyright>Copyright (c) CyberMushroom</copyright>
+  <website>https://github.com/CyberMushroom/CyberMushroom</website>
+
+  <parameter>
+    <name>Bezel Colour</name>
+    <variable>_Bezel</variable>
+    <description>What shows outside the curved glass.</description>
+    <type>int_float4</type>
+    <property>color</property>
+    <value>0</value>
+  </parameter>
+
+  <parameter>
+    <name>Curvature</name>
+    <variable>_Curve</variable>
+    <description>How much the picture bows outward. 0 is a flat panel.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.15</value>
+    <min>0</min>
+    <max>1</max>
+  </parameter>
+
+  <parameter>
+    <name>Scanlines</name>
+    <variable>_Scanlines</variable>
+    <description>Strength of the horizontal scanlines.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.3</value>
+    <min>0</min>
+    <max>1</max>
+  </parameter>
+
+  <parameter>
+    <name>Line Spacing</name>
+    <variable>_Period</variable>
+    <description>Texels from one scanline to the next.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>2.0</value>
+    <min>1</min>
+    <max>16</max>
+  </parameter>
+
+  <parameter>
+    <name>Shadow Mask</name>
+    <variable>_Mask</variable>
+    <description>Strength of the RGB stripe mask. Only visible if the image is drawn at 3 or more screen pixels per texel.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.2</value>
+    <min>0</min>
+    <max>1</max>
+  </parameter>
+
+  <parameter>
+    <name>Vignette</name>
+    <variable>_Vignette</variable>
+    <description>Darkening toward the corners.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.3</value>
+    <min>0</min>
+    <max>1</max>
+  </parameter>
+
+  <parameter>
+    <name>Brightness</name>
+    <variable>_Brightness</variable>
+    <description>Lifts the picture back up - scanlines and mask both cost light.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>1.15</value>
+    <min>0</min>
+    <max>3</max>
+  </parameter>
+</effect>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<effect>
+  <name>Motion Blur</name>
+  <description>Smears the image along a line. Point it the way the object is travelling and a fast sprite reads as fast instead of teleporting between frames.</description>
+  <author>CyberMushroom</author>
+  <copyright>Copyright (c) CyberMushroom</copyright>
+  <website>https://github.com/CyberMushroom/CyberMushroom</website>
+
+  <parameter>
+    <name>Distance</name>
+    <variable>_Distance</variable>
+    <description>Length of the smear in texels.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>8.0</value>
+    <min>0</min>
+    <max>128</max>
+  </parameter>
+
+  <parameter>
+    <name>Angle</name>
+    <variable>_Angle</variable>
+    <description>Direction of the smear in degrees. 0 is to the right, 90 is up.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.0</value>
+    <min>0</min>
+    <max>360</max>
+  </parameter>
+
+  <parameter>
+    <name>Trailing</name>
+    <variable>_Trail</variable>
+    <description>On smears only behind the object, like a real trail. Off smears both ways, which is what a camera shutter does.</description>
+    <type>bool</type>
+    <property>checkbox</property>
+    <value>1</value>
+  </parameter>
+
+  <parameter>
+    <name>Amount</name>
+    <variable>_Amount</variable>
+    <description>Blends the smear back over the sharp original.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>1.0</value>
+    <min>0</min>
+    <max>1</max>
+  </parameter>
+
+  <sampler>
+    <index>0</index>
+    <filter>linear</filter>
+    <addressU>clamp</addressU>
+    <addressV>clamp</addressV>
+  </sampler>
+</effect>

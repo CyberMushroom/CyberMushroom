@@ -1,0 +1,29 @@
+// @name        Vignette
+// @category    Screen
+// @target      ps_2_0
+// @description Darkens the edges so the eye goes to the middle. Subtle at 0.3,
+// a torch-lit cave at 0.9.
+// @usage       Apply to a layer. Pull Radius down as the player's health drops
+// for a tunnel-vision effect.
+// @param type=color var=_Color     name="Edge Colour" default=0 desc="What the edges fade toward. Black is the usual answer; the DMG darkest green keeps it on palette."
+// @param type=float var=_Radius    name="Radius"      default=0.75 min=0 max=2 desc="How far from the centre the darkening starts."
+// @param type=float var=_Softness  name="Softness"    default=0.5 min=0.01 max=2 desc="How gradually it falls off."
+// @param type=float var=_Amount    name="Amount"      default=0.6 min=0 max=1 desc="Overall strength."
+// @param type=float var=_Roundness name="Roundness"   default=1.0 min=0 max=1 desc="1 is a circle, 0 follows the shape of the object so a wide screen gets a wide vignette."
+
+float4 fusion_main(in PS_INPUT In)
+{
+    float4 src = fusionTex(In, In.texCoord);
+
+    float2 centred = (In.texCoord - 0.5) * 2.0;
+    /* fPixelWidth/fPixelHeight give the texture's shape, which is what lets
+       the vignette follow a wide frame instead of always being a circle. */
+    float aspect = fPixelHeight / max(fPixelWidth, 1.0e-6);
+    centred.x *= lerp(1.0, aspect, saturate(_Roundness));
+
+    float dist = length(centred);
+    float shade = smoothstep(_Radius, _Radius + max(_Softness, 0.01), dist);
+
+    src.rgb = lerp(src.rgb, _Color.rgb, shade * saturate(_Amount));
+    return src;
+}

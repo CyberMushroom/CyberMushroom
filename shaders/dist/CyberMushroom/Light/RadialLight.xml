@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<effect>
+  <name>Radial Light</name>
+  <description>Turns a plain rectangle into a light: a soft radial pool of colour, or - with Invert on - a sheet of darkness with a hole cut in it. Two objects and this shader give you a whole lighting system without an extension.</description>
+  <author>CyberMushroom</author>
+  <copyright>Copyright (c) CyberMushroom</copyright>
+  <website>https://github.com/CyberMushroom/CyberMushroom</website>
+
+  <parameter>
+    <name>Colour</name>
+    <variable>_Color</variable>
+    <description>Light colour with Invert off, darkness colour with it on.</description>
+    <type>int_float4</type>
+    <property>color</property>
+    <value>16777215</value>
+  </parameter>
+
+  <parameter>
+    <name>Centre X</name>
+    <variable>_CenterX</variable>
+    <description>Centre of the light across the object.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.5</value>
+    <min>-1</min>
+    <max>2</max>
+  </parameter>
+
+  <parameter>
+    <name>Centre Y</name>
+    <variable>_CenterY</variable>
+    <description>Centre of the light down the object.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.5</value>
+    <min>-1</min>
+    <max>2</max>
+  </parameter>
+
+  <parameter>
+    <name>Radius</name>
+    <variable>_Radius</variable>
+    <description>How far the light reaches, where 1 is the edge of the object.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.5</value>
+    <min>0</min>
+    <max>2</max>
+  </parameter>
+
+  <parameter>
+    <name>Falloff</name>
+    <variable>_Falloff</variable>
+    <description>How quickly it fades. 1 is a straight ramp, higher values keep a bright core with a fast edge.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>2.0</value>
+    <min>0.1</min>
+    <max>8</max>
+  </parameter>
+
+  <parameter>
+    <name>Intensity</name>
+    <variable>_Intensity</variable>
+    <description>Overall strength.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>1.0</value>
+    <min>0</min>
+    <max>4</max>
+  </parameter>
+
+  <parameter>
+    <name>Banding</name>
+    <variable>_Steps</variable>
+    <description>Quantises the falloff into this many bands, which keeps a soft light from looking out of place against pixel art. 0 is smooth.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.0</value>
+    <min>0</min>
+    <max>16</max>
+  </parameter>
+
+  <parameter>
+    <name>Invert</name>
+    <variable>_Invert</variable>
+    <description>Off draws the light. On draws darkness everywhere except the light, so the object becomes a shadow sheet with a hole in it.</description>
+    <type>bool</type>
+    <property>checkbox</property>
+    <value>0</value>
+  </parameter>
+
+  <parameter>
+    <name>Ignore Aspect</name>
+    <variable>_Square</variable>
+    <description>On lets the light stretch with the object instead of staying round.</description>
+    <type>bool</type>
+    <property>checkbox</property>
+    <value>0</value>
+  </parameter>
+</effect>

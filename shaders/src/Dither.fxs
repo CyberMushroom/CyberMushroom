@@ -1,0 +1,32 @@
+// @name        Dither
+// @category    Retro
+// @target      ps_2_0
+// @description Ordered (Bayer) dithering with an adjustable number of levels.
+// Where Posterize bands, this one trades banding for a woven pattern, the way
+// an artist fakes a gradient with two colours.
+// @usage       Leave Levels at 4 and Amount at 1 for a period-correct look;
+// raise Levels to 8 or 16 to keep more shading while the pattern still shows.
+// @param type=float var=_Levels name="Levels"  default=4.0 min=2 max=32 desc="Steps per channel after dithering. 2 is one bit per channel."
+// @param type=float var=_Amount name="Dither Strength" default=1.0 min=0 max=1 desc="0 quantises with hard bands, 1 dithers fully."
+// @param type=float var=_Scale  name="Pattern Scale"   default=1.0 min=1 max=8 desc="Size of one dither cell in texels. Raise it if the game is drawn small and scaled up."
+// @param type=bool  var=_Coarse name="Coarse Pattern"  default=0 desc="On uses a 2x2 matrix, off uses 4x4."
+// @param type=bool  var=_Luma   name="Luminance Only"  default=0 desc="On dithers brightness and keeps the hue smooth. Off dithers each channel, which is what a real indexed palette does."
+
+float4 fusion_main(in PS_INPUT In)
+{
+    float4 src = fusionTex(In, In.texCoord);
+
+    float steps = max(2.0, floor(_Levels)) - 1.0;
+    float2 pixel = In.texCoord / fusionTexel() / max(_Scale, 1.0);
+    float threshold = (_Coarse ? fusionBayer2(pixel) : fusionBayer4(pixel)) - 0.5;
+    float offset = threshold * _Amount / steps;
+
+    float3 perChannel = floor(saturate(src.rgb + offset) * steps + 0.5) / steps;
+
+    float luma = fusionLuma(src.rgb);
+    float stepped = floor(saturate(luma + offset) * steps + 0.5) / steps;
+    float3 lumaOnly = src.rgb * (stepped / max(luma, 1.0e-4));
+
+    src.rgb = saturate(_Luma ? lumaOnly : perChannel);
+    return src;
+}

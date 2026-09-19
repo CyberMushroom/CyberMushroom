@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<effect>
+  <name>DMG Palette</name>
+  <description>Crushes anything you point it at down to four tones - the original Game Boy screen, by default the same 155/188/15 greens the HUD assets in this repo are drawn on. Optional ordered dithering buys back the gradients four colours cannot hold.</description>
+  <author>CyberMushroom</author>
+  <copyright>Copyright (c) CyberMushroom</copyright>
+  <website>https://github.com/CyberMushroom/CyberMushroom</website>
+
+  <parameter>
+    <name>Shade 1 (darkest)</name>
+    <variable>_Shade0</variable>
+    <description>Darkest of the four tones. Default is DMG 15,56,15.</description>
+    <type>int_float4</type>
+    <property>color</property>
+    <value>997391</value>
+  </parameter>
+
+  <parameter>
+    <name>Shade 2</name>
+    <variable>_Shade1</variable>
+    <description>Dark midtone. Default is DMG 48,98,48.</description>
+    <type>int_float4</type>
+    <property>color</property>
+    <value>3170864</value>
+  </parameter>
+
+  <parameter>
+    <name>Shade 3</name>
+    <variable>_Shade2</variable>
+    <description>Light midtone. Default is DMG 139,172,15.</description>
+    <type>int_float4</type>
+    <property>color</property>
+    <value>1027211</value>
+  </parameter>
+
+  <parameter>
+    <name>Shade 4 (lightest)</name>
+    <variable>_Shade3</variable>
+    <description>Lightest of the four tones. Default is DMG 155,188,15.</description>
+    <type>int_float4</type>
+    <property>color</property>
+    <value>1031323</value>
+  </parameter>
+
+  <parameter>
+    <name>Brightness</name>
+    <variable>_Brightness</variable>
+    <description>Shifts everything up or down the four tones before quantising. Use it to fade a scene to black or white through the palette.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.0</value>
+    <min>-1</min>
+    <max>1</max>
+  </parameter>
+
+  <parameter>
+    <name>Contrast</name>
+    <variable>_Contrast</variable>
+    <description>Spreads or squeezes the brightness range before quantising.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>1.0</value>
+    <min>0</min>
+    <max>4</max>
+  </parameter>
+
+  <parameter>
+    <name>Dither</name>
+    <variable>_Dither</variable>
+    <description>0 is hard banding, 1 is full ordered dithering. Around 0.6 reads as shading rather than noise.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.0</value>
+    <min>0</min>
+    <max>1</max>
+  </parameter>
+
+  <parameter>
+    <name>Coarse Dither</name>
+    <variable>_Coarse</variable>
+    <description>On uses a chunky 2x2 pattern, off uses a finer 4x4. Coarse holds up better once the game is scaled up on a big screen.</description>
+    <type>bool</type>
+    <property>checkbox</property>
+    <value>0</value>
+  </parameter>
+
+  <parameter>
+    <name>Amount</name>
+    <variable>_Amount</variable>
+    <description>Blends the palettised image back over the original, for fading the effect in.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>1.0</value>
+    <min>0</min>
+    <max>1</max>
+  </parameter>
+</effect>

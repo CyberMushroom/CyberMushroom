@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<effect>
+  <name>Grayscale</name>
+  <description>Drains the colour out of a sprite or a whole layer. Four weightings, because "grey" is not one thing: Rec.601 luminance is what your eye reads, plain average is what most pixel art was drawn against.</description>
+  <author>CyberMushroom</author>
+  <copyright>Copyright (c) CyberMushroom</copyright>
+  <website>https://github.com/CyberMushroom/CyberMushroom</website>
+
+  <parameter>
+    <name>Amount</name>
+    <variable>_Amount</variable>
+    <description>0 is the original, 1 is fully grey.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>1.0</value>
+    <min>0</min>
+    <max>1</max>
+  </parameter>
+
+  <parameter>
+    <name>Mode</name>
+    <variable>_Mode</variable>
+    <description>0 luminance (Rec.601), 1 flat average, 2 lightness (max and min averaged), 3 brightest channel.</description>
+    <type>int</type>
+    <property>slider</property>
+    <value>0</value>
+    <min>0</min>
+    <max>3</max>
+  </parameter>
+</effect>

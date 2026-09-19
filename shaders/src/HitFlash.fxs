@@ -1,0 +1,24 @@
+// @name        Hit Flash
+// @category    Color
+// @target      ps_2_0
+// @description The damage flash. Drives the sprite to a solid colour and back
+// without touching its silhouette, so a hit reads instantly even at 160x144.
+// @usage       On hit, set Amount to 1 and subtract ~0.15 from it every tick
+// until it reaches 0. Six frames is about right for a pixel game.
+// @param type=color var=_Color    name="Flash Colour" default=16777215 desc="Colour the sprite flashes to. White for a generic hit, red for damage taken, dark green to read on a DMG screen."
+// @param type=float var=_Amount   name="Amount"       default=1.0 min=0 max=1 desc="How far through the flash you are. Animate this, leave everything else alone."
+// @param type=bool  var=_Additive name="Additive"     default=0 desc="On, the colour is added on top so bright pixels blow out. Off, the sprite is blended toward the colour."
+// @param type=float var=_Fade     name="Alpha Fade"   default=0.0 min=0 max=1 desc="Fades the sprite out as it flashes. Handy for death pops: run Amount and this together."
+
+float4 fusion_main(in PS_INPUT In)
+{
+    float4 src = fusionTex(In, In.texCoord);
+    float amount = saturate(_Amount);
+
+    float3 blended = lerp(src.rgb, _Color.rgb, amount);
+    float3 added = src.rgb + _Color.rgb * amount;
+
+    src.rgb = saturate(_Additive ? added : blended);
+    src.a *= 1.0 - saturate(_Fade) * amount;
+    return src;
+}

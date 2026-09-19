@@ -1,0 +1,31 @@
+// @name        Gradient Map
+// @category    Color
+// @target      ps_2_0
+// @description Throws away the hue and re-colours the sprite by brightness
+// across four stops. This is how you get a whole scene onto one palette in a
+// single pass: the defaults are already the DMG greens, darkest to lightest.
+// @usage       Animate Offset to make a scene sink toward its dark stop for a
+// dusk or damage state.
+// @param type=color var=_Stop0  name="Stop 1 (darkest)" default=997391 desc="Colour for the darkest pixels. Default is DMG 15,56,15."
+// @param type=color var=_Stop1  name="Stop 2"           default=3170864 desc="Colour for the dark midtones. Default is DMG 48,98,48."
+// @param type=color var=_Stop2  name="Stop 3"           default=1027211 desc="Colour for the light midtones. Default is DMG 139,172,15."
+// @param type=color var=_Stop3  name="Stop 4 (lightest)" default=1031323 desc="Colour for the brightest pixels. Default is DMG 155,188,15."
+// @param type=float var=_Offset name="Offset"           default=0.0 min=-1 max=1 desc="Slides every pixel up or down the ramp. Negative darkens the whole image."
+// @param type=float var=_Contrast name="Contrast"       default=1.0 min=0 max=4 desc="Widens or narrows the brightness range before it hits the ramp."
+// @param type=float var=_Amount name="Amount"           default=1.0 min=0 max=1 desc="Blends the mapped colour back over the original."
+
+float4 fusion_main(in PS_INPUT In)
+{
+    float4 src = fusionTex(In, In.texCoord);
+
+    float luma = fusionLuma(src.rgb);
+    luma = saturate((luma - 0.5) * _Contrast + 0.5 + _Offset);
+
+    float t = luma * 3.0;
+    float3 ramp = lerp(_Stop0.rgb, _Stop1.rgb, saturate(t));
+    ramp = lerp(ramp, _Stop2.rgb, saturate(t - 1.0));
+    ramp = lerp(ramp, _Stop3.rgb, saturate(t - 2.0));
+
+    src.rgb = lerp(src.rgb, ramp, saturate(_Amount));
+    return src;
+}

@@ -1,0 +1,60 @@
+// @name        Blur
+// @category    Blur
+// @target      ps_3_0
+// @description A round, single-pass blur. Alpha-weighted, so blurring a sprite
+// does not drag dark fringes out of its transparent edges the way a naive blur
+// does.
+// @usage       Blur a copy of the background behind a pause menu, or ramp
+// Radius up on a layer to pull focus.
+// @note        An object can only blur its own image, so the blur stops at the
+// edge of the sprite. On a layer it has the whole frame to work with.
+// @sampler     0 linear clamp clamp
+// @param type=float var=_Radius  name="Radius"  default=4.0 min=0 max=64 desc="Blur radius in texels."
+// @param type=float var=_Quality name="Quality" default=2.0 min=1 max=3 prop=slider desc="Rings of samples: 1 is 9 taps and fine for small radii, 3 is 25 taps and stays smooth at large ones."
+// @param type=float var=_Amount  name="Amount"  default=1.0 min=0 max=1 desc="Blends the blurred result back over the sharp original."
+
+float4 fusion_main(in PS_INPUT In)
+{
+    float4 src = fusionTex(In, In.texCoord);
+    float2 texel = fusionTexel();
+
+    float rings = clamp(floor(_Quality), 1.0, 3.0);
+
+    float4 sum = float4(src.rgb * src.a, src.a);
+    float weight = 1.0;
+
+    const int DIRECTIONS = 8;
+    const int MAX_RINGS = 3;
+
+    [unroll]
+    for (int r = 1; r <= MAX_RINGS; r++)
+    {
+        float spread = (float)r / rings;
+        /* Rings past the chosen quality are sampled but weighted to nothing,
+           which keeps the loop free of branches the old compilers dislike. */
+        float active = step((float)r, rings);
+
+        [unroll]
+        for (int i = 0; i < DIRECTIONS; i++)
+        {
+            /* Offset every ring by half a step so the taps spiral instead of
+               lining up into spokes. */
+            float angle = (6.2831853 / (float)DIRECTIONS) * ((float)i + (float)r * 0.5);
+            float2 dir;
+            sincos(angle, dir.y, dir.x);
+
+            float4 tap = fusionTex(In, In.texCoord + dir * texel * _Radius * spread);
+            float w = (1.0 - spread * 0.5) * active;
+
+            /* Weighting colour by alpha keeps transparent pixels from
+               contributing their (arbitrary) colour to the average. */
+            sum += float4(tap.rgb * tap.a, tap.a) * w;
+            weight += w;
+        }
+    }
+
+    sum /= weight;
+    float4 blurred = float4(sum.rgb / max(sum.a, 1.0e-5), sum.a);
+
+    return lerp(src, blurred, saturate(_Amount));
+}

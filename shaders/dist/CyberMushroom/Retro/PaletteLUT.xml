@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<effect>
+  <name>Palette Ramp</name>
+  <description>Re-colours by brightness through a palette strip you supply as an image, instead of the four hard-coded stops Gradient Map gives you. Draw a 1-pixel-tall strip of your palette, drop it in, and the whole game wears it.</description>
+  <author>CyberMushroom</author>
+  <copyright>Copyright (c) CyberMushroom</copyright>
+  <website>https://github.com/CyberMushroom/CyberMushroom</website>
+
+  <parameter>
+    <name>Ramp Length</name>
+    <variable>_Columns</variable>
+    <description>How many colours across your strip is. Must match the image or the ends will be sampled wrong.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>4.0</value>
+    <min>2</min>
+    <max>256</max>
+  </parameter>
+
+  <parameter>
+    <name>Ramp Rows</name>
+    <variable>_Rows</variable>
+    <description>How many palettes are stacked vertically in the image.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>1.0</value>
+    <min>1</min>
+    <max>64</max>
+  </parameter>
+
+  <parameter>
+    <name>Row</name>
+    <variable>_Row</variable>
+    <description>Which row to read. Animate this to swap palettes.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.0</value>
+    <min>0</min>
+    <max>63</max>
+  </parameter>
+
+  <parameter>
+    <name>Offset</name>
+    <variable>_Offset</variable>
+    <description>Slides every pixel along the ramp before it is looked up.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.0</value>
+    <min>-1</min>
+    <max>1</max>
+  </parameter>
+
+  <parameter>
+    <name>Contrast</name>
+    <variable>_Contrast</variable>
+    <description>Spreads the brightness range across the ramp.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>1.0</value>
+    <min>0</min>
+    <max>4</max>
+  </parameter>
+
+  <parameter>
+    <name>Amount</name>
+    <variable>_Amount</variable>
+    <description>Blends the re-coloured pixel back over the original.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>1.0</value>
+    <min>0</min>
+    <max>1</max>
+  </parameter>
+
+  <parameter>
+    <name>Palette Ramp</name>
+    <variable>_Ramp</variable>
+    <code>_Ramp</code>
+    <description>The palette strip. Darkest colour on the left, lightest on the right.</description>
+    <type>image</type>
+    <property>image</property>
+  </parameter>
+
+  <sampler>
+    <index>1</index>
+    <filter>point</filter>
+    <addressU>clamp</addressU>
+    <addressV>clamp</addressV>
+  </sampler>
+</effect>

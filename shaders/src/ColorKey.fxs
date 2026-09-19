@@ -1,0 +1,29 @@
+// @name        Colour Key
+// @category    Color
+// @target      ps_2_0
+// @description Makes one colour transparent. For sprite sheets exported without
+// alpha, for punching a window out of a backdrop, and for cutting a hole in
+// anything at runtime.
+// @usage       Set Tolerance to 0 first and raise it until the whole area goes,
+// then add Softness to clean up anti-aliased edges.
+// @param type=color var=_Key       name="Key Colour" default=16711935 desc="The colour to remove. Default is magenta."
+// @param type=float var=_Tolerance name="Tolerance"  default=0.15 min=0 max=1.8 desc="How close a pixel has to be to the key colour to be removed."
+// @param type=float var=_Softness  name="Softness"   default=0.05 min=0 max=1 desc="Fades pixels out near the edge of the tolerance rather than cutting them hard."
+// @param type=float var=_Despill   name="Despill"    default=0.0 min=0 max=1 desc="Pulls the key colour back out of the pixels that survive, which kills the coloured fringe left around a cut-out."
+
+float4 fusion_main(in PS_INPUT In)
+{
+    float4 src = fusionTex(In, In.texCoord);
+
+    float dist = distance(src.rgb, _Key.rgb);
+    float keyed = 1.0 - smoothstep(_Tolerance, _Tolerance + max(_Softness, 1.0e-4), dist);
+
+    /* Push the surviving pixels away from the key colour, toward their own
+       brightness, so no fringe of it is left behind. */
+    float grey = fusionLuma(src.rgb);
+    float3 clean = lerp(src.rgb, float3(grey, grey, grey), saturate(_Despill) * keyed);
+
+    src.rgb = clean;
+    src.a *= 1.0 - keyed;
+    return src;
+}

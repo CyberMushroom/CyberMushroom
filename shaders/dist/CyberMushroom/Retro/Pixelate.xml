@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<effect>
+  <name>Pixelate</name>
+  <description>Snaps the image to a coarser grid. Useful both as a permanent look and as a transition - ramp the block size up to dissolve a scene into squares.</description>
+  <author>CyberMushroom</author>
+  <copyright>Copyright (c) CyberMushroom</copyright>
+  <website>https://github.com/CyberMushroom/CyberMushroom</website>
+
+  <parameter>
+    <name>Block Width</name>
+    <variable>_SizeX</variable>
+    <description>Block width in texels. 1 leaves the image alone.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>4.0</value>
+    <min>1</min>
+    <max>64</max>
+  </parameter>
+
+  <parameter>
+    <name>Block Height</name>
+    <variable>_SizeY</variable>
+    <description>Block height in texels. Set it to 1 with a wide block for a horizontal smear.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>4.0</value>
+    <min>1</min>
+    <max>64</max>
+  </parameter>
+
+  <parameter>
+    <name>Sample Centre</name>
+    <variable>_Center</variable>
+    <description>On samples the middle of each block, which keeps thin features alive. Off samples the corner, which is the cheaper, blockier classic.</description>
+    <type>bool</type>
+    <property>checkbox</property>
+    <value>1</value>
+  </parameter>
+</effect>

@@ -1,0 +1,47 @@
+// @name        Bloom
+// @category    Screen
+// @target      ps_3_0
+// @description Bright pixels bleed light into their neighbours. One pass, two
+// rings of taps - not a film-grade bloom, but it costs one draw and it makes
+// lamps, coins and explosions feel hot.
+// @usage       Apply to a layer above the scene. If nothing happens, your
+// Threshold is above the brightest pixel in the frame - drop it.
+// @note        On an object rather than a layer, the glow stops at the edge of
+// the object's own image. Leave transparent padding around the sprite or add
+// the effect to the layer instead.
+// @param type=float var=_Threshold name="Threshold" default=0.7 min=0 max=1 desc="Only pixels brighter than this bleed."
+// @param type=float var=_Intensity name="Intensity" default=0.8 min=0 max=4 desc="How much light is added back."
+// @param type=float var=_Radius    name="Radius"    default=4.0 min=1 max=64 desc="How far the light spreads, in texels."
+// @param type=float var=_Tint      name="Tint Strength" default=0.0 min=0 max=1 desc="Pushes the glow toward Glow Colour instead of the colour of the pixel that made it."
+// @param type=color var=_Color     name="Glow Colour"   default=16777215 desc="Colour the glow is pushed toward when Tint Strength is above 0."
+
+float4 fusion_main(in PS_INPUT In)
+{
+    float4 src = fusionTex(In, In.texCoord);
+    float2 texel = fusionTexel();
+
+    float3 glow = float3(0.0, 0.0, 0.0);
+    const int TAPS = 6;
+
+    [unroll]
+    for (int i = 0; i < TAPS; i++)
+    {
+        float angle = (6.2831853 / (float)TAPS) * (float)i;
+        float2 dir;
+        sincos(angle, dir.y, dir.x);
+
+        /* Two rings: the inner one keeps the glow attached to the source,
+           the outer one gives it reach. */
+        float3 near = fusionTex(In, In.texCoord + dir * texel * _Radius * 0.5).rgb;
+        float3 far = fusionTex(In, In.texCoord + fusionRotate(dir, 0.5236) * texel * _Radius).rgb;
+
+        glow += max(near - _Threshold, float3(0.0, 0.0, 0.0));
+        glow += max(far - _Threshold, float3(0.0, 0.0, 0.0)) * 0.6;
+    }
+
+    glow /= (float)TAPS * 1.6;
+    glow = lerp(glow, _Color.rgb * fusionLuma(glow), saturate(_Tint));
+
+    src.rgb = saturate(src.rgb + glow * _Intensity);
+    return src;
+}

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<effect>
+  <name>Drop Shadow</name>
+  <description>Casts an offset shadow of the sprite behind itself, in one draw and one object. Lifts HUD cards and text off the background - the same trick the score panel in this repo uses, but free.</description>
+  <author>CyberMushroom</author>
+  <copyright>Copyright (c) CyberMushroom</copyright>
+  <website>https://github.com/CyberMushroom/CyberMushroom</website>
+
+  <parameter>
+    <name>Shadow Colour</name>
+    <variable>_Color</variable>
+    <description>Shadow colour. Default is DMG 15,56,15.</description>
+    <type>int_float4</type>
+    <property>color</property>
+    <value>997391</value>
+  </parameter>
+
+  <parameter>
+    <name>Offset X</name>
+    <variable>_OffsetX</variable>
+    <description>How far right the shadow falls, in texels.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>1.0</value>
+    <min>-32</min>
+    <max>32</max>
+  </parameter>
+
+  <parameter>
+    <name>Offset Y</name>
+    <variable>_OffsetY</variable>
+    <description>How far down the shadow falls, in texels.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>1.0</value>
+    <min>-32</min>
+    <max>32</max>
+  </parameter>
+
+  <parameter>
+    <name>Opacity</name>
+    <variable>_Opacity</variable>
+    <description>Shadow opacity.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.6</value>
+    <min>0</min>
+    <max>1</max>
+  </parameter>
+
+  <parameter>
+    <name>Soften</name>
+    <variable>_Soften</variable>
+    <description>Blurs the shadow by averaging four extra taps this far out, in texels. 0 keeps it hard edged, which is the right answer for pixel art.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.0</value>
+    <min>0</min>
+    <max>16</max>
+  </parameter>
+
+  <sampler>
+    <index>0</index>
+    <filter>point</filter>
+    <addressU>clamp</addressU>
+    <addressV>clamp</addressV>
+  </sampler>
+</effect>

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<effect>
+  <name>UV Transform</name>
+  <description>Scrolls, scales and rotates the image inside the object without moving the object. This is how you get endless parallax skies, conveyor belts, flowing lava and spinning gears out of one static Active object.</description>
+  <author>CyberMushroom</author>
+  <copyright>Copyright (c) CyberMushroom</copyright>
+  <website>https://github.com/CyberMushroom/CyberMushroom</website>
+
+  <parameter>
+    <name>Scroll X</name>
+    <variable>_ScrollX</variable>
+    <description>Horizontal scroll, where 1 is the full width of the image.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.0</value>
+    <min>-1000</min>
+    <max>1000</max>
+  </parameter>
+
+  <parameter>
+    <name>Scroll Y</name>
+    <variable>_ScrollY</variable>
+    <description>Vertical scroll, where 1 is the full height.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.0</value>
+    <min>-1000</min>
+    <max>1000</max>
+  </parameter>
+
+  <parameter>
+    <name>Scale X</name>
+    <variable>_ScaleX</variable>
+    <description>Horizontal zoom. Above 1 shows more of the image, below 1 zooms in.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>1.0</value>
+    <min>0.01</min>
+    <max>64</max>
+  </parameter>
+
+  <parameter>
+    <name>Scale Y</name>
+    <variable>_ScaleY</variable>
+    <description>Vertical zoom.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>1.0</value>
+    <min>0.01</min>
+    <max>64</max>
+  </parameter>
+
+  <parameter>
+    <name>Angle</name>
+    <variable>_Angle</variable>
+    <description>Rotation in degrees around the pivot.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.0</value>
+    <min>-1440</min>
+    <max>1440</max>
+  </parameter>
+
+  <parameter>
+    <name>Pivot X</name>
+    <variable>_PivotX</variable>
+    <description>Point the rotation and scaling happen around, across the object.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.5</value>
+    <min>0</min>
+    <max>1</max>
+  </parameter>
+
+  <parameter>
+    <name>Pivot Y</name>
+    <variable>_PivotY</variable>
+    <description>Point the rotation and scaling happen around, down the object.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.5</value>
+    <min>0</min>
+    <max>1</max>
+  </parameter>
+
+  <parameter>
+    <name>Wrap Mode</name>
+    <variable>_Wrap</variable>
+    <description>0 wrap (tiles forever), 1 clamp (edge pixels smear), 2 clip (anything outside disappears).</description>
+    <type>int</type>
+    <property>slider</property>
+    <value>0</value>
+    <min>0</min>
+    <max>2</max>
+  </parameter>
+</effect>

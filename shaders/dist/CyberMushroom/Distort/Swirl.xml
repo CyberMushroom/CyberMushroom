@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<effect>
+  <name>Swirl</name>
+  <description>Twists the image around a point, hardest in the middle and fading to nothing at the edge of its radius. Portals, whirlpools, drains, and a very good "sucked into the pipe" transition.</description>
+  <author>CyberMushroom</author>
+  <copyright>Copyright (c) CyberMushroom</copyright>
+  <website>https://github.com/CyberMushroom/CyberMushroom</website>
+
+  <parameter>
+    <name>Centre X</name>
+    <variable>_CenterX</variable>
+    <description>Centre of the twist across the object.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.5</value>
+    <min>0</min>
+    <max>1</max>
+  </parameter>
+
+  <parameter>
+    <name>Centre Y</name>
+    <variable>_CenterY</variable>
+    <description>Centre of the twist down the object.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.5</value>
+    <min>0</min>
+    <max>1</max>
+  </parameter>
+
+  <parameter>
+    <name>Angle</name>
+    <variable>_Angle</variable>
+    <description>Degrees of twist at the centre.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>180.0</value>
+    <min>-1440</min>
+    <max>1440</max>
+  </parameter>
+
+  <parameter>
+    <name>Radius</name>
+    <variable>_Radius</variable>
+    <description>How far the twist reaches, where 1 is half the object's width.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.5</value>
+    <min>0.01</min>
+    <max>2</max>
+  </parameter>
+
+  <parameter>
+    <name>Clip Edges</name>
+    <variable>_Clip</variable>
+    <description>On hides pixels dragged in from outside the object's image.</description>
+    <type>bool</type>
+    <property>checkbox</property>
+    <value>1</value>
+  </parameter>
+</effect>

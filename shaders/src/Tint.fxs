@@ -1,0 +1,22 @@
+// @name        Tint
+// @category    Color
+// @target      ps_2_0
+// @description Pushes the sprite toward a flat colour without touching its
+// alpha. The everyday one: team colours, poison green, frozen blue, a
+// dimmed-out menu item.
+// @usage       Animate Amount from 0 to 1 with Set effect parameter.
+// @param type=color var=_Color  name="Colour"   default=16777215 desc="The colour to tint toward. Fusion stores colours as BGR, the build script prints the RGB reading in shaders/REFERENCE.md."
+// @param type=float var=_Amount name="Amount"   default=1.0 min=0 max=1 desc="0 leaves the sprite alone, 1 replaces its colour completely."
+// @param type=bool  var=_KeepLuma name="Keep Shading" default=1 desc="On, the tint keeps the sprite's own light and shade. Off, it flattens to one colour."
+
+float4 fusion_main(in PS_INPUT In)
+{
+    float4 src = fusionTex(In, In.texCoord);
+
+    float3 solid = _Color.rgb;
+    float3 shaded = _Color.rgb * (fusionLuma(src.rgb) * 2.0);
+    float3 target = _KeepLuma ? shaded : solid;
+
+    src.rgb = lerp(src.rgb, saturate(target), saturate(_Amount));
+    return src;
+}

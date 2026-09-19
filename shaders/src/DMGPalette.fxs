@@ -1,0 +1,45 @@
+// @name        DMG Palette
+// @category    Retro
+// @target      ps_2_0
+// @description Crushes anything you point it at down to four tones - the
+// original Game Boy screen, by default the same 155/188/15 greens the HUD
+// assets in this repo are drawn on. Optional ordered dithering buys back the
+// gradients four colours cannot hold.
+// @usage       Put it on the frame's top layer, or on a fullscreen Active
+// object with "Apply to background" ticked, so the whole scene lands on one
+// palette instead of each sprite separately.
+// @note        The dither pattern is locked to the object's texels. If the
+// object is scaled or rotated the pattern scales with it - for a screen-stable
+// grid, apply this to an unscaled fullscreen layer.
+// @param type=color var=_Shade0   name="Shade 1 (darkest)"  default=997391 desc="Darkest of the four tones. Default is DMG 15,56,15."
+// @param type=color var=_Shade1   name="Shade 2"            default=3170864 desc="Dark midtone. Default is DMG 48,98,48."
+// @param type=color var=_Shade2   name="Shade 3"            default=1027211 desc="Light midtone. Default is DMG 139,172,15."
+// @param type=color var=_Shade3   name="Shade 4 (lightest)" default=1031323 desc="Lightest of the four tones. Default is DMG 155,188,15."
+// @param type=float var=_Brightness name="Brightness"       default=0.0 min=-1 max=1 desc="Shifts everything up or down the four tones before quantising. Use it to fade a scene to black or white through the palette."
+// @param type=float var=_Contrast name="Contrast"           default=1.0 min=0 max=4 desc="Spreads or squeezes the brightness range before quantising."
+// @param type=float var=_Dither   name="Dither"             default=0.0 min=0 max=1 desc="0 is hard banding, 1 is full ordered dithering. Around 0.6 reads as shading rather than noise."
+// @param type=bool  var=_Coarse   name="Coarse Dither"      default=0 desc="On uses a chunky 2x2 pattern, off uses a finer 4x4. Coarse holds up better once the game is scaled up on a big screen."
+// @param type=float var=_Amount   name="Amount"             default=1.0 min=0 max=1 desc="Blends the palettised image back over the original, for fading the effect in."
+
+float4 fusion_main(in PS_INPUT In)
+{
+    float4 src = fusionTex(In, In.texCoord);
+
+    float luma = fusionLuma(src.rgb);
+    luma = (luma - 0.5) * _Contrast + 0.5 + _Brightness;
+
+    /* Four tones means three steps, so the dither offset is at most half a
+       step either way - any more and it stops reading as shading. */
+    float2 pixel = In.texCoord / fusionTexel();
+    float threshold = _Coarse ? fusionBayer2(pixel) : fusionBayer4(pixel);
+    luma = saturate(luma + (threshold - 0.5) * _Dither / 3.0);
+
+    float index = floor(luma * 3.0 + 0.5);
+    float3 tone = _Shade0.rgb;
+    tone = (index > 0.5) ? _Shade1.rgb : tone;
+    tone = (index > 1.5) ? _Shade2.rgb : tone;
+    tone = (index > 2.5) ? _Shade3.rgb : tone;
+
+    src.rgb = lerp(src.rgb, tone, saturate(_Amount));
+    return src;
+}

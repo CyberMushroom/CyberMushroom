@@ -1,0 +1,30 @@
+// @name        Scanlines
+// @category    Screen
+// @target      ps_2_0
+// @description Dark lines across the image, the CRT tell. On its own it is the
+// cheapest way to make clean pixel art look like it came out of a tube.
+// @usage       Apply to a layer (Layer properties, Effect) so it covers the
+// whole frame. Animate Offset to make the lines roll like a badly synced
+// signal.
+// @param type=float var=_Period   name="Line Spacing" default=2.0 min=1 max=32 desc="Texels from one line to the next. 2 gives the classic every-other-line look."
+// @param type=float var=_Duty     name="Line Width"   default=0.5 min=0 max=1 desc="Fraction of the spacing that is dark."
+// @param type=float var=_Darkness name="Darkness"     default=0.35 min=0 max=1 desc="How far the dark lines are pulled down."
+// @param type=float var=_Soft     name="Softness"     default=0.3 min=0 max=1 desc="0 is a hard edged line, 1 is a smooth sine-like falloff."
+// @param type=float var=_Offset   name="Offset"       default=0.0 min=-64 max=64 desc="Slides the lines along. Add a little each tick for a rolling signal."
+// @param type=bool  var=_Vertical name="Vertical"     default=0 desc="On draws the lines vertically instead, for an aperture-grille look."
+
+float4 fusion_main(in PS_INPUT In)
+{
+    float4 src = fusionTex(In, In.texCoord);
+
+    float2 pixel = In.texCoord / fusionTexel();
+    float coord = _Vertical ? pixel.x : pixel.y;
+    float phase = frac((coord + _Offset) / max(_Period, 1.0));
+
+    float edge = max(_Soft, 1.0e-4) * 0.5;
+    float duty = saturate(_Duty);
+    float lineMask = smoothstep(duty + edge, duty - edge, phase);
+
+    src.rgb *= 1.0 - lineMask * saturate(_Darkness);
+    return src;
+}

@@ -1,0 +1,26 @@
+// @name        Adjust
+// @category    Color
+// @target      ps_2_0
+// @description Brightness, contrast, saturation and gamma in one pass. Reach
+// for this before stacking three effects on an object, since each extra effect
+// is another draw.
+// @usage       Everything defaults to "no change", so a freshly applied Adjust
+// looks like nothing happened. That is deliberate.
+// @param type=float var=_Brightness name="Brightness" default=0.0 min=-1 max=1 desc="Added to every channel. 0 is no change."
+// @param type=float var=_Contrast   name="Contrast"   default=1.0 min=0 max=4 desc="Pushes colours away from mid grey. 1 is no change, 0 flattens to grey."
+// @param type=float var=_Saturation name="Saturation" default=1.0 min=0 max=4 desc="1 is no change, 0 is greyscale, above 1 oversaturates."
+// @param type=float var=_Gamma      name="Gamma"      default=1.0 min=0.1 max=4 desc="Lifts or crushes the midtones without clipping the ends. 1 is no change."
+
+float4 fusion_main(in PS_INPUT In)
+{
+    float4 src = fusionTex(In, In.texCoord);
+
+    float3 c = pow(max(src.rgb, 1.0e-5), 1.0 / max(_Gamma, 0.01));
+    c = (c - 0.5) * _Contrast + 0.5;
+    c += _Brightness;
+    float grey = fusionLuma(c);
+    c = lerp(float3(grey, grey, grey), c, _Saturation);
+
+    src.rgb = saturate(c);
+    return src;
+}

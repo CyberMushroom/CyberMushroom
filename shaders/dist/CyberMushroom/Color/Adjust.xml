@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<effect>
+  <name>Adjust</name>
+  <description>Brightness, contrast, saturation and gamma in one pass. Reach for this before stacking three effects on an object, since each extra effect is another draw.</description>
+  <author>CyberMushroom</author>
+  <copyright>Copyright (c) CyberMushroom</copyright>
+  <website>https://github.com/CyberMushroom/CyberMushroom</website>
+
+  <parameter>
+    <name>Brightness</name>
+    <variable>_Brightness</variable>
+    <description>Added to every channel. 0 is no change.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.0</value>
+    <min>-1</min>
+    <max>1</max>
+  </parameter>
+
+  <parameter>
+    <name>Contrast</name>
+    <variable>_Contrast</variable>
+    <description>Pushes colours away from mid grey. 1 is no change, 0 flattens to grey.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>1.0</value>
+    <min>0</min>
+    <max>4</max>
+  </parameter>
+
+  <parameter>
+    <name>Saturation</name>
+    <variable>_Saturation</variable>
+    <description>1 is no change, 0 is greyscale, above 1 oversaturates.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>1.0</value>
+    <min>0</min>
+    <max>4</max>
+  </parameter>
+
+  <parameter>
+    <name>Gamma</name>
+    <variable>_Gamma</variable>
+    <description>Lifts or crushes the midtones without clipping the ends. 1 is no change.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>1.0</value>
+    <min>0.1</min>
+    <max>4</max>
+  </parameter>
+</effect>

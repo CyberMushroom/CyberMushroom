@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<effect>
+  <name>Heat Haze</name>
+  <description>Soft rising noise that bends the image, the air over a fire or a desert floor. Unlike Wave this has no repeating pattern, so it holds up over a whole screen.</description>
+  <author>CyberMushroom</author>
+  <copyright>Copyright (c) CyberMushroom</copyright>
+  <website>https://github.com/CyberMushroom/CyberMushroom</website>
+
+  <parameter>
+    <name>Strength</name>
+    <variable>_Strength</variable>
+    <description>How far pixels move, in texels.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>2.0</value>
+    <min>0</min>
+    <max>32</max>
+  </parameter>
+
+  <parameter>
+    <name>Cell Size</name>
+    <variable>_Scale</variable>
+    <description>Size of one noise cell in texels. Small is a fine shimmer, large is slow rolling air.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>24.0</value>
+    <min>1</min>
+    <max>256</max>
+  </parameter>
+
+  <parameter>
+    <name>Rise Speed</name>
+    <variable>_Speed</variable>
+    <description>How fast the haze climbs when Time is animated.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>1.0</value>
+    <min>-8</min>
+    <max>8</max>
+  </parameter>
+
+  <parameter>
+    <name>Time</name>
+    <variable>_Time</variable>
+    <description>Animate this or the haze stands still.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.0</value>
+    <min>0</min>
+    <max>100000</max>
+  </parameter>
+
+  <parameter>
+    <name>Vertical Bias</name>
+    <variable>_Rise</variable>
+    <description>0 wobbles evenly in both directions, 1 mostly pushes pixels up and down like rising air.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.6</value>
+    <min>0</min>
+    <max>1</max>
+  </parameter>
+</effect>

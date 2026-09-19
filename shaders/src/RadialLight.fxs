@@ -1,0 +1,44 @@
+// @name        Radial Light
+// @category    Light
+// @target      ps_2_0
+// @description Turns a plain rectangle into a light: a soft radial pool of
+// colour, or - with Invert on - a sheet of darkness with a hole cut in it. Two
+// objects and this shader give you a whole lighting system without an
+// extension.
+// @usage       For a torch, cover the frame with a rectangle filled with your
+// darkest colour, apply this with Invert on, and move Centre X and Y to follow
+// the player. For a glowing lamp, use a small rectangle with Invert off and set
+// the object's ink effect to Add.
+// @param type=color var=_Color    name="Colour"    default=16777215 desc="Light colour with Invert off, darkness colour with it on."
+// @param type=float var=_CenterX  name="Centre X"  default=0.5 min=-1 max=2 desc="Centre of the light across the object."
+// @param type=float var=_CenterY  name="Centre Y"  default=0.5 min=-1 max=2 desc="Centre of the light down the object."
+// @param type=float var=_Radius   name="Radius"    default=0.5 min=0 max=2 desc="How far the light reaches, where 1 is the edge of the object."
+// @param type=float var=_Falloff  name="Falloff"   default=2.0 min=0.1 max=8 desc="How quickly it fades. 1 is a straight ramp, higher values keep a bright core with a fast edge."
+// @param type=float var=_Intensity name="Intensity" default=1.0 min=0 max=4 desc="Overall strength."
+// @param type=float var=_Steps    name="Banding"   default=0.0 min=0 max=16 desc="Quantises the falloff into this many bands, which keeps a soft light from looking out of place against pixel art. 0 is smooth."
+// @param type=bool  var=_Invert   name="Invert"    default=0 desc="Off draws the light. On draws darkness everywhere except the light, so the object becomes a shadow sheet with a hole in it."
+// @param type=bool  var=_Square   name="Ignore Aspect" default=0 desc="On lets the light stretch with the object instead of staying round."
+
+float4 fusion_main(in PS_INPUT In)
+{
+    float4 src = fusionTex(In, In.texCoord);
+
+    float aspect = fPixelHeight / max(fPixelWidth, 1.0e-6);
+    float2 centred = (In.texCoord - float2(_CenterX, _CenterY)) * 2.0;
+    centred.x *= _Square ? 1.0 : aspect;
+
+    float light = saturate(1.0 - length(centred) / max(_Radius, 1.0e-4));
+    light = pow(light, _Falloff);
+
+    if (_Steps >= 1.0)
+    {
+        float bands = floor(_Steps);
+        light = floor(light * bands + 0.5) / bands;
+    }
+
+    light = saturate(light * _Intensity);
+
+    src.rgb = _Color.rgb;
+    src.a *= _Invert ? (1.0 - light) : light;
+    return src;
+}

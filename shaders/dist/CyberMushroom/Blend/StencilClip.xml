@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<effect>
+  <name>Stencil Clip</name>
+  <description>Shows the object only where the background behind it is a particular colour. Paint a mask colour into your level art and sprites will only draw inside it - water that only fills the pool, light that only lands on the floor, a reflection that stops at the edge of the puddle.</description>
+  <author>CyberMushroom</author>
+  <copyright>Copyright (c) CyberMushroom</copyright>
+  <website>https://github.com/CyberMushroom/CyberMushroom</website>
+  <BackgroundTexture>1</BackgroundTexture>
+
+  <parameter>
+    <name>Stencil Colour</name>
+    <variable>_Key</variable>
+    <description>The background colour the object is allowed to draw over. Default is magenta, the traditional 'this is not real art' colour.</description>
+    <type>int_float4</type>
+    <property>color</property>
+    <value>16711935</value>
+  </parameter>
+
+  <parameter>
+    <name>Tolerance</name>
+    <variable>_Tolerance</variable>
+    <description>How close the background has to be to the stencil colour. 0 is an exact match.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.1</value>
+    <min>0</min>
+    <max>1.8</max>
+  </parameter>
+
+  <parameter>
+    <name>Softness</name>
+    <variable>_Softness</variable>
+    <description>Fades the clip out past the tolerance instead of cutting hard.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.05</value>
+    <min>0</min>
+    <max>1</max>
+  </parameter>
+
+  <parameter>
+    <name>Invert</name>
+    <variable>_Invert</variable>
+    <description>On draws everywhere except over the stencil colour.</description>
+    <type>bool</type>
+    <property>checkbox</property>
+    <value>0</value>
+  </parameter>
+</effect>

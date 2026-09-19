@@ -1,0 +1,37 @@
+// @name        Water Reflection
+// @category    Distort
+// @target      ps_2_0
+// @description Flips the image, ripples it and fades it out with depth. Put a
+// copy of your scenery below the waterline, apply this, and it reflects.
+// @usage       Duplicate the backdrop under the water, apply the effect to the
+// copy, and animate Time. Fade Strength controls how fast the reflection dies
+// off with distance from the surface.
+// @param type=color var=_Color     name="Water Colour" default=3170864 desc="Colour the reflection is tinted toward. Default is DMG 48,98,48."
+// @param type=float var=_Amplitude name="Ripple Size"  default=1.5 min=0 max=32 desc="How far the ripples push pixels sideways, in texels."
+// @param type=float var=_Frequency name="Ripple Count" default=6.0 min=0 max=64 desc="How many ripples fit down the reflection."
+// @param type=float var=_Speed     name="Speed"        default=1.5 min=-32 max=32 desc="How fast the ripples travel when Time is animated."
+// @param type=float var=_Time      name="Time"         default=0.0 min=0 max=100000 desc="Animate this to make the water move."
+// @param type=float var=_Tint      name="Tint"         default=0.35 min=0 max=1 desc="How strongly the water colour stains the reflection."
+// @param type=float var=_Fade      name="Depth Fade"   default=0.6 min=0 max=1 desc="How much the reflection fades out toward the bottom, which is where it is furthest from the surface."
+// @param type=bool  var=_Flip      name="Flip"         default=1 desc="On mirrors the image vertically, which is what you want when the source is the scenery above. Off leaves it upright."
+
+float4 fusion_main(in PS_INPUT In)
+{
+    float2 texel = fusionTexel();
+    float2 uv = In.texCoord;
+
+    /* depth is 0 at the waterline and 1 at the far edge of the reflection. */
+    float depth = _Flip ? uv.y : 1.0 - uv.y;
+    if (_Flip)
+    {
+        uv.y = 1.0 - uv.y;
+    }
+
+    float phase = uv.y * _Frequency * 6.2831853 + _Time * _Speed;
+    uv.x += sin(phase) * _Amplitude * texel.x * (0.3 + depth);
+
+    float4 src = fusionTex(In, saturate(uv));
+    src.rgb = lerp(src.rgb, _Color.rgb, saturate(_Tint));
+    src.a *= 1.0 - saturate(_Fade) * depth;
+    return src;
+}

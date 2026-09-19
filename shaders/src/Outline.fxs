@@ -1,0 +1,63 @@
+// @name        Outline
+// @category    Outline
+// @target      ps_3_0
+// @description Draws a border around the sprite's silhouette. The single most
+// useful effect in a 2D game: it lifts a character off a busy background, marks
+// a selected unit, and flashes an interactable.
+// @usage       Leave it applied with Alpha at 0 and raise it when the object
+// becomes selectable, so nothing has to be turned on and off.
+// @note        The outline is drawn inside the object's own image, so a sprite
+// whose art touches the edge of its frame has nowhere to put it. Leave at least
+// Thickness pixels of transparent padding around the art.
+// @sampler     0 point clamp clamp
+// @param type=color var=_Color     name="Colour"      default=16777215 desc="Outline colour."
+// @param type=float var=_Thickness name="Thickness"   default=1.0 min=0 max=16 desc="Outline width in texels."
+// @param type=float var=_Alpha     name="Alpha"       default=1.0 min=0 max=1 desc="Outline opacity. 0 turns the outline off without removing the effect."
+// @param type=float var=_Threshold name="Alpha Cutoff" default=0.5 min=0 max=1 desc="How opaque a pixel has to be to count as part of the sprite. Lower it for soft-edged art."
+// @param type=bool  var=_Diagonal  name="8-Way"       default=1 desc="On checks the diagonals too, which keeps corners from being clipped. Off is the cheaper 4-way version."
+// @param type=bool  var=_Inside    name="Inside"      default=0 desc="On draws the border just inside the silhouette instead of around it, so the sprite does not grow."
+
+float fusionSpriteAlpha(in PS_INPUT In, float2 uv)
+{
+    return step(_Threshold, fusionTex(In, uv).a);
+}
+
+float4 fusion_main(in PS_INPUT In)
+{
+    float4 src = fusionTex(In, In.texCoord);
+    float2 texel = fusionTexel();
+
+    float here = step(_Threshold, src.a);
+    float widest = 0.0;
+    float narrowest = 1.0;
+
+    const int DIRECTIONS = 8;
+
+    [unroll]
+    for (int i = 0; i < DIRECTIONS; i++)
+    {
+        float angle = (6.2831853 / (float)DIRECTIONS) * (float)i;
+        float2 dir;
+        sincos(angle, dir.y, dir.x);
+
+        /* Every other direction is a diagonal; in 4-way mode they contribute
+           nothing rather than being branched around. */
+        bool diagonal = (i == 1 || i == 3 || i == 5 || i == 7);
+        float active = (diagonal && !_Diagonal) ? 0.0 : 1.0;
+
+        /* Two samples per direction, so a thick outline stays solid instead
+           of breaking into dots at the corners. */
+        float outer = fusionSpriteAlpha(In, In.texCoord + dir * texel * _Thickness);
+        float inner = fusionSpriteAlpha(In, In.texCoord + dir * texel * _Thickness * 0.5);
+
+        widest = max(widest, max(outer, inner) * active);
+        narrowest = min(narrowest, lerp(1.0, min(outer, inner), active));
+    }
+
+    float ring = _Inside ? (here * (1.0 - narrowest)) : ((1.0 - here) * widest);
+    ring *= saturate(_Alpha);
+
+    src.rgb = lerp(src.rgb, _Color.rgb, ring);
+    src.a = max(src.a, ring);
+    return src;
+}

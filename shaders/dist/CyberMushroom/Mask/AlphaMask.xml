@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<effect>
+  <name>Alpha Mask</name>
+  <description>Cuts the object out using a second image you supply. Anything you can draw, you can mask with: torn paper edges, a spotlight, a window in a wall, a hand-drawn transition.</description>
+  <author>CyberMushroom</author>
+  <copyright>Copyright (c) CyberMushroom</copyright>
+  <website>https://github.com/CyberMushroom/CyberMushroom</website>
+
+  <parameter>
+    <name>Offset X</name>
+    <variable>_OffsetX</variable>
+    <description>Slides the mask sideways, where 1 is its full width.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.0</value>
+    <min>-100</min>
+    <max>100</max>
+  </parameter>
+
+  <parameter>
+    <name>Offset Y</name>
+    <variable>_OffsetY</variable>
+    <description>Slides the mask vertically.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.0</value>
+    <min>-100</min>
+    <max>100</max>
+  </parameter>
+
+  <parameter>
+    <name>Scale X</name>
+    <variable>_ScaleX</variable>
+    <description>Stretches the mask horizontally.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>1.0</value>
+    <min>0.01</min>
+    <max>64</max>
+  </parameter>
+
+  <parameter>
+    <name>Scale Y</name>
+    <variable>_ScaleY</variable>
+    <description>Stretches the mask vertically.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>1.0</value>
+    <min>0.01</min>
+    <max>64</max>
+  </parameter>
+
+  <parameter>
+    <name>Channel</name>
+    <variable>_Channel</variable>
+    <description>Which part of the mask to read: 0 alpha, 1 luminance, 2 red, 3 green, 4 blue.</description>
+    <type>int</type>
+    <property>slider</property>
+    <value>0</value>
+    <min>0</min>
+    <max>4</max>
+  </parameter>
+
+  <parameter>
+    <name>Contrast</name>
+    <variable>_Contrast</variable>
+    <description>Hardens the mask around its midpoint. High values turn a soft gradient into a crisp cut.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>1.0</value>
+    <min>0</min>
+    <max>16</max>
+  </parameter>
+
+  <parameter>
+    <name>Invert</name>
+    <variable>_Invert</variable>
+    <description>On keeps what the mask hides and hides what it keeps.</description>
+    <type>bool</type>
+    <property>checkbox</property>
+    <value>0</value>
+  </parameter>
+
+  <parameter>
+    <name>Tile</name>
+    <variable>_Tile</variable>
+    <description>On repeats the mask instead of stretching one copy across the object.</description>
+    <type>bool</type>
+    <property>checkbox</property>
+    <value>0</value>
+  </parameter>
+
+  <parameter>
+    <name>Mask Image</name>
+    <variable>_Mask</variable>
+    <code>_Mask</code>
+    <description>The image to mask with. White or opaque keeps the pixel, black or transparent removes it.</description>
+    <type>image</type>
+    <property>image</property>
+  </parameter>
+
+  <sampler>
+    <index>1</index>
+    <filter>linear</filter>
+    <addressU>clamp</addressU>
+    <addressV>clamp</addressV>
+  </sampler>
+</effect>

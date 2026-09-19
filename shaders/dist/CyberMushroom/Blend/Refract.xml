@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<effect>
+  <name>Refract</name>
+  <description>Bends the background as it passes through the object, using the object's own shading as the lens. Draw a bubble, a bottle, a heat pocket or a pane of glass, apply this, and the world behind it warps.</description>
+  <author>CyberMushroom</author>
+  <copyright>Copyright (c) CyberMushroom</copyright>
+  <website>https://github.com/CyberMushroom/CyberMushroom</website>
+  <BackgroundTexture>1</BackgroundTexture>
+
+  <parameter>
+    <name>Tint Colour</name>
+    <variable>_Tint</variable>
+    <description>Colour the refracted background is stained with.</description>
+    <type>int_float4</type>
+    <property>color</property>
+    <value>16777215</value>
+  </parameter>
+
+  <parameter>
+    <name>Strength</name>
+    <variable>_Strength</variable>
+    <description>How far the background is pushed, in texels. Negative bends the other way.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>16.0</value>
+    <min>-128</min>
+    <max>128</max>
+  </parameter>
+
+  <parameter>
+    <name>Magnify</name>
+    <variable>_Zoom</variable>
+    <description>Scales the background inside the lens. Positive magnifies, negative shrinks.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.0</value>
+    <min>-1</min>
+    <max>1</max>
+  </parameter>
+
+  <parameter>
+    <name>Tint</name>
+    <variable>_TintAmount</variable>
+    <description>How strongly the tint colour stains what shows through.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.15</value>
+    <min>0</min>
+    <max>1</max>
+  </parameter>
+
+  <parameter>
+    <name>Keep Sprite</name>
+    <variable>_Keep</variable>
+    <description>How much of the object's own art stays visible on top of the refraction. 0 is invisible glass.</description>
+    <type>float</type>
+    <property>edit</property>
+    <value>0.15</value>
+    <min>0</min>
+    <max>1</max>
+  </parameter>
+
+  <sampler>
+    <index>0</index>
+    <filter>linear</filter>
+    <addressU>clamp</addressU>
+    <addressV>clamp</addressV>
+  </sampler>
+
+  <sampler>
+    <index>1</index>
+    <filter>linear</filter>
+    <addressU>clamp</addressU>
+    <addressV>clamp</addressV>
+  </sampler>
+</effect>

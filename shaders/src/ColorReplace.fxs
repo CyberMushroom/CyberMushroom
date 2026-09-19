@@ -1,0 +1,26 @@
+// @name        Colour Replace
+// @category    Color
+// @target      ps_2_0
+// @description Swaps one colour in a sprite for another, within a tolerance.
+// The palette-swap workhorse: one mushroom sheet, every mushroom in the game.
+// @usage       Tolerance is a straight RGB distance, so start at 0.05 and raise
+// it until the whole shape is caught but nothing else is.
+// @param type=color var=_From      name="Find Colour"    default=255 desc="The colour to look for. Pick it with the eyedropper from your actual sprite; anti-aliased edges will need some tolerance."
+// @param type=color var=_To        name="Replace With"   default=16711680 desc="The colour it becomes."
+// @param type=float var=_Tolerance name="Tolerance"      default=0.1 min=0 max=1.8 desc="How far a pixel can sit from Find Colour and still count. 0 is an exact match."
+// @param type=float var=_Softness  name="Edge Softness"  default=0.05 min=0 max=1 desc="Fades the swap out past the tolerance so anti-aliased edges do not turn into a hard rim."
+// @param type=bool  var=_KeepShade name="Keep Shading"   default=0 desc="On, the replacement keeps the original pixel's light and shade, which holds up on shaded sprites."
+
+float4 fusion_main(in PS_INPUT In)
+{
+    float4 src = fusionTex(In, In.texCoord);
+
+    float dist = distance(src.rgb, _From.rgb);
+    float match = 1.0 - smoothstep(_Tolerance, _Tolerance + max(_Softness, 1.0e-4), dist);
+
+    float3 shaded = _To.rgb * (fusionLuma(src.rgb) * 2.0);
+    float3 target = _KeepShade ? saturate(shaded) : _To.rgb;
+
+    src.rgb = lerp(src.rgb, target, match);
+    return src;
+}

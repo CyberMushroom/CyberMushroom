@@ -1,0 +1,28 @@
+// @name        Stencil Clip
+// @category    Blend
+// @target      ps_2_0
+// @background  yes
+// @description Shows the object only where the background behind it is a
+// particular colour. Paint a mask colour into your level art and sprites will
+// only draw inside it - water that only fills the pool, light that only lands
+// on the floor, a reflection that stops at the edge of the puddle.
+// @usage       Pick a colour that appears nowhere else in your art, put it on a
+// lower layer, and set Tolerance just high enough to catch it.
+// @note        Needs something drawn behind it, on a lower layer or earlier in
+// the same one.
+// @param type=color var=_Key       name="Stencil Colour" default=16711935 desc="The background colour the object is allowed to draw over. Default is magenta, the traditional 'this is not real art' colour."
+// @param type=float var=_Tolerance name="Tolerance"      default=0.1 min=0 max=1.8 desc="How close the background has to be to the stencil colour. 0 is an exact match."
+// @param type=float var=_Softness  name="Softness"       default=0.05 min=0 max=1 desc="Fades the clip out past the tolerance instead of cutting hard."
+// @param type=bool  var=_Invert    name="Invert"         default=0 desc="On draws everywhere except over the stencil colour."
+
+float4 fusion_main(in PS_INPUT In)
+{
+    float4 src = fusionTex(In, In.texCoord);
+    float4 bg = fusionBg(In.bgCoord);
+
+    float dist = distance(bg.rgb, _Key.rgb);
+    float inside = 1.0 - smoothstep(_Tolerance, _Tolerance + max(_Softness, 1.0e-4), dist);
+
+    src.a *= _Invert ? (1.0 - inside) : inside;
+    return src;
+}

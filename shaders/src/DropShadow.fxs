@@ -1,0 +1,41 @@
+// @name        Drop Shadow
+// @category    Outline
+// @target      ps_2_0
+// @description Casts an offset shadow of the sprite behind itself, in one draw
+// and one object. Lifts HUD cards and text off the background - the same trick
+// the score panel in this repo uses, but free.
+// @note        The shadow is drawn inside the object's own image. Leave
+// transparent padding on the side the shadow falls, or it gets cut off.
+// @sampler     0 point clamp clamp
+// @param type=color var=_Color   name="Shadow Colour" default=997391 desc="Shadow colour. Default is DMG 15,56,15."
+// @param type=float var=_OffsetX name="Offset X"      default=1.0 min=-32 max=32 desc="How far right the shadow falls, in texels."
+// @param type=float var=_OffsetY name="Offset Y"      default=1.0 min=-32 max=32 desc="How far down the shadow falls, in texels."
+// @param type=float var=_Opacity name="Opacity"       default=0.6 min=0 max=1 desc="Shadow opacity."
+// @param type=float var=_Soften  name="Soften"        default=0.0 min=0 max=16 desc="Blurs the shadow by averaging four extra taps this far out, in texels. 0 keeps it hard edged, which is the right answer for pixel art."
+
+float4 fusion_main(in PS_INPUT In)
+{
+    float2 texel = fusionTexel();
+    float4 src = fusionTex(In, In.texCoord);
+
+    float2 shadowUV = In.texCoord - float2(_OffsetX, _OffsetY) * texel;
+    float shadow = fusionTex(In, shadowUV).a;
+
+    if (_Soften > 0.0)
+    {
+        float2 spread = texel * _Soften;
+        shadow += fusionTex(In, shadowUV + float2(spread.x, 0.0)).a;
+        shadow += fusionTex(In, shadowUV - float2(spread.x, 0.0)).a;
+        shadow += fusionTex(In, shadowUV + float2(0.0, spread.y)).a;
+        shadow += fusionTex(In, shadowUV - float2(0.0, spread.y)).a;
+        shadow /= 5.0;
+    }
+
+    shadow *= saturate(_Opacity);
+
+    /* Composite the sprite over its own shadow. */
+    float alpha = src.a + shadow * (1.0 - src.a);
+    float3 rgb = (src.rgb * src.a + _Color.rgb * shadow * (1.0 - src.a)) / max(alpha, 1.0e-5);
+
+    return float4(rgb, alpha);
+}

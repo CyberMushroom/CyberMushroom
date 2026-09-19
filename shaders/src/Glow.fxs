@@ -1,0 +1,48 @@
+// @name        Glow
+// @category    Outline
+// @target      ps_3_0
+// @description A soft halo around the sprite's silhouette, drawn behind it.
+// Unlike Bloom this does not care how bright the sprite is - a pitch black
+// sprite still glows - so it works for magic, pickups and selection states.
+// @usage       Pulse Strength with a sine to make a pickup breathe.
+// @note        The halo lives inside the object's image. Leave at least Radius
+// pixels of transparent padding around the art or it will be clipped square.
+// @sampler     0 point clamp clamp
+// @param type=color var=_Color    name="Glow Colour" default=1031323 desc="Colour of the halo. Default is DMG 155,188,15."
+// @param type=float var=_Radius   name="Radius"      default=4.0 min=1 max=32 desc="How far the halo reaches, in texels."
+// @param type=float var=_Strength name="Strength"    default=1.0 min=0 max=4 desc="Halo opacity. 0 turns it off."
+// @param type=float var=_Falloff  name="Falloff"     default=1.0 min=0.1 max=4 desc="Above 1 the halo hugs the sprite, below 1 it spreads out flat."
+
+float4 fusion_main(in PS_INPUT In)
+{
+    float4 src = fusionTex(In, In.texCoord);
+    float2 texel = fusionTexel();
+
+    float glow = 0.0;
+    const int DIRECTIONS = 8;
+    const int RINGS = 3;
+
+    [unroll]
+    for (int i = 0; i < DIRECTIONS; i++)
+    {
+        float angle = (6.2831853 / (float)DIRECTIONS) * ((float)i + 0.5);
+        float2 dir;
+        sincos(angle, dir.y, dir.x);
+
+        [unroll]
+        for (int r = 1; r <= RINGS; r++)
+        {
+            float spread = (float)r / (float)RINGS;
+            float weight = pow(1.0 - spread, _Falloff);
+            glow = max(glow, fusionTex(In, In.texCoord + dir * texel * _Radius * spread).a * weight);
+        }
+    }
+
+    glow = saturate(glow * _Strength);
+
+    /* The halo sits behind the sprite, so the sprite's own pixels win. */
+    float alpha = src.a + glow * (1.0 - src.a);
+    float3 rgb = (src.rgb * src.a + _Color.rgb * glow * (1.0 - src.a)) / max(alpha, 1.0e-5);
+
+    return float4(rgb, alpha);
+}
